@@ -1,0 +1,13 @@
+
+.env
+public/archivos/
+
+.idea/
+
+.DS_Store
+
+vendor/
+
+.env*
+
+*env*

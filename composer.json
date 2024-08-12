@@ -1,0 +1,31 @@
+{
+    "name": "jp_grow/proyecto",
+    "description": "Proyecto personal para el curso de multimedios",
+    "type": "project",
+    "authors": [
+        {
+            "name": "chepelcr",
+            "email": "chepelcr@outlook.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    
+    "require": {
+		"php": "^7.3||^8.0",
+		"phpmailer/phpmailer": "^6.5",
+        "vlucas/phpdotenv": "^5.3",
+        "dompdf/dompdf": "^3.0",
+        "pendalff/phpqrcode": "^1.0",
+        "phpbook/view": "^1.0",
+        "robrichards/xmlseclibs": "^3.1",
+		"jrtec/xmlseclibs_hacienda": "^1.0",
+        "aws/aws-sdk-php": "^3.315"
+
+	},
+    "autoload": {
+        "psr-4": {
+            "App\\":"App/",
+            "Core\\":"Core/"
+        }
+    }
+}
