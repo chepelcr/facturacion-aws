@@ -1,0 +1,11 @@
+*.zip
+.env
+public/archivos/
+.env
+
+.DS_Store
+
+.idea/
+vendor/
+
+*env*

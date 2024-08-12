@@ -1,0 +1,17 @@
+version: '3.5'
+
+services:
+  mariadb:
+    image: mariadb
+    environment:
+        MARIADB_USER: biller_user
+        MARIADB_ROOT_PASSWORD: chpcr0971
+        MARIADB_PASSWORD: chpcr0971
+        MARIADB_DATABASE: biller_front_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./laura_produccion (1).sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./laura_walmart (2).sql:/docker-entrypoint-initdb.d/2.sql"
+      - "./laura_seguridad (4).sql:/docker-entrypoint-initdb.d/3.sql"
+      - "./laura_facturacion (5).sql:/docker-entrypoint-initdb.d/4.sql"
