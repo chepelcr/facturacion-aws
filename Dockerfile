@@ -1,8 +1,11 @@
 # Dockerfile para una aplicación PHP 8.1 con Apache
 FROM php:8.1-apache
 
+#Copiar las credenciales de AWS
+COPY ./.aws /root/.aws
+
 # Establece el directorio de trabajo
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Instala las bibliotecas comunes de PHP
 RUN apt-get update && apt-get install -y \
@@ -31,13 +34,16 @@ RUN a2enmod rewrite
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copia tu código fuente a la ubicación deseada en la imagen
-COPY . /var/www/html
+COPY ./app /var/www
 
 # Asignar permisos de usuario y grupo a la carpeta /var/www/html
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www
 
 # Asignar permisos de lectura, escritura y ejecución a la carpeta /var/www/html
-RUN chmod -R 755 /var/www/html
+RUN chmod -R 755 /var/www
+
+# Establecer el directorio de trabajo
+WORKDIR /var/www/html
 
 # Colocar la zona horaria en America/Costa_Rica
 RUN echo "date.timezone = America/Costa_Rica" > /usr/local/etc/php/php.ini

@@ -1,11 +1,12 @@
 *.zip
-.env
-public/archivos/
-.env
+app/.env*
+app/html/archivos/*
 
 .DS_Store
 
 .idea/
-vendor/
+app/vendor/*
 
 *env*
+
+.aws/*
