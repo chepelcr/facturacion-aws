@@ -10,3 +10,5 @@ app/vendor/*
 *env*
 
 .aws/*
+
+*.p12
