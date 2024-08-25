@@ -36,7 +36,7 @@ function generar_password_complejo($largo)
  */
 function encriptar_texto($texto)
 {
-	$key = getEnt('app.key');
+	$key = getEnt('app.config.key');
 	$texto = $texto . $key;
 
 	return password_hash($texto, PASSWORD_DEFAULT);
@@ -55,7 +55,7 @@ function validar($texto)
 /**Validar la contrasenia de un usuario */
 function validatePassword($id_usuario, $pswd)
 {
-	$pswd = $pswd . getEnt('app.key');
+	$pswd = $pswd . getEnt('app.config.key');
 
 	$contraseniaModel = new ContraseniaModel();
 	$contraseniaModel->where('id_usuario', $id_usuario);

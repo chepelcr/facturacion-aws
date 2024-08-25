@@ -43,20 +43,20 @@ function icono($icono, $alt, $class = null)
  */
 function location($carpeta = '')
 {
-    /*$ambiente = getEnt('app.ambiente');
+    /*$ambiente = getEnt('app.config.ambiente');
 
     if($ambiente == 'desarrollo')
     {
         //Transformar todos los / en \\
         $carpeta = str_replace('/', '\\', $carpeta);
         
-        return getEnt('app.location') . $carpeta;
+        return getEnt('app.config.location') . $carpeta;
     }
 
     else {*/
     //Transformar todos los \\ en /
     $carpeta = str_replace('\\', '/', $carpeta);
 
-    return getEnt('app.location') . $carpeta;
+    return getEnt('app.config.location') . $carpeta;
     //}
 }

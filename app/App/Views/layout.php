@@ -30,7 +30,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <?php if (getEnt('app.ambiente') != 'produccion') : ?>
+            <?php if (getEnt('app.config.ambiente') != 'produccion') : ?>
                 <div class="ribbon-wrapper">
                     <div class="ribbon bg-warning">
                         Stag

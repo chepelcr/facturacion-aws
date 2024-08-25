@@ -4,8 +4,8 @@ namespace App\Librerias;
 
 //Import PHPMailer classes into the global namespace
 //These must be at the top of your script, not inside a function
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
+
+use Core\Aws\SesMailer;
 use PHPMailer\PHPMailer\Exception;
 
 /**Clase para manejar el correo */
@@ -18,22 +18,9 @@ class Correo
         $data = json_decode($data);
 
         //Create an instance; passing `true` enables exceptions
-        $mail = new PHPMailer(true);
+        $mail = new SesMailer(true);
 
         try {
-            //Server settings
-            $mail->SMTPDebug = SMTP::DEBUG_OFF;                      //Enable verbose debug output
-            $mail->isSMTP();                                            //Send using SMTP
-            $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
-            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-            $mail->Username   = getEnt('app.CorreoElectronico');                     //SMTP username
-            $mail->Password   = getEnt('app.Contrasena');                               //SMTP password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-            $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
-            //Recipients
-            $mail->setFrom(getEnt('app.CorreoElectronico'), 'Soluciones J&J');
-
             $receptor = $data->receptor;
 
             foreach ($receptor as $nombre => $correo) {

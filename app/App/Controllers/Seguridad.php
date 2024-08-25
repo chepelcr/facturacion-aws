@@ -646,8 +646,8 @@ class Seguridad extends BaseController
 
 		$contrasenia = $model->where('id_usuario', $id_usuario)->fila();
 
-		$old_pass = $old_pass.getEnt('app.key');
-		$newPass = $pass.getEnt('app.key');
+		$old_pass = $old_pass.getEnt('app.config.key');
+		$newPass = $pass.getEnt('app.config.key');
 
 		//Si la contrasenia actual es correcta
 		if (password_verify($old_pass, $contrasenia->contrasenia)) {
