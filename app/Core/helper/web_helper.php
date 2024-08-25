@@ -6,10 +6,10 @@ use Core\Config\Header;
 function baseUrl($ext = false)
 {
     if ($ext) {
-        return getEnt('app.URL') . $ext;
+        return getEnt('app.config.host') . $ext;
     }
 
-    return getEnt('app.URL');
+    return getEnt('app.config.host');
 } //Fin de la funcion
 
 /**Obtener un segmento de la url */

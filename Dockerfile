@@ -2,7 +2,7 @@
 FROM php:8.1-apache
 
 #Copiar las credenciales de AWS
-COPY ./.aws /root/.aws
+#COPY ./.aws /root/.aws
 
 # Establece el directorio de trabajo
 WORKDIR /var/www
@@ -34,13 +34,16 @@ RUN a2enmod rewrite
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copia tu código fuente a la ubicación deseada en la imagen
-COPY ./app /var/www
+#COPY ./app /var/www
 
 # Asignar permisos de usuario y grupo a la carpeta /var/www/html
 RUN chown -R www-data:www-data /var/www
 
 # Asignar permisos de lectura, escritura y ejecución a la carpeta /var/www/html
 RUN chmod -R 755 /var/www
+
+# Actualizar Composer
+#RUN composer update
 
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
@@ -55,6 +58,9 @@ RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & E_STRICT" >> /usr/local/etc/
 
 # Exponer el puerto 80
 EXPOSE 80
+
+# Exponer Puerto para SSH
+EXPOSE 443
 
 # Comando para ejecutar Apache en segundo plano
 CMD ["apache2-foreground"]

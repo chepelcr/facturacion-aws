@@ -3,7 +3,7 @@
 //si la variable controller y action son pasadas por la url desde layout.php entran en el if
 
 #require_once 'Core/Config/Routes.php';
-require_once 'vendor/autoload.php';
+require_once '../vendor/autoload.php';
 
 use Core\Config\Routes;
 

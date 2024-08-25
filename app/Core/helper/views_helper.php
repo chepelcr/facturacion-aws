@@ -69,7 +69,7 @@ function cargar($script = '')
 function getFile($name = '')
 {
     if ($name != '') {
-        return baseUrl('public/files/' . $name);
+        return baseUrl('files/' . $name);
     }
 
     return false;

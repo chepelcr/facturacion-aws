@@ -26,7 +26,7 @@ function model($model_name = null)
 } //Fin de la funcion
 
 /**Mostrar una imagen como un icono personalizado 
- * @param string $icono: Nombre de la imagen ubicada en la carpeta public/files/dist/img/icons
+ * @param string $icono: Nombre de la imagen ubicada en la carpeta dist/img/icons
  * @param string $alt: Texto alternativo para la imagen
  * @param string $class: Clase CSS para la imagen
  */
@@ -42,15 +42,15 @@ function icono($icono, $alt, $class = null)
  */
 function location($carpeta = '')
 {
-    if (getEnt('app.ambiente') == 'desarrollo') {
+    if (getEnt('app.config.ambiente') == 'desarrollo') {
         //Transformar todos los / en \\
         $carpeta = str_replace('/', '\\', $carpeta);
 
-        return getEnt('app.location') . $carpeta;
+        return getEnt('app.config.location') . $carpeta;
     } else {
         //Transformar todos los \\ en /
         $carpeta = str_replace('\\', '/', $carpeta);
 
-        return getEnt('app.location') . $carpeta;
+        return getEnt('app.config.location') . $carpeta;
     }
 }

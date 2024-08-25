@@ -27,7 +27,7 @@ class Entorno
     private static function setEnt()
     {
         if (!isset(self::$entorno)) {
-            $dotEnv = Dotenv::createImmutable('.');
+            $dotEnv = Dotenv::createImmutable('../');
             $dotEnv->load();
 
             //Si existe la variable de entorno app.environment
@@ -38,7 +38,7 @@ class Entorno
             }
 
             //Vamos a validar si existe un archivo de entorno que se llame .env-$entorno
-            if (file_exists('.env-' . self::$entorno)) {
+            if (file_exists('../.env-' . self::$entorno)) {
                 $dotEnv = Dotenv::createImmutable('.', '.env-' . self::$entorno);
                 $dotEnv->load();
             }

@@ -266,7 +266,7 @@ function crear_data_table(nombre_tabla) {
                     ordering: true,
                     order: [[0, 'desc']],
                     language: {
-                        url: base + "public/files/dist/js/plugins/datatables/es-MX.json",
+                        url: base + "files/dist/js/plugins/datatables/es-MX.json",
                     },
                     select: {
                         style: 'api'
@@ -287,7 +287,7 @@ function crear_data_table(nombre_tabla) {
                     ordering: true,
                     order: [[1, 'asc']],
                     language: {
-                        url: base + "public/files/dist/js/plugins/datatables/es-MX.json",
+                        url: base + "files/dist/js/plugins/datatables/es-MX.json",
                     },
                     select: {
                         style: 'api'
@@ -307,7 +307,7 @@ function crear_data_table(nombre_tabla) {
                 info: false,
                 searching: true,
                 language: {
-                    url: base + "public/files/dist/js/plugins/datatables/es-MX.json",
+                    url: base + "files/dist/js/plugins/datatables/es-MX.json",
                 },
                 select: {
                     style: 'api'

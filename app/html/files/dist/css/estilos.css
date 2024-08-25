@@ -41,7 +41,7 @@
 .icn-wamlart{
     width: 100%;
     height: 100%;
-    background-image: url('/public/files/dist/img/walmart.png');
+    background-image: url('/files/dist/img/walmart.png');
 }
 
 /**Modificar scroll para .scroll_vertical*/

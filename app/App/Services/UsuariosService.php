@@ -337,8 +337,8 @@ class UsuariosService extends BaseService
 
         $contrasenia = $model->where('id_usuario', $id_usuario)->fila();
 
-        $old_pass = $old_pass . getEnt('app.key');
-        $new_pass = $pass . getEnt('app.key');
+        $old_pass = $old_pass . getEnt('app.config.key');
+        $new_pass = $pass . getEnt('app.config.key');
 
         //Si la contrasenia actual es correcta
         if (password_verify($old_pass, $contrasenia->contrasenia)) {

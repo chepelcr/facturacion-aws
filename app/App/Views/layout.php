@@ -17,7 +17,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="loader">
             <div class="circle-small"></div>
             <figure>
-                <img class="circle-inner-inner img-fluid" src="<?= baseUrl('public/files/dist/img/logo.png') ?>" alt="Modas Laura">
+                <img class="circle-inner-inner img-fluid" src="<?= getFile('dist/img/logo.png') ?>" alt="Logo Empresa">
 
                 <!-- Colocar 'cargando' abajo de la imagen -->
                 <figcaption class="text-center p-5">
@@ -30,10 +30,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <?php if (getEnt('app.ambiente') != 'produccion') : ?>
+            <?php if (getEnt('app.config.ambiente') != 'produccion') : ?>
                 <div class="ribbon-wrapper">
                     <div class="ribbon bg-warning">
-                        <?= getEnt('app.ambiente') ?>
+                        <?= getEnt('app.config.ambiente') ?>
                     </div>
                 </div>
             <?php endif; ?>

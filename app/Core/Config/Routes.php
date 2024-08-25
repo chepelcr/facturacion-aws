@@ -26,9 +26,9 @@ class Routes
     private function init_load()
     {
         #require_once '../vendor/autoload.php';
-        require_once 'Core/helper/load_helper.php';
+        require_once '../Core/helper/load_helper.php';
 
-        AwsAppConfig::setConfigurations();
+        //AwsAppConfig::setConfigurations();
 
         //Colocar la zona horaria de la aplicacion
         date_default_timezone_set('America/Costa_Rica');

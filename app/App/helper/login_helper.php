@@ -48,7 +48,7 @@ function generar_password_complejo($largo)
  */
 function encriptar_texto($texto)
 {
-	$key = getEnt('app.key');
+	$key = getEnt('app.config.key');
 	$texto = $texto . $key;
 
 	//El texto no debe ser desencriptado
@@ -80,7 +80,7 @@ function validar_contrasenia($id_usuario, $pswd)
 	$contraseniaModel = new ContraseniaModel();
 	$contrasenia = $contraseniaModel->contrasenia($id_usuario);
 
-	$pswd = $pswd . getEnt('app.key');
+	$pswd = $pswd . getEnt('app.config.key');
 
 	//Si la contrasenia esta bloqueada
 	if ($contrasenia->bloqueado == 1) {
