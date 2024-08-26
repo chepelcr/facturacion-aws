@@ -7,15 +7,13 @@ use App\Models\UbicacionesModel;
 use App\Models\UsuariosModel;
 
 /** Validar si el usuario ha iniciado sesion */
-function is_login()
-{
+function is_login() {
 	return getSession();
 	//return true;
 } //Fin de la validacion para el login
 
 /**Generar una contraseña aleatoriamente */
-function generar_password_complejo($largo)
-{
+function generar_password_complejo($largo) {
 	$cadena_base =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 	$cadena_base .= '0123456789';
 	$cadena_base .= '!@#&';
@@ -34,8 +32,7 @@ function generar_password_complejo($largo)
  * @param string $texto Texto a encriptar
  * @return string Texto encriptado
  */
-function encriptar_texto($texto)
-{
+function encriptar_texto($texto) {
 	$key = getEnt('app.config.key');
 	$texto = $texto . $key;
 
@@ -43,8 +40,7 @@ function encriptar_texto($texto)
 } //Fin del metodo para encriptar un texto
 
 //Validar si un texto esta vacio
-function validar($texto)
-{
+function validar($texto) {
 	if ($texto && $texto != '') {
 		return true;
 	}
@@ -53,8 +49,7 @@ function validar($texto)
 } //Fin de la funcion para validar si un texto esta vacio
 
 /**Validar la contrasenia de un usuario */
-function validatePassword($id_usuario, $pswd)
-{
+function validatePassword($id_usuario, $pswd) {
 	$pswd = $pswd . getEnt('app.config.key');
 
 	$contraseniaModel = new ContraseniaModel();
@@ -134,8 +129,7 @@ function validatePassword($id_usuario, $pswd)
 } //Fin del metodo para validar la contraseña
 
 /**Enviar una contrasenia temporal a un usuario por correo electronico */
-function enviar_contrasenia_temporal($usuario)
-{
+function enviar_contrasenia_temporal($usuario) {
 	$pass = generar_password_complejo(8);
 
 	$contraseniaModel = new ContraseniaModel();
@@ -148,7 +142,7 @@ function enviar_contrasenia_temporal($usuario)
 		);
 
 		$contraseniaModel = new ContraseniaModel();
-		$id = $contraseniaModel->update($data, $contrasenia->id_contrasenia);
+		$data = $contraseniaModel->update($data, $contrasenia->id_contrasenia);
 	} //Fin de validacion de contrasenia
 
 	else {
@@ -160,10 +154,10 @@ function enviar_contrasenia_temporal($usuario)
 		);
 
 		$contraseniaModel = new ContraseniaModel();
-		$id = $contraseniaModel->insert($data);
+		$data = $contraseniaModel->insert($data);
 	} //Fin de validacion de contrasenia
 
-	if ($id != 0) {
+	if (!is_object($data)) {
 		$correos = array(
 			$usuario->nombre => $usuario->correo,
 			//'RECEPTOR DE PRUEBA' => 'chepelcr@outlook.com',
@@ -194,29 +188,29 @@ function enviar_contrasenia_temporal($usuario)
 
 		$correo = new Correo();
 
-		if ($correo->enviarCorreo($data))
-			return array(
-				'estado' => 1,
+		if ($correo->enviarCorreo($data)) {
+			$data = array(
+				'status' => 200,
 				'mensaje' => 'Se ha enviado un correo electronico con la nueva contraseña.'
 			);
-
-		else
-			return array(
-				'estado' => 0,
-				'mensaje' => 'No se ha podido enviar el correo electronico con la nueva contraseña.'
+		} else {
+			$data = array(
+				'status' => 500,
+				'error' => 'No se ha podido enviar el correo electronico con la nueva contraseña.',
 			);
-	} //Fin de validacion de id
-
-	else
-		return array(
-			'estado' => 0,
-			'mensaje' => 'No se ha podido actualizar la contraseña.'
+		}
+	} else {
+		$data = array(
+			'status' => 500,
+			'error' => 'No se ha podido actualizar la contraseña.'
 		);
+	}
+
+	return $data;
 } //Fin del metodo para enviar una contrasenia temporal
 
 /**Obtener el perfil del usuario que ha iniciado sesion */
-function getPerfil()
-{
+function getPerfil() {
 	if (is_login()) {
 		$usuariosModel = new UsuariosModel();
 		$perfil = $usuariosModel->getPerfil();
@@ -277,8 +271,7 @@ function getPerfil()
 } //Fin del metodo para obtener el perfil del usuario
 
 /**Obtener la empresa del usuario que ha iniciado sesión */
-function getEmpresa()
-{
+function getEmpresa() {
 	if (is_login()) {
 		$empresasModel = new EmpresasModel();
 		$empresa = $empresasModel->getEmpresa();
@@ -358,7 +351,7 @@ function getEmpresa()
 	return false;
 }
 
-function setEmpresaData(){
+function setEmpresaData() {
 	$empresaModel = new EmpresasModel();
 
 	$empresa = $empresaModel->getEmpresa();

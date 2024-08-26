@@ -198,7 +198,7 @@ class Model {
                 $data[$this->pkTabla] = $id;
             }
 
-            return $data;
+            return (object) $data;
         } //Fin del try
 
         catch (\Exception $ex) {
@@ -761,7 +761,12 @@ class Model {
         return $data;
     } //Fin de camposInsert
 
-    /**  Insertar un registro en la base de datos */
+    /**
+     * Insertar un registro en la base de datos
+     * 
+     * @param array $data Datos a insertar en la base de datos
+     * @return mixed Data insertada en la base de datos o false si no se inserto
+     */
     public function insert(array $data) {
         $db = $this->query();
 
@@ -784,13 +789,20 @@ class Model {
                 if ($insert->execute()) {
                     /**Insertar auditoria */
                     if ($this->auditorias) {
-                        $id_usuario = getSession('id_usuario');
-
-                        if (!$id_usuario)
+                        if (getSession('id_usuario')) {
                             $id_usuario = 0;
+                        } else {
+                            $id_usuario = getSession('id_usuario');
+                        }
+
+                        if ($this->pkTabla) {
+                            $id_fila = $data[$this->pkTabla];
+                        } else {
+                            $id_fila = 1;
+                        }
 
                         $audit = array(
-                            'id_fila' => $data[$this->pkTabla],
+                            'id_fila' => $id_fila,
                             'tabla' => $this->nombreTabla,
                             'accion' => 'INSERT',
                             'id_usuario' => $id_usuario
@@ -799,11 +811,8 @@ class Model {
                         $this->insertAuditoria($audit);
                     } //Fin de la insercion de auditoria
 
-                    //Si hay un dato en el campo de la llave primaria
-                    if ($this->pkTabla)
-                        return $data[$this->pkTabla];
-
-                    return true;
+                    //Retorna la data insertada
+                    return (object) $data;
                 } //Fin de la ejecucion
 
                 else {

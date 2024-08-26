@@ -6,24 +6,20 @@ use Core\Aws\AwsSecretsService;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
-/* MYMAILER
- * Our own custom mailer class. Makes it easier to use default settings for all things email.
- *
- * Rules of thumb:
- * - Keep bounce rate under 5%.
- * - Keep complaint rate under 0.1%
- *
- * Tips:
- * - To check that the SPF and DKIM settings are correct, simply send an email (e.g.: to Gmail) and check its headers.
- * - Check URIBL.com and SURBL.org to check my links are not blacklisted.
- *
- * Documentation:
+/**
+ * Clase que se encarga de configurar el correo electrónico para ser enviado a travez de AWS SES.
+ * @package Core\Aws
+ * @subpackage AwsSecretsService
+ * @version 1.0
+ * @author jcampos
+ * 
  * - Best practices: http://media.amazonwebservices.com/AWS_Amazon_SES_Best_Practices.pdf -- includes iSP postmaster pages for many ISPs on last page.
  * - Header fields: http://docs.aws.amazon.com/ses/latest/DeveloperGuide/header-fields.html
- * ================================================================================= */
+ * ================================================================================= 
+ * 
+ */
 
-class SesMailer extends PHPMailer
-{
+class SesMailer extends PHPMailer {
     private static $host = null;
 
     private static $port = null;
@@ -32,18 +28,13 @@ class SesMailer extends PHPMailer
 
     private static $pass = null;
 
-    public function __construct($exceptions = null)
-    {
+    /**
+     * Constructor de la clase que se encarga de colocar los valores de configuración de PHP Mailer obtenidos desde AWS Secrets Manager
+     */
+    public function __construct($exceptions = null) {
         parent::__construct($exceptions);
 
-        $this->CharSet = 'UTF-8';
-
-        $this->IsSMTP(true);
-        $this->SMTPDebug = SMTP::DEBUG_OFF;
-        $this->SMTPAuth = true;
-        $this->SMTPSecure = "tls";
-
-        if(self::$host == null || self::$port == null || self::$user == null || self::$pass == null) {
+        if (self::$host == null || self::$port == null || self::$user == null || self::$pass == null) {
             $secret = AwsSecretsService::getSecret(getEnt('app.email.secret'));
 
             self::$host = $secret['host'];
@@ -51,6 +42,17 @@ class SesMailer extends PHPMailer
             self::$user = $secret['user'];
             self::$pass = $secret['password'];
         }
+
+        $this->__init();
+    }
+
+    private function __init() {
+        $this->CharSet = 'UTF-8';
+
+        $this->IsSMTP(true);
+        $this->SMTPDebug = SMTP::DEBUG_OFF;
+        $this->SMTPAuth = true;
+        $this->SMTPSecure = "tls";
 
         $this->Host = self::$host;
         $this->Port = self::$port;

@@ -735,29 +735,29 @@ class Seguridad extends BaseController {
 			$usuario = $model->getById($id_usuario);
 
 			if ($usuario) {
-				$estado = enviar_contrasenia_temporal($usuario);
+				$data = enviar_contrasenia_temporal($usuario);
 			} //Fin de validacion de usuario
 
 			else {
-				$estado = array(
+				$data = array(
 					'error' => 'No se encontro el usuario',
 					'status' => 404
 				);
 			};
 		} else {
-			$estado = array(
+			$data = array(
 				'error' => 'No se ha indicado el usuario',
 				'status' => 400
 			);
 		}
 
-		if (!isset($estado['error'])) {
+		if (!isset($data['error'])) {
 			return json_encode(array(
 				'success' => 'Se ha enviado una contraseña temporal al usuario',
 				'status' => 200
 			));
 		} else {
-			return $this->error($estado);
+			return $this->error($data);
 		}
 	} //Fin del metodo para enviar una contraseña temporal
 }//Fin de la clase

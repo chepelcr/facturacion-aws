@@ -63,7 +63,7 @@ function cargar_contenido(contenido) {
 
         //Agregar el contenido al contenedor del modal
         $('#modal-' + modulo + '-' + submodulo).find('.contenedor_submodulo').append(contenido);
-        
+
         if (modulo == 'configuracion' && (submodulo == 'documentos' || submodulo == 'empresa')) {
             if (submodulo == 'documentos') {
                 campos_activos(true, 'frm_configuracion_empresa');
