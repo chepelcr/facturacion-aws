@@ -30,7 +30,7 @@ function cargar_listado(modulo = '', submodulo = '', url = '') {
                 if (!respuesta.error) {
                     cargar_contenido(respuesta, modulo, submodulo);
                 }
-    
+
                 else {
                     //Mostrar la respuesta
                     mensajeAutomatico('Atencion', respuesta.error, 'error');
@@ -44,7 +44,7 @@ function cargar_listado(modulo = '', submodulo = '', url = '') {
 function cargar_contenido(contenido) {
     var modulo = modulo_activo;
     var submodulo = submodulo_activo;
-    
+
     //Mostrar la respuesta
     if ((modulo == 'empresa' && submodulo == 'ordenes') || (modulo == 'seguridad' && (submodulo == 'errores' || submodulo == 'auditorias'))) {
         //Cerrar todos los modal
@@ -57,21 +57,42 @@ function cargar_contenido(contenido) {
         $('#contenedor').append(contenido);
 
         cargar_modulo('contenedor');
-    }
-
-    else {
+    } else {
         //Vaciar el contenedor del modal
         $('#modal-' + modulo + '-' + submodulo).find('.contenedor_submodulo').empty();
 
         //Agregar el contenido al contenedor del modal
         $('#modal-' + modulo + '-' + submodulo).find('.contenedor_submodulo').append(contenido);
+        
+        if (modulo == 'configuracion' && (submodulo == 'documentos' || submodulo == 'empresa')) {
+            if (submodulo == 'documentos') {
+                campos_activos(true, 'frm_configuracion_empresa');
 
-        //Collapse el card-form del modal
-        $('#modal-' + modulo + '-' + submodulo).find('.card-frm').hide();
+                //Cerrar todos los card
+                $('#frm_configuracion_empresa').find('.card-frm').CardWidget('collapse');
 
-        if (modulo == 'empresa' && submodulo == 'productos') {
-            //Esconder el card-cabys
-            $('#modal-' + modulo + '-' + submodulo).find('.card-cabys').hide();
+                campos_activos(true, 'frm_llave_criptografica');
+
+                //Cerrar todos los card
+                $('#frm_llave_criptografica').find('.card-frm').CardWidget('collapse');
+            } else if (submodulo == 'empresa') {
+                form_activo = 'frm_informacion_empresa';
+
+                campos_activos(true, form_activo);
+
+                desactivar_ubicaciones();
+
+                //Cerrar todos los card
+                $('#' + form_activo).find('.card-frm').CardWidget('collapse');
+            }
+        } else {
+            //Collapse el card-form del modal
+            $('#modal-' + modulo + '-' + submodulo).find('.card-frm').hide();
+
+            if (modulo == 'empresa' && submodulo == 'productos') {
+                //Esconder el card-cabys
+                $('#modal-' + modulo + '-' + submodulo).find('.card-cabys').hide();
+            }
         }
 
         //Mostrar el card-table del modal

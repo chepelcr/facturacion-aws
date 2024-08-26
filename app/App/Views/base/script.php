@@ -111,6 +111,9 @@ if (is_login()) {
     <!-- Seguridad | Usuarios -->
     <?= getScript('seguridad/usuarios') ?>
 
+    <!-- Seguridad | Configuracion -->
+    <?= getScript('seguridad/configuracion') ?>
+
 <?php
 } //is_login
 

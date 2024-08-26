@@ -32,7 +32,7 @@ class Documentos extends BaseController
         } //Fin de la validacion
 
         else
-            header('Location: ' . baseUrl('login'));
+            redirect(baseUrl('login'));
     } //Fin de la funcion index
 
     /**Abrir el submodulo de ventas*/
@@ -49,7 +49,7 @@ class Documentos extends BaseController
         } //Fin de la validacion
 
         else
-            header('Location: ' . baseUrl('login'));
+            redirect(baseUrl('login'));
     } //Fin de la funcion facturacion
 
     /**Cargar documentos emitidos */
@@ -66,7 +66,7 @@ class Documentos extends BaseController
         } //Fin de la validacion
 
         else
-            header('Location: ' . baseUrl('login'));
+            redirect(baseUrl('login'));
     } //Fin de la funcion emitidos
 
     /**Abrir el submodulo de importar */
@@ -87,7 +87,7 @@ class Documentos extends BaseController
         } //Fin de la validacion
 
         else
-            header('Location: ' . baseUrl('login'));
+            redirect(baseUrl('login'));
     } //Fin de la funcion importar
 
     /**Validar el estado los documentos que se encuentran en proceso en el ministerio de hacienda */

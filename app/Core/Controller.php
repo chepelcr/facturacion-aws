@@ -2,8 +2,7 @@
 
 namespace Core;
 
-class Controller
-{
+class Controller {
     /** Archivos de ayuda creados por el usuario */
     protected $helpers = [];
 
@@ -52,26 +51,22 @@ class Controller
      */
     protected $validacion_login = false;
 
-    public function __construct()
-    {
+    public function __construct() {
         load_helpers($this->base_helpers);
         load_helpers($this->helpers, 'App');
     } //Fin del constructor
 
-    public function error($error = array())
-    {
-        $nombreVista = 'base/error';
+    public function error($error = array()) {
+        $error = (object) $error;
 
-        $dataView = array(
-            'error' => $error,
-        );
+        //Poner el header en el codigo de error
+        header('HTTP/1.0 ' . $error->status . $error->error);
 
-        return view($nombreVista, $dataView);
+        return json_encode($error);
     } //Fin de la funcion error
 
     /**Establecer un modelo en el controlador */
-    public function model($modelName = '')
-    {
+    public function model($modelName = '') {
         if ($modelName != '') {
             $this->modelName = $modelName;
         }
@@ -83,10 +78,9 @@ class Controller
     } //Fin de la funcion
 
     /**Enviar un error en formato json */
-    protected function object_error($codigo, $mensaje)
-    {
+    protected function object_error($codigo, $mensaje) {
         $error = array(
-            'codigo' => $codigo,
+            'status' => $codigo,
             'error' => $mensaje
         );
 
@@ -94,11 +88,10 @@ class Controller
     } //Fin de la funcion
 
     /**Enviar un error en formato json */
-    private function data_error($codigo, $mensaje)
-    {
+    private function data_error($codigo, $mensaje) {
         $error = array(
             'error' => array(
-                'codigo' => $codigo,
+                'status' => $codigo,
                 'error' => $mensaje
             )
         );
@@ -107,8 +100,7 @@ class Controller
     } //Fin de la funcion
 
     /** Obtener filas de un objeto solicitado */
-    public function obtener($id = '', $objeto = null)
-    {
+    public function obtener($id = '', $objeto = null) {
         $validacion_login = false;
 
         /**Validar si el controlador es un modulo */
@@ -205,8 +197,7 @@ class Controller
     } //Fin de la funcion para obtener objetos de la aplicacion
 
     /**Validar si existe un objeto de la base de datos por código */
-    public function validar($codigo = '', $objeto = null)
-    {
+    public function validar($codigo = '', $objeto = null) {
         $validacion = false;
 
         if ($this->isModulo) {
@@ -237,8 +228,7 @@ class Controller
     } //Fin de la validacion de un objeto
 
     /**Desactivar un objeto de la base de datos */
-    public function desactivar($id = '', $objeto = null)
-    {
+    public function desactivar($id = '', $objeto = null) {
         $validacion_login = false;
 
         /**Validar si el controlador es un modulo */
@@ -330,8 +320,7 @@ class Controller
     } //Fin de la funcion para desactivar un objeto
 
     /**Activar un objeto de la base de datos */
-    public function activar($id = '', $objeto = null)
-    {
+    public function activar($id = '', $objeto = null) {
         $validacion_login = false;
 
         /**Validar si el controlador es un modulo */
@@ -415,11 +404,9 @@ class Controller
         } //Fin de la validacion de id
     } //Fin de la funcion para activar un objeto
 
-    public function update($id, $objeto = null)
-    {
+    public function update($id, $objeto = null) {
     }
 
-    public function guardar($objeto = null)
-    {
+    public function guardar($objeto = null) {
     }
 }//Fin de la clase

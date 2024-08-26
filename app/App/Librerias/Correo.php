@@ -9,10 +9,8 @@ use Core\Aws\SesMailer;
 use PHPMailer\PHPMailer\Exception;
 
 /**Clase para manejar el correo */
-class Correo
-{
-    public function enviarCorreo($data)
-    {
+class Correo {
+    public function enviarCorreo($data) {
         $data = json_encode($data);
 
         $data = json_decode($data);
@@ -64,7 +62,7 @@ class Correo
 
             //Content
             $mail->isHTML(true);                                  //Set email format to HTML
-            $mail->CharSet = 'UTF-8';
+
 
             $mail->Subject = $data->asunto;
             $mail->Body    = $data->body;
@@ -87,14 +85,17 @@ class Correo
 
                 insertAuditoria($data);
 
-                return true;
+                return array(
+                    'estado' => 1,
+                    'mensaje' => 'Su mensaje ha sido enviado'
+                );
             }
         } catch (Exception $ex) {
             $id_usuario = getSession('id_usuario');
 
             if (!$id_usuario)
                 $id_usuario = 0;
-            
+
             $message = "Su mensaje no se ha enviado: {$mail->ErrorInfo}";
 
             $messagecomplet = $message;
@@ -107,7 +108,10 @@ class Correo
 
             insertError($data);
 
-            return false;
+            return array(
+                'estado' => 0,
+                'error' => $message
+            );
         }
     } //Fin de la funcion para enviar un correo
 }//Fin de la clase

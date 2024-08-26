@@ -49,7 +49,7 @@ class SesMailer extends PHPMailer
             self::$host = $secret['host'];
             self::$port = $secret['port'];
             self::$user = $secret['user'];
-            self::$pass = $secret['pass'];
+            self::$pass = $secret['password'];
         }
 
         $this->Host = self::$host;

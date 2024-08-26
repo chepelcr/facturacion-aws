@@ -47,7 +47,7 @@ class Empresa extends BaseController
 		} //Fin de la validacion
 
 		else {
-			header('Location: ' . baseUrl('login'));
+			redirect(baseUrl('login'));
 		}
 	} //Fin de la funcion index
 
@@ -63,7 +63,7 @@ class Empresa extends BaseController
 
 			return $this->inicio($data);
 		} else {
-			header('Location: ' . baseUrl('login'));
+			redirect(baseUrl('login'));
 		}
 	} //Fin de la función index
 
@@ -155,7 +155,7 @@ class Empresa extends BaseController
 		} //Fin de la validacion
 
 		else
-			header('Location: ' . baseUrl('login'));
+			redirect(baseUrl('login'));
 	} //Fin de la funcion para mostrar el listado de clientes
 
 	public function productos() {
@@ -239,7 +239,7 @@ class Empresa extends BaseController
 		} //Fin de la validacion
 
 		else
-			header('Location: ' . baseUrl('login'));
+			redirect(baseUrl('login'));
 	} //Fin de la funcion para mostrar el listado de productos
 
 	public function ordenes()
@@ -263,7 +263,7 @@ class Empresa extends BaseController
 		} //Fin de la validacion
 
 		else
-			header('Location: ' . baseUrl('login'));
+			redirect(baseUrl('login'));
 	} //Fin de la funcion para mostrar el listado de productos
 
 	public function update($id, $objeto = null)

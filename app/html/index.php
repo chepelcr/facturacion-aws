@@ -2,7 +2,10 @@
 // la variable controller guarda el nombre del controlador y action guarda la acción por ejemplo registrar 
 //si la variable controller y action son pasadas por la url desde layout.php entran en el if
 
-require_once '../Core/Config/Routes.php';
+require_once '../vendor/autoload.php';
+
+use Core\Aws\AwsSecretsService;
+use Core\Config\Routes;
 
 /**Guarda el nombre del controlador por defecto */
 $default_controller = 'Inicio';
@@ -15,6 +18,7 @@ error_reporting(E_ALL);
 
 /**Crear instancia de la clase rutas */
 $app = new Routes();
+
 
 $app->setDefault($default_controller, $default_action);
 

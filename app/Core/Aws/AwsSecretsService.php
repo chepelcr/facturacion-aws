@@ -22,7 +22,8 @@ class AwsSecretsService
     {
         $client = new SecretsManagerClient([
             'version' => 'latest',
-            'region' => 'us-east-1'
+            'region' => getEnt('app.aws.region'),
+            'profile'=> 'default'
         ]);
 
         $result = $client->getSecretValue([

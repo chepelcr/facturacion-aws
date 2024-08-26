@@ -42,7 +42,7 @@ class BaseController extends Controller
         } //Fin de la validacion
 
         else
-            header('Location: ' . baseUrl('login'));
+            redirect(baseUrl('login'));
     } //Fin de la funcion index
 
     protected function listado($data)

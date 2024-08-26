@@ -168,60 +168,34 @@ class AwsCognito {
      */
     public function signUp($username, $password, $data) {
         try {
+            $userAtributes = [
+                [
+                    'Name' => 'email',
+                    'Value' => $data['correo']
+                ],
+                [
+                    'Name' => 'phone_number',
+                    'Value' => $data['telefono']
+                ],
+            ];
+
+            foreach ($data as $key => $value) {
+                $userAtributes[] = [
+                    'Name' => 'custom:' . $key,
+                    'Value' => $value
+                ];
+            };
+
+            $userAtributes[] = [
+                'Name' => 'custom:status',
+                'Value' => 1
+            ];
+
             return $this->cognitoClient->signUp([
                 'ClientId' => getEnt('app.aws.client_id'),
                 'Username' => $username,
                 'Password' => $password,
-                'UserAttributes' => [
-                    [
-                        'Name' => 'email',
-                        'Value' => $data['correo']
-                    ],
-                    [
-                        'Name' => 'phone_number',
-                        'Value' => $data['telefono']
-                    ],
-                    [
-                        'Name' => 'custom:identificacion',
-                        'Value' => $data['identificacion']
-                    ],
-                    [
-                        'Name' => 'custom:id_tipo_identificacion',
-                        'Value' => $data['id_tipo_identificacion']
-                    ],
-                    [
-                        'Name' => 'custom:nombre',
-                        'Value' => $data['nombre']
-                    ],
-                    [
-                        'Name' => 'custom:cod_pais',
-                        'Value' => $data['cod_pais']
-                    ],
-                    [
-                        'Name' => 'custom:nombre_usuario',
-                        'Value' => $data['nombre_usuario']
-                    ],
-                    [
-                        'Name' => 'custom:id_rol',
-                        'Value' => $data['id_rol']
-                    ],
-                    [
-                        'Name' => 'custom:id_empresa',
-                        'Value' => $data['id_empresa']
-                    ],
-                    [
-                        'Name' => 'custom:id_sucursal',
-                        'Value' => $data['id_sucursal']
-                    ],
-                    [
-                        'Name' => 'custom:id_termimal',
-                        'Value' => $data['id_termimal']
-                    ],
-                    [
-                        'Name' => 'custom:status',
-                        'Value' => 1
-                    ]
-                ],
+                'UserAttributes' => $userAtributes,
                 'ValidationData' => [['Name' => 'email', 'Value' => $data['correo']]]
             ]);
         } catch (CognitoIdentityProviderException $e) {
@@ -280,58 +254,22 @@ class AwsCognito {
      */
     public function updateUser($data, $username) {
         try {
-            return $this->cognitoClient->adminUpdateUserAttributes([
-                'UserAttributes' => [
-                    [
-                        'Name' => 'email',
-                        'Value' => $data['correo']
-                    ],
-                    [
-                        'Name' => 'phone_number',
-                        'Value' => $data['telefono']
-                    ],
-                    [
-                        'Name' => 'custom:identificacion',
-                        'Value' => $data['identificacion']
-                    ],
-                    [
-                        'Name' => 'custom:id_tipo_identificacion',
-                        'Value' => $data['id_tipo_identificacion']
-                    ],
-                    [
-                        'Name' => 'custom:nombre',
-                        'Value' => $data['nombre']
-                    ],
-                    [
-                        'Name' => 'custom:cod_pais',
-                        'Value' => $data['cod_pais']
-                    ],
-                    [
-                        'Name' => 'custom:nombre_usuario',
-                        'Value' => $data['nombre_usuario']
-                    ],
-                    [
-                        'Name' => 'custom:id_rol',
-                        'Value' => $data['id_rol']
-                    ],
-                    [
-                        'Name' => 'custom:id_empresa',
-                        'Value' => $data['id_empresa']
-                    ],
-                    [
-                        'Name' => 'custom:id_sucursal',
-                        'Value' => $data['id_sucursal']
-                    ],
-                    [
-                        'Name' => 'custom:id_termimal',
-                        'Value' => $data['id_termimal']
-                    ]
-                    // ,
-                    // [
-                    //     'Name' => 'custom:status',
-                    //     'Value' => 1
-                    // ]
+            $userAtributes = [
+                [
+                    'Name' => 'phone_number',
+                    'Value' => $data['telefono']
                 ],
+            ];
+
+            foreach ($data as $key => $value) {
+                $userAtributes[] = [
+                    'Name' => 'custom:' . $key,
+                    'Value' => $value
+                ];
+            };
+
+            return $this->cognitoClient->adminUpdateUserAttributes([
+                'UserAttributes' => $userAtributes,
                 'Username' => $username,
                 'UserPoolId' => getEnt('app.aws.user_pool_id')
             ]);
@@ -370,36 +308,4 @@ class AwsCognito {
             'message' => 'Error desconocido'
         );
     } //Fin de deleteUser
-
-    /**
-     * Actualizar el status de un usuario en cognito
-     * @param string $username Nombre de usuario
-     * @param array $data Datos del usuario
-     * @return array
-     */
-    public function updatestatus($username, $data) {
-        try {
-            $status = $data['status'];v
-
-            return $this->cognitoClient->adminUpdateUserAttributes([
-                'UserAttributes' => [
-                    [
-                        'Name' => 'custom:status',
-                        'Value' => $status
-                    ]
-                ],
-                'Username' => $username,
-                'UserPoolId' => getEnt('app.aws.user_pool_id')
-            ]);
-        } catch (CognitoIdentityProviderException $e) {
-            return array(
-                'error' => true,
-                'message' => $e->getMessage()
-            );
-        }
-        return array(
-            'error' => true,
-            'message' => 'Error desconocido'
-        );
-    } //Fin de updatestatus
 }

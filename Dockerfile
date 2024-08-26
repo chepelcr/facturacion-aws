@@ -1,11 +1,11 @@
 # Dockerfile para una aplicación PHP 8.1 con Apache
 FROM php:8.1-apache
 
-# Copia tu código fuente a la ubicación deseada en la imagen
-#COPY . /var/www/html
+#Copiar las credenciales de AWS
+#COPY ./.aws /root/.aws
 
 # Establece el directorio de trabajo
-WORKDIR /var/www/html
+WORKDIR /var/www
 
 # Instala las bibliotecas comunes de PHP
 RUN apt-get update && apt-get install -y \
@@ -30,22 +30,37 @@ RUN apt-get update && apt-get install -y \
 # Habilita el módulo de Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Instalar Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copia tu código fuente a la ubicación deseada en la imagen
+#COPY ./app /var/www
+
 # Asignar permisos de usuario y grupo a la carpeta /var/www/html
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www
 
-RUN chmod -R 755 /var/www/html
+# Asignar permisos de lectura, escritura y ejecución a la carpeta /var/www/html
+RUN chmod -R 755 /var/www
 
-# Desactivar mensajes de deprecated
-RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_NOTICE" > /usr/local/etc/php/php.ini
+# Actualizar Composer
+#RUN composer update
+
+# Establecer el directorio de trabajo
+WORKDIR /var/www/html
+
+# Colocar la zona horaria en America/Costa_Rica
+RUN echo "date.timezone = America/Costa_Rica" > /usr/local/etc/php/php.ini
+
+# Ocultar mesajes de error en producción
+RUN echo "display_errors = On" >> /usr/local/etc/php/php.ini
+RUN echo "display_startup_errors = Off" >> /usr/local/etc/php/php.ini
+RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & E_STRICT" >> /usr/local/etc/php/php.ini
 
 # Exponer el puerto 80
 EXPOSE 80
 
-# Colocar el tiempo de la zona horaria en America/Costa_Rica
-ENV TZ=America/Costa_Rica
-
-# Ejecutar el comando para actualizar la zona horaria
-RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# Exponer Puerto para SSH
+EXPOSE 443
 
 # Comando para ejecutar Apache en segundo plano
 CMD ["apache2-foreground"]

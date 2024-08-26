@@ -20,9 +20,7 @@ class Conexion {
 		if (!isset(self::$instance)) {
 			$pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
-			$conexionInfo = AwsSecretsService::getSecret(getEnt('app.database'));
-
-			var_dump($conexionInfo);
+			$conexionInfo = AwsSecretsService::getSecret(getEnt('app.config.database'));
 
 			$host = $conexionInfo['host'];
 			$database = $conexionInfo['dbname'];

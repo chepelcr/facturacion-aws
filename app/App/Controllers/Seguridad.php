@@ -7,7 +7,6 @@ use App\Models\CodigosPaisesModel;
 use App\Models\EmpresasModel;
 use App\Models\RolesModel;
 use App\Models\TipoIdentificacionModel;
-use App\Models\UbicacionesModel;
 use App\Models\UsuariosModel;
 use Core\Auditorias\AuditoriaModel;
 use Core\Auditorias\ErroresModel;
@@ -17,8 +16,7 @@ use Core\Permisos\SubmodulosAccionesModel;
 /**
  * Descripción: Controlador para la entidad usuario
  */
-class Seguridad extends BaseController
-{
+class Seguridad extends BaseController {
 	protected $isModulo = true;
 
 	protected $nombre_modulo = 'seguridad';
@@ -35,14 +33,9 @@ class Seguridad extends BaseController
 		'roles' => true,
 	);
 
-	public function index()
-	{
+	public function index() {
 		if (is_login()) {
-			$script = '<script>
-                $(document).ready(function(){
-                    cargar_inicio_modulo("seguridad");
-                });
-            </script>';
+			$script = cargar('cargar_inicio_modulo("seguridad");');
 
 			$data = array(
 				'script' => $script,
@@ -51,15 +44,15 @@ class Seguridad extends BaseController
 			return $this->inicio($data);
 		} //Fin de la validacion
 
-		else
-			header('Location: ' . baseUrl('login'));
+		else {
+			redirect(baseUrl('login'));
+		}
 	} //Fin de la funcion index
 
 	/**Ontener todos los usuarios del sistema */
-	public function usuarios()
-	{
+	public function usuarios() {
 		if (!is_login()) {
-			header('Location: ' . baseUrl('login'));
+			redirect(baseUrl('login'));
 		}
 
 		if (!validar_permiso('seguridad', 'usuarios', 'consultar')) {
@@ -123,11 +116,7 @@ class Seguridad extends BaseController
 
 			default:
 				$data = array(
-					'script' => "<script>
-									$(document).ready(function(){
-										cargar_listado('seguridad', 'usuarios', '" . baseUrl('seguridad/usuarios/listado') . "');
-									});
-								</script>"
+					'script' => cargar("cargar_listado('seguridad', 'usuarios', '" . baseUrl('seguridad/usuarios/listado') . "');")
 				);
 
 				return $this->inicio($data);
@@ -136,10 +125,9 @@ class Seguridad extends BaseController
 	} //Fin de la funcion para retornar los usuarios del sistema
 
 	/**Obtener todos los roles del sistema */
-	public function roles()
-	{
+	public function roles() {
 		if (!is_login()) {
-			header('Location: ' . baseUrl('login'));
+			redirect(baseUrl('login'));
 		}
 
 		if (!validar_permiso('seguridad', 'roles', 'consultar')) {
@@ -187,11 +175,7 @@ class Seguridad extends BaseController
 
 			default:
 				$data = array(
-					'script' => "<script>
-										$(document).ready(function(){
-											cargar_listado('seguridad', 'roles', '" . baseUrl('seguridad/roles/listado') . "');
-										});
-									</script>"
+					'script' => cargar("cargar_listado('seguridad', 'roles', '" . baseUrl('seguridad/roles/listado') . "');")
 				);
 
 				return $this->inicio($data);
@@ -200,8 +184,7 @@ class Seguridad extends BaseController
 	} //Fin de la funcion
 
 	/**Mostrar las acciones de la base de datos */
-	public function auditorias()
-	{
+	public function auditorias() {
 		if (is_login()) {
 			if (getSegment(3) == 'listado') {
 				$auditoriaModel = new AuditoriaModel();
@@ -213,11 +196,7 @@ class Seguridad extends BaseController
 				return view('seguridad/auditoria/listado', $dataView);
 			} else {
 				$data = array(
-					'script' => '<script>
-						$(document).ready(function(){
-							cargar_listado("seguridad", "auditorias", "' . baseUrl('seguridad/auditorias/listado') . '");
-						});
-					</script>'
+					'script' => cargar('cargar_listado("seguridad", "auditorias", "' . baseUrl('seguridad/auditorias/listado') . '");')
 				);
 
 				return $this->inicio($data);
@@ -225,13 +204,12 @@ class Seguridad extends BaseController
 		} //Fin de la validacion
 
 		else {
-			header('Location: ' . baseUrl('login'));
+			redirect(baseUrl('login'));
 		}
 	} //Fin de la funcion para mostrar el listado de auditorias
 
 	/**Obtener los errores del sistema */
-	public function errores()
-	{
+	public function errores() {
 		if (getSegment(3) == 'listado') {
 			if (!is_login()) {
 				return $this->error($this->object_error(505, 'No ha iniciado sesión'));
@@ -248,15 +226,11 @@ class Seguridad extends BaseController
 			}
 		} else {
 			if (!is_login()) {
-				header('Location: ' . baseUrl('login'));
+				redirect(baseUrl('login'));
 			}
 
 			$data = array(
-				'script' => '<script>
-						$(document).ready(function(){
-							cargar_listado("seguridad", "errores", "' . baseUrl('seguridad/errores/listado') . '");
-						});
-					</script>'
+				'script' => cargar('cargar_listado("seguridad", "errores", "' . baseUrl('seguridad/errores/listado') . '");')
 			);
 
 			return $this->inicio($data);
@@ -264,8 +238,7 @@ class Seguridad extends BaseController
 	} //Fin de la funcion para mostrar todos los errores
 
 	/**Actualizar un objeto de la base de datos */
-	public function update($id, $objeto = null)
-	{
+	public function update($id, $objeto = null) {
 		if (is_login()) {
 			if ($id == 'perfil' || $id == 'contrasenia')
 				$objeto = 'usuarios';
@@ -437,8 +410,7 @@ class Seguridad extends BaseController
 	} //Fin del metodo para actualizar un objeto
 
 	/**Guardar un objeto en la base de datos */
-	public function guardar($objeto = null)
-	{
+	public function guardar($objeto = null) {
 		if (is_login()) {
 			if (!is_null($objeto) && in_array($objeto, $this->objetos)) {
 				$model = $this->model($objeto);
@@ -638,16 +610,15 @@ class Seguridad extends BaseController
 	} //Fin del metodo para guardar un objeto
 
 	/**Cambiar la contrasenia de un usuario */
-	private function actualizar_contrasenia($id, $pass, $old_pass)
-	{
+	private function actualizar_contrasenia($id, $pass, $old_pass) {
 		$id_usuario = $id;
 
 		$model = $this->model('contrasenia');
 
 		$contrasenia = $model->where('id_usuario', $id_usuario)->fila();
 
-		$old_pass = $old_pass.getEnt('app.config.key');
-		$newPass = $pass.getEnt('app.config.key');
+		$old_pass = $old_pass . getEnt('app.config.key');
+		$newPass = $pass . getEnt('app.config.key');
 
 		//Si la contrasenia actual es correcta
 		if (password_verify($old_pass, $contrasenia->contrasenia)) {
@@ -738,20 +709,25 @@ class Seguridad extends BaseController
 	} //Fin del metodo para cambiar la contrasenia
 
 	/**Enviar una contraseña temporal a un usuario */
-	public function enviar_contrasenia()
-	{
+	public function enviar_contrasenia() {
 		if (!is_login()) {
 			return json_encode(array(
 				'error' => 'No se ha iniciado sesión',
+				'status' => 401
 			));
 		}
 
 		if (getSegment(3)) {
 			//Validar permiso
-			if (!validar_permiso($this->nombre_modulo, 'usuarios', 'modificar'))
-				return json_encode(array(
+			if (!validar_permiso($this->nombre_modulo, 'usuarios', 'modificar')) {
+
+				$error = array(
 					'error' => 'No tiene permisos para realizar esta acción.',
-				));
+					'status' => 403
+				);
+
+				return $this->error($error);
+			}
 
 			$id_usuario = getSegment(3);
 
@@ -760,25 +736,28 @@ class Seguridad extends BaseController
 
 			if ($usuario) {
 				$estado = enviar_contrasenia_temporal($usuario);
-
-				if ($estado == 1)
-					return json_encode(array(
-						'estado' => 1,
-					));
-
-				else
-					return json_encode(array(
-						'error' => $estado,
-					));
 			} //Fin de validacion de usuario
 
-			else
-				return json_encode(array(
+			else {
+				$estado = array(
 					'error' => 'No se encontro el usuario',
-				));
-		} else
-			return json_encode(array(
+					'status' => 404
+				);
+			};
+		} else {
+			$estado = array(
 				'error' => 'No se ha indicado el usuario',
+				'status' => 400
+			);
+		}
+
+		if (!isset($estado['error'])) {
+			return json_encode(array(
+				'success' => 'Se ha enviado una contraseña temporal al usuario',
+				'status' => 200
 			));
+		} else {
+			return $this->error($estado);
+		}
 	} //Fin del metodo para enviar una contraseña temporal
 }//Fin de la clase

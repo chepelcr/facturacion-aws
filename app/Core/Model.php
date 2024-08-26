@@ -141,12 +141,12 @@ class Model {
         insertError($data);
     } //Fin de la funcion
 
-    /**Obtener el error generado en el modelo */
+    /** Obtener el error generado en el modelo */
     public function getError() {
         return json_decode(json_encode($this->error));
     }
 
-    /**Actualizar un registro en la base de datos */
+    /** Actualizar un registro en la base de datos */
     public function update($data, $id = null) {
         try {
             $db = $this->query();
@@ -164,23 +164,25 @@ class Model {
                 $update->bindValue($campo, $valor);
             }
 
-            if (isset($id))
+            if (isset($id)) {
                 $update->bindValue($this->pkTabla, $id);
+            }
 
             $update->execute();
 
             /**Insertar auditoria */
             if ($this->auditorias) {
-                $id_usuario = getSession('id_usuario');
 
-                if (!$id_usuario)
-                    $id_usuario = 0;
+                $id_usuario = 0;
 
-                if (isset($id))
+                if (getSession('id_usuario')) {
+                    $id_usuario = getSession('id_usuario');
+                }
+                if (isset($id)) {
                     $id_fila = $id;
-
-                else
+                } else {
                     $id_fila = 1;
+                }
 
                 $data = array(
                     'id_fila' => $id_fila,
@@ -192,10 +194,87 @@ class Model {
                 $this->insertAuditoria($data);
             }
 
-            if (isset($id))
-                return $id;
+            if (isset($id)) {
+                $data[$this->pkTabla] = $id;
+            }
 
-            return true;
+            return $data;
+        } //Fin del try
+
+        catch (\Exception $ex) {
+            var_dump($ex);
+
+            if ($this->auditorias) {
+                $this->insertError($ex);
+            } //Fin de validacion
+        } //Fin del catch
+
+        return false;
+    } //Fin del método
+
+    /** Actualizar un registro en la base de datos
+     * 
+     * @param array $data Datos a actualizar en la base de datos
+     * @param int $id ID del registro a actualizar
+     * 
+     * @return mixed Datos del registro actualizado o false si no se pudo actualizar
+     */
+    public function updateComplexData($data, $id = null) {
+        try {
+            $db = $this->query();
+
+            $this->setCamposUpdate($data);
+
+            if (isset($id))
+                $this->where($this->pkTabla, $id);
+
+            $sql = $this->crearQuery('UPDATE');
+
+            $update = $db->prepare($sql);
+
+            foreach ($data as $campo => $valor) {
+                if (isset($valor['type']) && $valor['type'] == 'blob') {
+                    $update->bindParam($campo, $valor['data'], PDO::PARAM_LOB);
+                } else {
+                    $update->bindValue($campo, $valor);
+                }
+            }
+
+            if (isset($id)) {
+                $update->bindValue($this->pkTabla, $id);
+            }
+
+            $update->execute();
+
+            /**Insertar auditoria */
+            if ($this->auditorias) {
+                $id_usuario = 0;
+
+                if (getSession('id_usuario')) {
+                    $id_usuario = getSession('id_usuario');
+                }
+
+                if (isset($id)) {
+                    $id_fila = $id;
+                } else {
+                    $id_fila = 1;
+                }
+
+                $data = array(
+                    'id_fila' => $id_fila,
+                    'tabla' => $this->nombreTabla,
+                    'accion' => 'UPDATE',
+                    'id_usuario' => $id_usuario
+                );
+
+                $this->insertAuditoria($data);
+            }
+
+            if (isset($id)) {
+                $data[$this->pkTabla] = $id;
+            }
+
+            return $data;
         } //Fin del try
 
         catch (\Exception $ex) {
@@ -740,6 +819,90 @@ class Model {
         } //Fin del catch
     } //Fin de la funcion
 
+    /**
+     * Insertar un registro en la base de datos con campos complejos como binarios
+     * 
+     * @param array $data Datos a insertar en la base de datos
+     * 
+     * Ejemplo de uso:
+     *  $data = array(
+     *      'file' => array(
+     *          'data' => 'file',
+     *          'type' => 'blob'
+     *      ),
+     *      'nombre' => array(
+     *          'data' => 'nombre',
+     *          'type' => 'string'
+     *      )
+     * );
+     * 
+     * @return mixed Data insertada en la base de datos o false si no se inserto
+     */
+    public function insertCompexData($data) {
+        $db = $this->query();
+
+        try {
+            //Si la conexion a la base de datos no es nula
+            if ($db != null) {
+                $data = $this->camposInsert($data);
+
+                //Crear la sentencia de ejecucion
+                $sql = $this->crearQuery("INSERT");
+
+                //Preparar la conexion
+                $insert = $db->prepare($sql);
+
+                //Ciclo para terminar la preparacion de la ejecucion
+                foreach ($data as $campo => $valor) {
+                    if (isset($valor['type']) && $valor['type'] == 'blob') {
+                        $insert->bindParam($campo, $valor['data'], PDO::PARAM_LOB);
+                    } else {
+                        $insert->bindValue($campo, $valor);
+                    }
+                } //Fin del ciclo
+
+                if ($insert->execute()) {
+                    /**Insertar auditoria */
+                    if ($this->auditorias) {
+
+                        if (getSession('id_usuario')) {
+                            $id_usuario = 0;
+                        } else {
+                            $id_usuario = getSession('id_usuario');
+                        }
+
+                        if ($this->pkTabla) {
+                            $id_fila = $data[$this->pkTabla];
+                        } else {
+                            $id_fila = 1;
+                        }
+
+                        $audit = array(
+                            'id_fila' => $id_fila,
+                            'tabla' => $this->nombreTabla,
+                            'accion' => 'INSERT',
+                            'id_usuario' => $id_usuario
+                        );
+
+                        $this->insertAuditoria($audit);
+                    } //Fin de la insercion de auditoria
+
+                    return $data;
+                } //Fin de la ejecucion
+
+                else {
+                    return false;
+                }
+            } //Fin del if
+        } catch (\Exception $ex) {
+            if ($this->auditorias) {
+                $this->insertError($ex);
+            } //Fin de validacion
+
+            return false;
+        } //Fin del catch
+    }
+
     /** Obtener todos los elementos de una tabla */
     public function getAll() {
         $db = $this->query();
@@ -914,4 +1077,4 @@ class Model {
     public function query() {
         return $this->db;
     } //Fin de la funcion
-} //Fin 
+} //Fin
