@@ -83,6 +83,7 @@
                                 </div>
                                 <input class="form-control form-control-sm salePrice_money" value="0" disabled readonly>
                                 <input value="0" class="salePrice calcular" min="0" type="hidden" name="details[0][salePrice]">
+                                <input value="0" class="originalSalePrice" type="hidden">
                             </div>
                         </div>
                     </div>

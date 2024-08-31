@@ -3,7 +3,7 @@ FROM php:8.1-apache
 
 
 #Copiar las credenciales de AWS
-COPY ./.aws /.aws
+#COPY ./.aws /.aws
 
 # Establece el directorio de trabajo
 WORKDIR /var/www
@@ -35,7 +35,7 @@ RUN a2enmod rewrite
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copia tu código fuente a la ubicación deseada en la imagen
-COPY ./app /var/www
+#COPY ./app /var/www
 
 # Asignar permisos de usuario y grupo a la carpeta /var/www/html
 RUN chown -R www-data:www-data /var/www
@@ -44,7 +44,7 @@ RUN chown -R www-data:www-data /var/www
 RUN chmod -R 755 /var/www
 
 # Actualizar Composer
-RUN composer update
+#RUN composer update
 
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html

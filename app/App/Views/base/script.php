@@ -115,11 +115,16 @@ if (is_login()) {
     <!-- Facturacion | Documento | Walmart -->
     <?= getScript('core/facturacion/documento/walmart') ?>
 
+    <!-- Facturacion | Documento | Tipo de cambio -->
+    <?= getScript('core/facturacion/documento/tipoCambio') ?>
+
     <!-- Facturacion | Lineas | Descuentos -->
     <?= getScript('core/facturacion/lineas/descuentos') ?>
 
     <!-- Facturacion | Lineas | Impuestos -->
     <?= getScript('core/facturacion/lineas/impuestos') ?>
+
+
 
     <!-- Core | Seguridad | Contrasenia -->
     <?= getScript('core/seguridad/contrasenia') ?>

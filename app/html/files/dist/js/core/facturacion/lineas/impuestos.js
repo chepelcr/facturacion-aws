@@ -316,7 +316,7 @@ function calcular_impuestos(linea_detalle = null) {
 
     //Colocar el impuesto total en el campo .ivNeto y .ivNetoVL
     linea_detalle.find(".ivNeto").val(impuestoTotal);
-    linea_detalle.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 2));
+    linea_detalle.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 2, monedaDocumento));
 
     return impuestoTotal;
 }
@@ -347,14 +347,14 @@ function calcular_impuesto(taxLine = null, subtotal = 0) {
 
             montoExoneracion = parseFloat(montoExoneracion);
             taxLine.find(".excemption_amount").val(montoExoneracion);
-            taxLine.find(".excemption_amount_money").val(formato_moneda(montoExoneracion, 2));
+            taxLine.find(".excemption_amount_money").val(formato_moneda(montoExoneracion, 2, monedaDocumento));
 
         } else {
             impuesto_neto = impuesto;
         }
 
         taxLine.find(".tax_amount").val(impuesto);
-        taxLine.find(".tax_amount_money").val(formato_moneda(impuesto, 2));
+        taxLine.find(".tax_amount_money").val(formato_moneda(impuesto, 2, monedaDocumento));
 
         return impuesto_neto;
     }//Fin de validacion de taxLine

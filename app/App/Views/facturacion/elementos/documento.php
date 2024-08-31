@@ -108,7 +108,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-hand-holding-usd"></i></span>
                                                     </div>
-                                                    <input class="form-control exchangeRate inp-fct" name="currencyCode[exchangeRate]" readonly required>
+                                                    <input class="form-control exchangeRate inp-fct calcular_tipo_cambio" name="currencyCode[exchangeRate]" readonly required>
                                                 </div>
                                             </div>
                                         </div>

@@ -29,33 +29,6 @@ function cancelar_documento() {
   }, 1000);
 }
 
-function selectTipoCambio() {
-  //Obtener el option seleccionado en el select
-  var option = $("#" + factura_activa)
-    .find(".currencyCode")
-    .find("option:selected");
-
-  //Obtener el valor data-currencyCode del option
-  var moneda = $(option).data("currencycode");
-
-  if (moneda == "CRC") {
-    $("#" + factura_activa)
-      .find(".exchangeRate")
-      .val(1);
-    activar_campo_clase("exchangeRate", true, factura_activa);
-  } else if (moneda == "USD") {
-    $("#" + factura_activa)
-      .find(".exchangeRate")
-      .val(cambio_venta);
-    activar_campo_clase("exchangeRate", true, factura_activa);
-  } else {
-    $("#" + factura_activa)
-      .find(".exchangeRate")
-      .val("");
-    activar_campo_clase("exchangeRate", false, factura_activa);
-  }
-}
-
 /**Ver el contenedor de una factura */
 function ver_factura(id_factura) {
   factura = "card-factura-" + id_factura;
