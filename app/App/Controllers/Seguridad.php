@@ -2,11 +2,11 @@
 
 namespace App\Controllers;
 
-use App\Models\RolesModel;
 use App\Services\UsuariosService;
 use Core\Auditorias\AuditoriaModel;
 use Core\Auditorias\ErroresModel;
 use Core\Permisos\PermisosModel;
+use Core\Permisos\RolesModel;
 use Core\Permisos\SubmodulosAccionesModel;
 
 /**
@@ -16,8 +16,7 @@ use Core\Permisos\SubmodulosAccionesModel;
  * @version 1.5
  * @author jcampos
  */
-class Seguridad extends BaseController
-{
+class Seguridad extends BaseController {
     protected $isModulo = true;
 
     protected $nombreModulo = 'seguridad';
@@ -37,8 +36,7 @@ class Seguridad extends BaseController
     /**
      * Cargar pagina de inicio del modulo de seguridad
      */
-    public function index()
-    {
+    public function index() {
         if (is_login()) {
             $script = cargar('cargar_inicio_modulo("seguridad");');
 
@@ -59,8 +57,7 @@ class Seguridad extends BaseController
      * 
      * @return string Lista de usuarios
      */
-    public function usuarios()
-    {
+    public function usuarios() {
         if (!is_login()) {
             redirect(baseUrl('login'));
         }
@@ -83,7 +80,7 @@ class Seguridad extends BaseController
 
             default:
                 $data = array(
-                    'script' => cargar("cargar_listado('seguridad', 'usuarios', '" . baseUrl('seguridad/usuarios/listado') . "');")
+                    'script' => cargar("cargar_listado('seguridad', 'usuarios', 'Seguridad', 'Usuarios', '" . baseUrl('seguridad/usuarios/listado') . "');")
                 );
 
                 return $this->inicio($data);
@@ -92,8 +89,7 @@ class Seguridad extends BaseController
     } //Fin de la funcion para retornar los usuarios del sistema
 
     /**Obtener todos los roles del sistema */
-    public function roles()
-    {
+    public function roles() {
         if (!is_login()) {
             header('Location: ' . baseUrl('login'));
         }
@@ -109,10 +105,10 @@ class Seguridad extends BaseController
                 $rolesModel = new RolesModel();
                 $roles = $rolesModel->getAll();
 
-                $nombreTabla = 'seguridad/rol/table';
+                $tableName = 'seguridad/rol/table';
 
                 $data_tabla = array(
-                    'nombreTable' => $nombreTabla,
+                    'nombreTable' => $tableName,
                     'nombre_tabla' => 'listado_seguridad_roles',
                     'dataTable' => array(
                         'roles' => $roles
@@ -143,7 +139,7 @@ class Seguridad extends BaseController
 
             default:
                 $data = array(
-                    'script' => cargar("cargar_listado('seguridad', 'roles', '" . baseUrl('seguridad/roles/listado') . "');")
+                    'script' => cargar("cargar_listado('seguridad', 'roles', 'Seguridad', 'Roles', '" . baseUrl('seguridad/roles/listado') . "');")
                 );
 
                 return $this->inicio($data);
@@ -152,8 +148,7 @@ class Seguridad extends BaseController
     } //Fin de la funcion
 
     /**Mostrar las acciones de la base de datos */
-    public function auditorias()
-    {
+    public function auditorias() {
         if (is_login()) {
             if (getSegment(3) == 'listado') {
                 $auditoriaModel = new AuditoriaModel();
@@ -165,7 +160,7 @@ class Seguridad extends BaseController
                 return view('seguridad/auditoria/listado', $dataView);
             } else {
                 $data = array(
-                    'script' => cargar('cargar_listado("seguridad", "auditorias", "' . baseUrl('seguridad/auditorias/listado') . '");')
+                    'script' => cargar('cargar_listado("seguridad", "auditorias", "Seguridad", "Auditorias", "' . baseUrl('seguridad/auditorias/listado') . '");')
                 );
 
                 return $this->inicio($data);
@@ -176,8 +171,7 @@ class Seguridad extends BaseController
     } //Fin de la funcion para mostrar el listado de auditorias
 
     /**Obtener los errores del sistema */
-    public function errores()
-    {
+    public function errores() {
         if (getSegment(3) == 'listado') {
             if (!is_login()) {
                 return $this->error($this->object_error(505, 'No ha iniciado sesión'));
@@ -200,7 +194,7 @@ class Seguridad extends BaseController
             $data = array(
                 'script' => '<script>
                         $(document).ready(function(){
-                            cargar_listado("seguridad", "errores", "' . baseUrl('seguridad/errores/listado') . '");
+                            cargar_listado("seguridad", "errores", "Seguridad", "Errores", "' . baseUrl('seguridad/errores/listado') . '");
                         });
                     </script>'
             );
@@ -210,11 +204,12 @@ class Seguridad extends BaseController
     } //Fin de la funcion para mostrar todos los errores
 
     /**Actualizar un objeto de la base de datos */
-    public function update($id, $data)
-    {
+    public function update($id, $data) {
         if (is_login()) {
             if ($id == 'perfil' || $id == 'contrasenia') {
                 $objeto = 'usuarios';
+            } else {
+                $objeto = $this->modelName;
             }
 
             if (!is_null($objeto) && in_array($objeto, $this->objetos)) {
@@ -353,10 +348,11 @@ class Seguridad extends BaseController
                 } //Fin del switch
             } //Fin de la validacion
 
-            else
+            else {
                 return json_encode(array(
                     'error' => 'No se pudo actualizar el objeto',
-                ));
+                ));   
+            }
         } //Fin de la validacion de sesion
 
         else {
@@ -366,8 +362,7 @@ class Seguridad extends BaseController
     } //Fin del metodo para actualizar un objeto
 
     /**Guardar un objeto en la base de datos */
-    public function guardar($data = null)
-    {
+    public function guardar($data = null) {
         if (is_login()) {
             $objeto = $this->modelName;
 
@@ -474,8 +469,7 @@ class Seguridad extends BaseController
     } //Fin del metodo para guardar un objeto
 
     /**Enviar una contraseña temporal a un usuario */
-    public function enviar_contrasenia()
-    {
+    public function enviar_contrasenia() {
         if (!is_login()) {
             return $this->error(array(
                 'error' => 'No se ha iniciado sesión',

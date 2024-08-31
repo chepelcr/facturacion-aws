@@ -3,76 +3,73 @@
 namespace App\Librerias;
 
 use App\Models\TipoCambioModel;
+use Core\Aws\AwsSecretsService;
 use Exception;
 use \SoapClient;
 
-class Indicador
-{
+class Indicador {
 
     // Constantes de tipo de cambio
     const COMPRA = 317;
     const VENTA = 318;
 
-    // URL del WebService
-    private $indEconomWs; #= "https://gee.bccr.fi.cr/Indicadores/Suscripciones/WS/wsindicadoreseconomicos.asmx";
-
-    // Funcion que se va a utilizar del WebService
-    private $indEconomFunc; # = "ObtenerIndicadoresEconomicosXML";
+    private static $bccrInfo;
 
     // Tipo de cambio que se quiere obtener (COMPRA por defecto)
     private $tipo = self::COMPRA;
 
     // Fecha actual
-    private $fecha = "";
+    private static $fecha;
 
-    public function __construct()
-    {
-        $this->fecha = date("d/m/Y");
-        $this->indEconomWs = "https://gee.bccr.fi.cr/Indicadores/Suscripciones/WS/wsindicadoreseconomicos.asmx";
-        $this->indEconomFunc = "ObtenerIndicadoresEconomicosXML";
+    function __construct() {
+        self::__init();
     }
 
-    public function obtenerIndicadorEconomico($tipo = 'CRC')
-    {
+    private static function __init() {
+        self::$fecha = date("d/m/Y");
+
+        if (!isset(self::$bccrInfo)) {
+            self::$bccrInfo = AwsSecretsService::getSecret(getEnt('app.config.bccr'));
+        }
+    }
+
+    public function obtenerIndicadorEconomico($tipo = 'CRC') {
         if ($tipo == 'CRC') {
             $this->tipo = self::COMPRA;
         } else {
             $this->tipo = self::VENTA;
         }
-
-        $tipoCambioModel = new TipoCambioModel();
-        $tipoCambio = $tipoCambioModel->obtener($this->tipo);
-
-        $data_cambio = $this->obtenerPorGet();
-
-        if ($data_cambio) {
-            $tipoCambioModel = new TipoCambioModel();
-            $tipoCambioModel->update($data_cambio, $tipoCambio->id_tipo_cambio);
-
-            return $data_cambio->tipo_cambio;
-        }
-
-        return $tipoCambio->tipoCambio;
+        return $this->obtenerPorGet();
     } //Fin de la función obtenerIndicadorEconomico
 
-    private function obtenerPorGet()
-    {
+    private function obtenerPorGet() {
+        /*
+         * object(SimpleXMLElement)#68 (1) {
+         *  [0]=> string(42) "<Datos_de_INGC011_CAT_INDICADORECONOMIC />" 
+         * }
+         * 
+         * /**
+         * <string xmlns="http://ws.sdde.bccr.fi.cr">
+            *  &lt;Datos_de_INGC011_CAT_INDICADORECONOMIC&gt;
+                * &lt;INGC011_CAT_INDICADORECONOMIC&gt;
+                    * &lt;COD_INDICADORINTERNO&gt;317&lt;/COD_INDICADORINTERNO&gt;
+                    * &lt;DES_FECHA&gt;2022-04-25T00:00:00-06:00&lt;/DES_FECHA&gt;
+                    * &lt;NUM_VALOR&gt;658.99000000&lt;/NUM_VALOR&gt;
+                * &lt;/INGC011_CAT_INDICADORECONOMIC&gt;
+            * &lt;/Datos_de_INGC011_CAT_INDICADORECONOMIC&gt;
+         * </string>
+         */
+
+        $tipoCambioModel = new TipoCambioModel();
+        $tipo_cambio = $tipoCambioModel->obtener($this->tipo);
+
         try {
-            $correo = getEnt('bccr.CorreoElectronico');
-            $token = getEnt('bccr.Token');
-            $nombre = getSession('nombre');
+            $bccrInfo = self::$bccrInfo;
 
-            $urlWS = $this->indEconomWs . "/" . $this->indEconomFunc . "?Indicador=" . $this->tipo . "&FechaInicio=" . $this->fecha . "&FechaFinal=" . $this->fecha . "&Nombre=$nombre&SubNiveles=N&CorreoElectronico=$correo&Token=$token";
+            $indEconomWsUrl = $bccrInfo['host'] . "/" . $bccrInfo['function_id'] . "?Indicador=" . $this->tipo . "&FechaInicio=" . self::$fecha . "&FechaFinal=" . self::$fecha . "&Nombre=" . $bccrInfo['name'] . "&SubNiveles=N&CorreoElectronico=" . $bccrInfo['email'] . "&Token=" . $bccrInfo['token'];
 
-            //Colocar el tiempo maximo para el simplexml_load_file
-            ini_set('default_socket_timeout', 15);
-
-            $xml = simplexml_load_file($urlWS);
-
-            //Si no se pudo obtener respuesta en el tiempo establecido
-            if ($xml === false) {
-                return false;
-            }
+            //Obtiene la informacion del WebService
+            $xml = simplexml_load_file($indEconomWsUrl);
 
             //Obtiene el string del XML
             $xmlString = $xml->asXML();
@@ -113,13 +110,16 @@ class Indicador
                 'tipo_cambio' => $valor
             );
 
-            return (object) $data;
+            $tipoCambioModel = new TipoCambioModel();
+            $tipoCambioModel->update($data, $tipo_cambio->id_tipo_cambio);
+
+            return $valor;
         } catch (Exception $e) {
             $messagecomplet = "No se ha podido obtener el tipo de cambio del BCCR. " . $e->getMessage();
 
             insertError($messagecomplet, 'Indicadores');
-        }
 
-        return false;
+            return $tipo_cambio->tipo_cambio;
+        }
     } //Fin de la funcion para obtener el tipo de cambio del BCCR
 } //Fin de la clase

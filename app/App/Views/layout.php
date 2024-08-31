@@ -98,6 +98,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         <?= view('base/modal/login') ?>
 
+        <?= view('base/modal/tipo_cambio') ?>
+
         <!-- Main Footer -->
         <?php echo view('base/footer') ?>
     </div>

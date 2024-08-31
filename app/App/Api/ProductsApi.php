@@ -42,10 +42,10 @@ class ProductsApi extends IvoisApi
 
     /**
      * Obtiene todos los productos de un contribuyente aplicando un filtro de busqueda
-     * @param $searchFilter Filtro de busqueda
+     * @param $searchFilter Filtro de busqueda ("code_number:$code", "name:$name", "description:$description")
      * @return array Lista de productos
      */
-    public function getProductsBySearchFilter($searchFilter)
+    public function getProductsBySearchFilter($searchFilter = '')
     {
         return $this->makeGetRequestUrl("all?search=" . $searchFilter);
     }

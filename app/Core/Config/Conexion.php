@@ -5,71 +5,38 @@ namespace Core\Config;
 use Core\Aws\AwsSecretsService;
 use \PDO;
 
-class Conexion
-{
-    private static $instance = null;
+class Conexion {
+	private static $instance = NULL;
 
-    private function __construct() {}
+	private function __construct() {
+		//Evita que se construya la clase
+	}
 
-    private function __clone() {}
+	private function __clone() {
+		//Evita que se cree una nueva instancia de la clase
+	}
 
-    public static function getConnect()
-    {
-        if (!isset(self::$instance)) {
-            $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+	public static function getConnect() {
+		if (!isset(self::$instance)) {
+			$pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 
-            $conexionInfo = AwsSecretsService::getSecret(getEnt('app.database'));
+			$conexionInfo = AwsSecretsService::getSecret(getEnt('app.config.database'));
 
-            var_dump($conexionInfo);
-            
-            $host = $conexionInfo['host'];
-            $database = $conexionInfo['dbname'];
-            $user = $conexionInfo['username'];
-            $pswd = $conexionInfo['password'];
-            $port = $conexionInfo['port'];
+			$host = $conexionInfo['host'];
+			$database = $conexionInfo['dbname'];
+			$user = $conexionInfo['username'];
+			$pswd = $conexionInfo['password'];
+			$port = $conexionInfo['port'];
 
-            $dsn = "mysql:host=$host;port=$port;dbname=$database";
+			$dsn = "mysql:host=$host;port=$port;dbname=$database";
 
-            self::$instance = new PDO($dsn, $user, $pswd, $pdo_options);
-        } //Fin de validacion de instancia de conexion
+			self::$instance = new PDO($dsn, $user, $pswd, $pdo_options);
+		} //Fin de validacion de instancia de conexion
 
-        //Poner el conjunto de caracteres a utf8
-        self::$instance->exec("SET NAMES utf8");
+		//Poner el conjunto de caracteres a utf8
+		self::$instance->exec("SET NAMES utf8");
 
-        //Retornar la instancia de conexion
-        return self::$instance;
-    } //Fin de getConnect
-
-    public static function connectToPlanetScale()
-    {
-        // Use env variables to connect to the database
-        $dsn = "mysql:host={$_ENV["DATABASE_HOST"]};dbname={$_ENV["DATABASE"]}";
-
-        $options = array(
-            PDO::MYSQL_ATTR_SSL_CA => "/etc/ssl/certs/ca-certificates.crt",
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        );
-
-        $pdo = new PDO($dsn, $_ENV["DATABASE_USERNAME"], $_ENV["DATABASE_PASSWORD"], $options);
-
-        $pdo->exec("SET NAMES utf8");
-
-        // Query to fetch list of tables
-        $query = "SHOW TABLES";
-        $stmt = $pdo->query($query);
-        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        if (!empty($tables)) {
-            echo "Tables in the database:\n";
-            foreach ($tables as $table) {
-                echo "- $table\n";
-            }
-        } else {
-            echo "Successfully ran the query. No tables were found in the database.\n";
-        }
-
-        self::$instance = $pdo;
-
-        return self::$instance;
-    }
+		//Retornar la instancia de conexion
+		return self::$instance;
+	} //Fin de getConnect
 }

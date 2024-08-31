@@ -13,14 +13,14 @@ use Core\Model;
  */
 class PermisosModel extends Model
 {
-    protected $nombreTabla = "permisos_submodulos";
-    protected $pk_tabla = "id_permiso";
+    protected $tableName = "permisos_submodulos";
+    protected $primaryKey = "id_permiso";
 
-    protected $vistaTabla = 'permisos_view';
+    protected $tableView = 'permisos_view';
 
     protected $dbGroup = 'seguridad';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'id_rol',
         'id_modulo',
         'id_submodulo',
@@ -34,7 +34,7 @@ class PermisosModel extends Model
         'estado',
     ];
 
-    protected $camposVista = [
+    protected $tableExtraViewFields = [
         'nombre_rol',
         'nombre_modulo',
         'nombre_submodulo',

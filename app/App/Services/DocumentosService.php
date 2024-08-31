@@ -4,22 +4,22 @@ namespace App\Services;
 
 use App\Librerias\Hacienda;
 
-use App\Api\DetailsApi;
 use App\Api\CustomersApi;
 use App\Api\DataServiceApi;
 use App\Api\DocumentsApi;
 use App\Api\LocationsApi;
+use App\Api\ProductsApi;
 use App\Api\TaxpayersApi;
 use App\Librerias\Indicador;
 use App\Librerias\Reportes;
+use App\Models\ConsecutivosModel;
+use App\Models\EmpresasModel;
 
 /**
  * Servicio para la gestion de documentos
  */
-class DocumentosService
-{
-    public function buscarCliente($idCliente)
-    {
+class DocumentosService {
+    public function buscarCliente($idCliente) {
         $customersApi = new CustomersApi(getTaxpayerId());
 
         return $customersApi->getCustomerById($idCliente);
@@ -28,8 +28,7 @@ class DocumentosService
     /**
      * Validar los documentos que se encuentran en proceso
      */
-    public function validarDocumentos()
-    {
+    public function validarDocumentos() {
         $hacienda = new Hacienda();
 
         $documentoModel = model('document');
@@ -80,8 +79,7 @@ class DocumentosService
         ));
     } //Fin del metodo
 
-    public function recibirRespuestaHacienda($documentKey, $respuesta)
-    {
+    public function recibirRespuestaHacienda($documentKey, $respuesta) {
         //Decodificar la documentKey
         $documentKey = base64_decode($documentKey);
 
@@ -95,8 +93,7 @@ class DocumentosService
      * @param int $idDocumento Id del document
      * @return array Retorna el resultado del envio
      */
-    public function enviarDocumento($idDocumento, $email = null)
-    {
+    public function enviarDocumento($idDocumento, $email = null) {
         $documentsApi = new DocumentsApi(getTaxpayerId());
 
         if ($email) {
@@ -120,8 +117,7 @@ class DocumentosService
         return $data;
     }
 
-    private function filterDocumentsByDate($documents, $startDate, $endDate)
-    {
+    private function filterDocumentsByDate($documents, $startDate, $endDate) {
         $documentos = array();
 
         foreach ($documents as $document) {
@@ -135,8 +131,7 @@ class DocumentosService
         return $documentos;
     }
 
-    public function cargarDocumentos($documentTypeId, $issuerFilter, $reportType = null, $startDate = '', $endDate = '')
-    {
+    public function cargarDocumentos($documentTypeId, $issuerFilter, $reportType = null, $startDate = '', $endDate = '') {
         $documentsApi = new DocumentsApi(getTaxpayerId());
 
         $filter = '';
@@ -234,19 +229,18 @@ class DocumentosService
         return view('facturacion/table/documentos', $dataView);
     }
 
-    public function validarDocumento($idDocumento)
-    {
-        $model = model('document');
+    public function validarDocumento($idDocumento) {
+        //$model = model('document');
 
-        $document = $model->obtener($idDocumento);
+        //$document = $model->obtener($idDocumento);
 
-        if ($document) {
-            $hacienda = new Hacienda($document->documentKey);
+        /*if ($document) {
+            $hacienda = new Hacienda($idDocumento);
 
             $validar = json_decode($hacienda->validar());
 
             if (isset($validar['xml']['ind-estado'])) {
-                $fecha_gmt = date('Y-m-d\TH:i:s', strtotime('-6 hours'));
+                //$fecha_gmt = date('Y-m-d\TH:i:s', strtotime('-6 hours'));
 
                 if ($validar['xml']['ind-estado'] != "procesando") {
                     $json = json_decode(json_encode(simplexml_load_string(base64_decode($validar['xml']['respuesta-xml']))));
@@ -257,10 +251,10 @@ class DocumentosService
                         'fecha_valido' => $fecha_gmt,
                     );
 
-                    $documentosModel = model('document');
-                    $documentosModel->update($data_validado, $idDocumento);
+                    //$documentosModel = model('document');
+                    //$documentosModel->update($data_validado, $idDocumento);
 
-                    $correo_enviado = $hacienda->enviar_documento($idDocumento);
+                    //$correo_enviado = $hacienda->enviar_documento($idDocumento);
 
                     return json_encode(array(
                         'documentKey' => $idDocumento,
@@ -290,11 +284,10 @@ class DocumentosService
                     'correo_enviado' => false,
                 ));
             }
-        }
+        }*/
     }
 
-    public function enviarHacienda($idDocumento)
-    {
+    public function enviarHacienda($idDocumento) {
         $documentoModel = model('document');
         $document = $documentoModel->obtener($idDocumento);
 
@@ -382,9 +375,8 @@ class DocumentosService
     /**
      * Obtener los productos de un contribuyente
      */
-    public function getProductos()
-    {
-        $detailsApi = new DetailsApi(getTaxpayerId());
+    public function getProductos() {
+        $detailsApi = new ProductsApi(getTaxpayerId());
 
         $productos = $detailsApi->getProductsByTaxpayerId();
 
@@ -398,8 +390,7 @@ class DocumentosService
     /**
      * Obtener los clientes de un contribuyente
      */
-    public function getCustomers($documentTypeCode)
-    {
+    public function getCustomers($documentTypeCode) {
         $customersApi = new CustomersApi(getTaxpayerId());
 
         //Si el código del tipo de document es 01 o 08 se obtienen solo los clientes nacionales
@@ -427,8 +418,7 @@ class DocumentosService
      * @deprecated
      * @return string
      */
-    private function old_guardar()
-    {
+    private function old_guardar() {
         if (is_login()) {
             $cantidad_lineas = 0;
 
@@ -1516,8 +1506,7 @@ class DocumentosService
         }
     } //Fin de la funcion create
 
-    public function getInfoClientes()
-    {
+    public function getInfoClientes() {
         $locationsApi = new LocationsApi();
         $dataServiceApi = new DataServiceApi();
 
@@ -1544,8 +1533,7 @@ class DocumentosService
         );
     }
 
-    public function getPdf($documentUrl)
-    {
+    public function getPdf($documentUrl) {
         $dataView = array(
             'documentUrl' => $documentUrl
         );
@@ -1553,17 +1541,17 @@ class DocumentosService
         return view('facturacion/modal/ver_pdf', $dataView);
     }
 
-    public function getProductByCode($code)
-    {
+    public function getProductByCode($code) {
         //La variable search es un string que contiene los valores de busqueda separados por comas por ejemplo: "id_estado=1,id_categoria=2"
-        $filters = "code_number:$code";
+        $filters = array(
+            'search' => "code_number:$code"
+        );
 
         $productosService = new ProductosService();
         return $productosService->getData('all', $filters);
     }
 
-    public function crearDocumento($tipo_documento, $numero_documento)
-    {
+    public function crearDocumento($tipo_documento, $numero_documento) {
         $nombreVista = 'facturacion/elementos/documento';
 
         $dataServiceApi = new DataServiceApi();
@@ -1644,8 +1632,7 @@ class DocumentosService
     /**
      * Eliminar campos y filas que no contengan datos para enviar la informacion a la API de IVOIS
      */
-    private function validateDocumentStructure($document)
-    {
+    private function validateDocumentStructure($document) {
         $document = json_encode($document);
         //var_dump($document);
 
@@ -1836,8 +1823,7 @@ class DocumentosService
      * @param array $data Datos del documento
      * @return  object Respuesta de la API
      */
-    public function guardarDocumento($data)
-    {
+    public function guardarDocumento($data) {
         $document = $this->validateDocumentStructure($data);
 
         $documentsApi = new DocumentsApi(getTaxpayerId());
@@ -1845,8 +1831,7 @@ class DocumentosService
         return $documentsApi->sendDocument($document);
     }
 
-    public function getWalmart()
-    {
+    public function getWalmart() {
         return view('facturacion/modal/walmart', $this->getInfoWalmart());
     }
 
@@ -1855,8 +1840,7 @@ class DocumentosService
      * @param string $tipo Tipo de indicador economico
      * @return string Retorna los indicadores economicos
      */
-    public function obtenerIndicadores($tipo = 'CRC')
-    {
+    public function obtenerIndicadores($tipo = 'CRC') {
         if ($tipo) {
             $indicadores = new Indicador();
             $tipo_cambio = $indicadores->obtenerIndicadorEconomico($tipo);
@@ -1878,8 +1862,7 @@ class DocumentosService
     }
 
     /**Obtener la informacion para los documentos de walmart */
-    private function getInfoWalmart()
-    {
+    private function getInfoWalmart() {
         $tiendasModel = model('tiendas');
         $numerosProveedorModel = model('departamentos');
 
@@ -1893,8 +1876,7 @@ class DocumentosService
         );
     }
 
-    public function getReporteZip($documentos)
-    {
+    public function getReporteZip($documentos) {
         $claves = array();
 
         $reporte = new Reportes();

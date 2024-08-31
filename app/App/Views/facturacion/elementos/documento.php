@@ -41,14 +41,25 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-handshake"></i></span>
                                             </div>
-                                            <select class="form-control" id="condicion_venta" name="saleConditionId" required>
+                                            <select class="form-control slc-saleCondition" id="condicion_venta" name="saleConditionId" required onchange="agregar_termino_credito(this)">
                                                 <option value="">Seleccionar</option>
-                                                <?php foreach ($saleConditions as $condicion_venta) : ?>
-                                                    <option value="<?= $condicion_venta->conditionId ?>">
+                                                <?php
+                                                foreach ($saleConditions as $condicion_venta) :
+                                                    if ($condicion_venta->code == '02') {
+                                                        $condicion_venta->description = 'Crédito 30 días';
+
+                                                        $creditTerm = 30;
+                                                    } else {
+                                                        $creditTerm = 0;
+                                                    }
+                                                ?>
+                                                    <option value="<?= $condicion_venta->conditionId ?>" <?= $condicion_venta->code == '01' ? 'selected' : '' ?> data-creditTerm="<?= $creditTerm ?>">
                                                         <?= $condicion_venta->description ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>
+                                            <!-- Termino de credito -->
+                                            <input type="hidden" class="form-control inp-fct creditTerm" name="creditTerm" placeholder="Término de crédito" value="0">
                                         </div>
                                     </div>
                                 </div>

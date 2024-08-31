@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de tipo de cambio del dolar */
 class TipoCambioModel extends Model
 {
-    protected $nombreTabla = 'tipo_cambio_historico';
-    protected $pk_tabla = 'id_tipo_cambio';
+    protected $tableName = 'tipo_cambio_historico';
+    protected $primaryKey = 'id_tipo_cambio';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'tipo_cambio',
         'fecha_cambio',
         'codigo_indicador',

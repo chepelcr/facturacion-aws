@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de ordenes de compra */
 class OrdenesModel extends Model
 {
-	protected $nombreTabla = 'ordenes';
-	protected $pk_tabla = 'id_orden';
+	protected $tableName = 'ordenes';
+	protected $primaryKey = 'id_orden';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'nombre',
 		'numero_departamento',
 		'numero_proveedor',

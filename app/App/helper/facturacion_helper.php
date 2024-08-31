@@ -24,15 +24,3 @@ function getDocumentName($tipo_documento)
             break;
     }
 }
-
-/**
- * Obtener la informacion de la empresa
- */
-function getTaxpayerId()
-{
-    if (is_login()) {
-        return getSession('id_empresa');
-    } else {
-        return null;
-    }
-}

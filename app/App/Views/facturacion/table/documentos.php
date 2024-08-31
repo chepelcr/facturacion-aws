@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body scroll_vertical" style="max-height: 65vh; overflow-y: auto;">
+    <div class="card-body scroll_vertical card-facturacion">
         <table class="table table-bordered table-hover text-center" id="documentos">
             <thead class="bg-gray-dark">
                 <tr>
@@ -64,7 +64,7 @@
                             <td hidden>
                                 <?= $documento->saleDate ?>
                             </td>
-                            <td><?= $fecha ?></td>
+                            <td><?= date('d-m-Y', strtotime($documento->saleDate)) ?></td>
                             <td><?= $documento->consecutiveNumber ?></td>
                             <td>¢ <?= number_format($documento->summary->voucherTotal, "2", ",", ".") ?></td>
                             <td>

@@ -49,7 +49,7 @@ function agregar_linea_activa(producto, cantidad = 1, precio_final = 0) {
     if (producto.codes != null && producto.codes.length > 0) {
         codigo_venta = producto.codes.find(codigo => codigo.typeCode == '01').codeNumber;
     } else {
-        codigo_venta = lineas_activas;
+        codigo_venta = lineas_activas + 1;
     }
 
     //Si solo hay una linea
@@ -298,8 +298,8 @@ function calcular(linea) {
 }
 
 /**Formatear un numero de acuerdo al pais */
-function formato_moneda(numero, decimales = 0) {
-    numero = numero.toLocaleString('es-CR', { style: 'currency', currency: 'CRC', minimumFractionDigits: decimales, maximumFractionDigits: decimales });
+function formato_moneda(numero, decimales = 0, currency = 'CRC') {
+    numero = numero.toLocaleString('es-CR', { style: 'currency', currency: current, minimumFractionDigits: decimales, maximumFractionDigits: decimales });
 
     return numero;
 }//Fin de la funcion para dar formato a un numero

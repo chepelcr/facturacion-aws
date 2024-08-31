@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Core\Permisos;
 
 use Core\Model;
 use Core\Permisos\PermisosModel;
@@ -10,10 +10,10 @@ use Core\Permisos\PermisosModel;
  */
 class RolesModel extends Model
 {
-	protected $nombreTabla = "roles";
-	protected $pk_tabla = "id_rol";
+	protected $tableName = "roles";
+	protected $primaryKey = "id_rol";
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'nombre_rol',
 		'estado',
 		'fecha_creacion',

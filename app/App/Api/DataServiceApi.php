@@ -23,6 +23,24 @@ class DataServiceApi extends IvoisApi {
     }
 
     /**
+     * Obtener un tipo de identificación por país y el id
+     * @param string $countryCode Código del país
+     * @param int $id Id del tipo de identificación
+     * @return object Tipo de identificación
+     */
+    public function getIdentificationTypeById($countryCode, $id){
+        $url = getEnt("ivois.api.countries.url").$countryCode.getEnt("ivois.api.identifications.id.url").$id;
+
+        return $this->makeGetRequestUrl($url);
+    }
+
+    public function getIdentificationTypeByCode($countryCode, $code){
+        $url = getEnt("ivois.api.countries.url").$countryCode.getEnt("ivois.api.identifications.code.url").$code;
+
+        return $this->makeGetRequestUrl($url);
+    }
+
+    /**
      * Obtener los tipos de pago por país
      * @param string $countryCode Código del país
      * @return array Tipos de pago

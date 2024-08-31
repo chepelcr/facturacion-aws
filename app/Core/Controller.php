@@ -7,8 +7,7 @@ namespace Core;
  * @author jcampos
  * @version 2.0
  */
-abstract class Controller
-{
+abstract class Controller {
     /** Archivos de ayuda creados por el usuario */
     protected $helpers = [];
 
@@ -54,19 +53,16 @@ abstract class Controller
      */
     protected $loginValidation;
 
-    public function __construct()
-    {
+    public function __construct() {
         load_helpers($this->baseHelpers);
         load_helpers($this->helpers, 'App');
     } //Fin del constructor
 
-    public function setObjectName($name)
-    {
+    public function setObjectName($name) {
         $this->modelName = $name;
     } //Fin de la funcion
 
-    public function error($error = array())
-    {
+    public function error($error = array()) {
         $error = (object) $error;
 
         //Poner el header en el codigo de error
@@ -76,16 +72,14 @@ abstract class Controller
     } //Fin de la funcion error
 
     /**Establecer un modelo en el controlador */
-    protected function getService($modelName = '')
-    {
+    protected function getService($modelName = '') {
         $modelName = 'App\\Services\\' . ucfirst($modelName) . 'Service';
 
         return new $modelName();
     } //Fin de la funcion
 
     /**Enviar un error para una vista de error*/
-    protected function object_error($codigo, $mensaje)
-    {
+    protected function object_error($codigo, $mensaje) {
         $error = array(
             'codigo' => $codigo,
             'error' => $mensaje
@@ -95,11 +89,10 @@ abstract class Controller
     } //Fin de la funcion
 
     /**Enviar un error en formato json */
-    private function dataError($codigo, $mensaje)
-    {
+    private function dataError($codigo, $mensaje) {
         $error = array(
             'error' => array(
-                'codigo' => $codigo,
+                'status' => $codigo,
                 'error' => $mensaje
             )
         );
@@ -108,8 +101,7 @@ abstract class Controller
     } //Fin de la funcion
 
     /** Obtener filas de un objeto solicitado */
-    public function obtener($id = '', $objeto = null)
-    {
+    public function obtener($id = '', $objeto = null) {
         //Valida si el controlador es un modulo
         if ($this->isModulo) {
             //Si el objeto no es nulo, y se encuentra registrado en el modulo
@@ -181,12 +173,10 @@ abstract class Controller
     } //Fin de la funcion para obtener objetos de la aplicacion
 
     /**Validar si existe un objeto de la base de datos por código */
-    public function validar($id = null)
-    {
+    public function validar($id = null) {
 
         $validacion = false;
         $objeto = $this->modelName;
-
 
         if ($this->isModulo) {
             //Si el objeto no es nulo, y se encuentra registrado en el modulo
@@ -227,12 +217,15 @@ abstract class Controller
             $validacion = $service->validarExistencia($_GET);
         }
 
-        return json_encode($validacion);
+        if (isset($validacion->error)) {
+            return $this->error($validacion);
+        } else {
+            return json_encode($validacion);
+        }
     } //Fin de la validacion de un objeto
 
     /**Desactivar un objeto de la base de datos */
-    public function desactivar($id = '')
-    {
+    public function desactivar($id = '') {
         $objeto = $this->modelName;
         $loginValidation = false;
 
@@ -312,8 +305,7 @@ abstract class Controller
     } //Fin de la funcion para desactivar un objeto
 
     /**Activar un objeto de la base de datos */
-    public function activar($id = '')
-    {
+    public function activar($id = '') {
         $objeto = $this->modelName;
         $loginValidation = false;
 
@@ -387,8 +379,7 @@ abstract class Controller
         } //Fin de la validacion de id
     } //Fin de la funcion para activar un objeto
 
-    public function update($id, $data)
-    {
+    public function update($id, $data) {
         return $this->dataError(1, 'Se ha generado un error en la solicitud');
     }
 
@@ -398,8 +389,7 @@ abstract class Controller
      * @return string
          
      */
-    public function guardar($data)
-    {
+    public function guardar($data) {
         return $this->dataError(1, 'Se ha generado un error en la solicitud');
     }
 }//Fin de la clase

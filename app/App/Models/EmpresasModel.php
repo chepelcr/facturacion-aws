@@ -5,14 +5,13 @@ namespace App\Models;
 use Core\Model;
 
 /**Manejador de la tabla Empresas */
-class EmpresasModel extends Model
-{
-    protected $nombreTabla = 'empresas';
-    protected $vistaTabla = 'empresas_view';
+class EmpresasModel extends Model {
+    protected $tableName = 'empresas';
+    protected $tableView = 'empresas_view';
 
-    protected $pk_tabla = 'id_empresa';
+    protected $primaryKey = 'id_empresa';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'identificacion',
         'id_tipo_identificacion',
         'razon',
@@ -23,13 +22,14 @@ class EmpresasModel extends Model
         'telefono',
         'cod_pais',
         'correo',
+        'taxpayer_id',
         //'fecha_creacion',
         //'fecha_modificacion',
         //'fecha_eliminacion',
         'estado'
     ];
 
-    protected $camposVista = [
+    protected $tableExtraViewFields = [
         'tipo_identificacion',
         'nombre',
         'codigo_telefono',
@@ -47,30 +47,14 @@ class EmpresasModel extends Model
     protected $auditorias = true;
     protected $autoIncrement = true;
 
-    /**Obtener una empresa por numero de identificacion */
-    public function getByIdentificacion($identificacion)
-    {
-        $this->where('identificacion', $identificacion);
-
-        return $this->fila();
-    } //Fin de la funcion para obtener una empresa por numero de identificacion
-
-    /**Obtener la empresa del usuario que ha iniciado sesión 
+    /**
+     * Obtener una empresa por su id de contribuyente
+     * 
+     * @param string $taxpayer_id
      * @return object
-     * @return boolean
      */
-    function getEmpresa()
-    {
-        $empresa = $this->getById(getSession('id_empresa'));
-
-        if (!$empresa) {
-            return false;
-        } else {
-            foreach ($empresa as $key => $value) {
-                setSession('empresa_' . $key, $value);
-            }
-        }
-
-        return $empresa;
-    } //Fin de la funcion para obtener la empresa del usuario que ha iniciado sesión
+    public function getByTaxpayerId($taxpayer_id) {
+        $this->where('taxpayer_id', $taxpayer_id);
+        return $this->fila();
+    }
 }//Fin de la clase

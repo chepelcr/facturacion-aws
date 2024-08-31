@@ -77,10 +77,10 @@ class Walmart extends BaseController
                             }
                         }
 
-                        $nombreTabla = 'walmart/tiendas/table';
+                        $tableName = 'walmart/tiendas/table';
 
                         $data_tabla = array(
-                            'nombreTable' => $nombreTabla,
+                            'nombreTable' => $tableName,
                             'nombre_tabla' => 'listado_walmart_tiendas',
 
                             'dataTable' => array(
@@ -154,10 +154,10 @@ class Walmart extends BaseController
                             }
                         }
 
-                        $nombreTabla = 'walmart/departamentos/table';
+                        $tableName = 'walmart/departamentos/table';
 
                         $data_tabla = array(
-                            'nombreTable' => $nombreTabla,
+                            'nombreTable' => $tableName,
                             'nombre_tabla' => 'listado_walmart_departamentos',
 
                             'dataTable' => array(

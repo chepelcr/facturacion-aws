@@ -85,10 +85,10 @@ class ClientesService extends BaseService
             $estado = 'all';
         }
 
-        $nombreTabla = 'empresa/cliente/table';
+        $tableName = 'empresa/cliente/table';
 
         $data_tabla = array(
-            'nombreTable' => $nombreTabla,
+            'nombreTable' => $tableName,
             'nombre_tabla' => 'listado_empresa_clientes',
 
             'dataTable' => array(

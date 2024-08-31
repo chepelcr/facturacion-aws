@@ -2,7 +2,7 @@
 
 use PHPBook\View as View;
 
-View\Configuration\View::setViewsPathRoot('main', 'App/Views');
+View\Configuration\View::setViewsPathRoot('main', '../App/Views');
 
 View\Configuration\View::setDefaultPathRoot('main');
 

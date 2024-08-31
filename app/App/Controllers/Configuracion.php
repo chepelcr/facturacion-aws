@@ -7,6 +7,7 @@
 namespace App\Controllers;
 
 use App\Services\AutenticacionService;
+use App\Services\TaxpayersService;
 
 /**
  * Controlador para el modulo de configuracion
@@ -15,8 +16,7 @@ use App\Services\AutenticacionService;
  * @version 2.0
  * @autor jcampos
  */
-class Configuracion extends BaseController
-{
+class Configuracion extends BaseController {
 
     protected $isModulo = true;
 
@@ -25,8 +25,7 @@ class Configuracion extends BaseController
     protected $objetos = ['empresa', 'documentos'];
 
     /** Devolver el dash de la aplicacion */
-    public function index()
-    {
+    public function index() {
         if (is_login()) {
             $script = cargar("cargar_inicio_modulo('configuracion', 'Configuración');");
 
@@ -42,29 +41,33 @@ class Configuracion extends BaseController
         }
     } //Fin de la funcion index
 
-
     /**
      * Entrar a la configuracion del modulo de administracion
      */
-    public function empresa()
-    {
+    public function empresa() {
         if (is_login()) {
             if (validar_permiso("configuracion", "empresa", "consultar")) {
                 if (getSegment(3) == "listado") {
+                    $taxpayersService = new TaxpayersService();
 
-                    return view('seguridad/configuracion/empresa');
+                    $formData = array(
+                        'taxpayer' => $taxpayersService->getEmpresaData()
+                    );
+
+                    return view('seguridad/configuracion/empresa', $formData);
+                } else {
+                    $script = cargar("cargar_listado('configuracion', 'empresa', 'Configuración', 'Empresa', ' " . baseUrl("configuracion/empresa/listado") . "');");
+
+                    $data = array(
+                        'script' => $script
+                    );
+
+                    return $this->inicio($data);
                 }
-
-                $script = cargar("cargar_listado('configuracion', 'empresa', 'Configuración', 'Empresa', ' " . baseUrl("configuracion/empresa/listado") . "');");
-
-                $data = array(
-                    'script' => $script
-                );
-
-                return $this->inicio($data);
             } else {
                 $data = array(
-                    'error' => 'No tiene permisos para acceder a la página.'
+                    'error' => 'No tiene permisos para acceder a la página.',
+                    'status'=> 403
                 );
 
                 return $this->error($data);
@@ -77,8 +80,7 @@ class Configuracion extends BaseController
     /**
      * Entrar a la configuracion del modulo de facturacion
      */
-    public function documentos()
-    {
+    public function documentos() {
         if (is_login()) {
             if (validar_permiso("configuracion", "documentos", "consultar")) {
                 if (getSegment(3) == "listado") {
@@ -127,8 +129,7 @@ class Configuracion extends BaseController
     /**
      * Actualizar la configuracion de la empresa
      */
-    public function update($objeto, $data)
-    {
+    public function update($objeto, $data) {
         if (is_login()) {
             if ($objeto == 'hacienda' && validar_permiso('configuracion', 'documentos', 'modificar')) {
                 $autenticationService = new AutenticacionService();

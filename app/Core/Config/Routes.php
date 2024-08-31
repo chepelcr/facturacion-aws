@@ -7,8 +7,7 @@ use Core\Config\Controllers;
 use Core\Controller;
 
 /**Clase para manejar el routeo del controlador y acciones */
-class Routes
-{
+class Routes {
     private $default_controller = '';
 
     private $default_action = '';
@@ -17,25 +16,24 @@ class Routes
 
     protected Controller $controller;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->init_load();
     }
 
     /**Carga inicial de la aplicacion */
-    private function init_load()
-    {
+    private function init_load() {
         #require_once '../vendor/autoload.php';
         require_once '../Core/helper/load_helper.php';
 
         //AwsAppConfig::setConfigurations();
 
+        load_helper('entorno');
+
         //Colocar la zona horaria de la aplicacion
         date_default_timezone_set('America/Costa_Rica');
     } //Fin de la funcion
 
-    public function setDefault($controller, $action)
-    {
+    public function setDefault($controller, $action) {
         $this->default_controller = $controller;
         $this->default_action = $action;
 
@@ -43,8 +41,7 @@ class Routes
     } //Fin del metodo para establecer el controlador y funcion por defecto
 
     /**Obtener un controlador de la aplicacion */
-    private function getController($controllerName)
-    {
+    private function getController($controllerName) {
         $controllerName = "App\\Controllers\\" . $controllerName;
         $this->controller = new $controllerName();
 
@@ -52,8 +49,7 @@ class Routes
     } //Fin del metodo
 
     /**función que llama al controlador y su respectiva acción, que son pasados como parámetros */
-    private function call($controllerName, $action)
-    {
+    private function call($controllerName, $action) {
         /**Obtener un controlador */
         $controller = $this->getController($controllerName);
 
@@ -154,7 +150,7 @@ class Routes
                 break;
 
             case 'health':
-
+                echo json_encode(array('status' => 'UP'));
                 break;
 
             default:
@@ -164,8 +160,7 @@ class Routes
     } //Fin de la funcion
 
     /**Realizar una solicitud a la aplicacion */
-    public function llamar()
-    {
+    public function llamar() {
         $default_controller = $this->default_controller;
         $default_action = $this->default_action;
 
@@ -221,10 +216,9 @@ class Routes
         }
     } //Fin de la funcion
 
-    private function data_error($mensaje)
-    {
+    private function data_error($mensaje) {
         $error = array(
-            'codigo' => $this->estado,
+            'status' => $this->estado,
             'error' => $mensaje
         );
 
@@ -234,8 +228,7 @@ class Routes
     } //Fin de la funcion
 
     /**Mostrar la p[agina por defecto de la aplicacion */
-    public function error($controller, $error)
-    {
+    public function error($controller, $error) {
         //crea el controlador
         $controller = $this->getController($controller);
 

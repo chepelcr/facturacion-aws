@@ -39,7 +39,7 @@ class Entorno
 
             //Vamos a validar si existe un archivo de entorno que se llame .env-$entorno
             if (file_exists('../.env-' . self::$entorno)) {
-                $dotEnv = Dotenv::createImmutable('.', '.env-' . self::$entorno);
+                $dotEnv = Dotenv::createImmutable('../', '.env-' . self::$entorno);
                 $dotEnv->load();
             }
         }

@@ -34,12 +34,12 @@
                                 <div class="col-md-12">
                                     <!-- Si el estado del usuario es 1 -->
                                     <?php
-                                    if ($estado == 1) :
+                                    if ($estado == 1) {
                                     ?>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <!-- Si el estado del usuario es 1, desactivar -->
-                                                <button onclick="deshabilitar('<?= $id ?>', '<?= $objeto ?>');" type="button"
+                                                <button onclick="deshabilitar('<?= $id ?>', '<?= $objeto ?>');" type="button" <?php if($id == getSession('id_usuario')) echo 'disabled'; ?>
                                                     class="btn btn-danger btn-desactivar btn-sm btn-block" data-toggle="tooltip"
                                                     title="Desactivar <?= $objeto ?>">
                                                     <i class="fas fa-user-times"></i>
@@ -57,8 +57,8 @@
                                         </div>
 
                                         <?php
-                                    else:
-                                        if ($estado == 2):
+                                    } else {
+                                        if ($estado == 2) {
                                         ?>
                                             <!-- Si el estado del usuario es 0, activar -->
                                             <button onclick="habilitar('<?= $id ?>', '<?= $objeto ?>');" type="button"
@@ -67,7 +67,7 @@
                                                 <i class="fas fa-user-check"></i>
                                             </button>
                                         <?php
-                                        else:
+                                        } else {
                                         ?>
                                             <!-- Enviar contrasenia -->
                                             <button onclick="enviar_contrasenia('<?= $id ?>');" type="button"
@@ -76,8 +76,8 @@
                                                 <i class="fas fa-key"></i>
                                             </button>
                                     <?php
-                                        endif;
-                                    endif;
+                                        }
+                                    }
                                     ?>
                                 </div>
                             <?php

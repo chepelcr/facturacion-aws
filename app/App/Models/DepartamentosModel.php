@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de departamentos */
 class DepartamentosModel extends Model
 {
-    protected $nombreTabla = 'departamentos';
-    protected $pk_tabla = 'id_departamento';
+    protected $tableName = 'departamentos';
+    protected $primaryKey = 'id_departamento';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'nombre',
         'numero_departamento',
         'numero_proveedor',

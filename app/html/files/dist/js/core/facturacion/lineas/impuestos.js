@@ -186,18 +186,24 @@ function agregar_impuesto_linea(taxLine, impuesto) {
     //Recorrer los option de .taxTypes
     const taxTypes = taxLine.find(".taxTypes option");
 
-    $.each(taxTypes, function (option) {
+    console.log(taxTypes);
+
+    $.each(taxTypes, function (i, option) {
         //Obtener el data-code del option
         var code = $(option).data("code");
+
+        console.log(code);
 
         //Si el valor del select es igual al tipo de impuesto
         if (code == type.code) {
             //Marcar el select como seleccionado
-            $(option).attr("selected", true);
+            option.selected = true;
+
+            console.log("Seleccionado");
 
             activar_porcentajes(taxLine.find(".taxTypes"));
         } else {
-            $(option).attr("selected", false);
+            option.selected = false;
         }
     });
 
@@ -206,20 +212,20 @@ function agregar_impuesto_linea(taxLine, impuesto) {
         const taxRates = taxLine.find(".taxRates option");
 
         //Recorrer los option de .taxRates
-        $.each(taxRates, function (option) {
+        $.each(taxRates, function (i, option) {
             //Obtener el data-code del option
             var value = $(option).data("code");
 
             //Si el valor del select es igual al tipo de impuesto
             if (value == impuesto.taxRate.code) {
                 //Marcar el select como seleccionado
-                $(option).attr("selected", true);
+                option.selected = true;
 
                 colocar_tarifa(taxLine.find(".taxRates"));
 
                 taxPercentage = impuesto.taxRate.percentage;
             } else {
-                $(option).attr("selected", false);
+                option.selected = false;
             }
         });
     } else {

@@ -10,22 +10,21 @@ use Core\Config\Conexion;
 /**
  * Modelo para el acceso a la base de datos y funciones CRUD
  */
-abstract class Model
-{
+abstract class Model {
     /** Nombre de la tabla del modelo */
-    protected $nombreTabla;
+    protected $tableName;
 
     /**Nombre de la vista que usara la tabla */
-    protected $vistaTabla;
+    protected $tableView;
 
     /** Nombre de la llave primaria */
-    protected $pk_tabla = false;
+    protected $primaryKey = false;
 
     /** Columnas que se deben ingresar al modelo */
-    protected $camposTabla = [];
+    protected $tableFields = [];
 
     /**Campos que solo se utilizan en la vista */
-    protected $camposVista = [];
+    protected $tableExtraViewFields = [];
 
     /** Usar variables para almacenar la fecha de creacion y actualizacion */
     protected $useTimesnaps = false;
@@ -87,8 +86,7 @@ abstract class Model
     protected $error = array();
 
     //constructor de la clase
-    public function __construct($model_name = null)
-    {
+    public function __construct($model_name = null) {
         //Intentar conexion a la base de datos
         try {
             //Obtener la conexion a la base de datos
@@ -99,30 +97,26 @@ abstract class Model
     } //Fin del constructor
 
     /**Establecer el nombre de una vista en el modelo */
-    public function vista($nombreVista)
-    {
-        $this->vistaTabla = $nombreVista;
+    public function vista($nombreVista) {
+        $this->tableView = $nombreVista;
         return $this;
     } //Fin de la funcion
 
     /**Setear los campos del update */
-    private function setCamposUpdate($data)
-    {
+    private function setCamposUpdate($data) {
         $this->camposUpdate = $data;
         return $this;
     } //Fin del metodo para los campos del update
 
     /**Insertar un registro en la tabla de auditorias */
-    public function insertAuditoria($id, $tabla, $accion)
-    {
+    public function insertAuditoria($id, $tabla, $accion) {
         if ($this->auditorias) {
             insertAuditoria($id, $tabla, $accion);
         }
     } //Fin de la funcion
 
     /**Insertar un registro en la tabla de errores */
-    public function insertError($ex)
-    {
+    public function insertError($ex) {
         try {
             if ($this->auditorias) {
 
@@ -135,13 +129,13 @@ abstract class Model
 
                 $data = array(
                     'sentencia' => $messagecomplet,
-                    'controlador' => $this->nombreTabla,
+                    'controlador' => $this->tableName,
                     'id_usuario' => getSession('id_usuario') ?? 0,
                 );
 
                 $this->error = $data;
 
-                insertError($messagecomplet, $this->nombreTabla);
+                insertError($messagecomplet, $this->tableName);
             }
         } catch (Throwable $th) {
             echo $th->getMessage();
@@ -149,21 +143,19 @@ abstract class Model
     } //Fin de la funcion
 
     /**Obtener el error generado en el modelo */
-    public function getError()
-    {
+    public function getError() {
         return json_decode(json_encode($this->error));
     }
 
     /**Actualizar un registro en la base de datos */
-    public function update($data, $id = null)
-    {
+    public function update($data, $id = null) {
         try {
             $db = $this->query();
 
             $this->setCamposUpdate($data);
 
             if (isset($id)) {
-                $this->where($this->pk_tabla, $id);
+                $this->where($this->primaryKey, $id);
             }
 
             $sql = $this->crearQuery('UPDATE');
@@ -175,18 +167,18 @@ abstract class Model
             }
 
             if (isset($id)) {
-                $update->bindValue($this->pk_tabla, $id);
+                $update->bindValue($this->primaryKey, $id);
             }
 
             $update->execute();
 
-            $this->insertAuditoria($id ?? 0, $this->nombreTabla, 'UPDATE');
+            $this->insertAuditoria($id ?? 0, $this->tableName, 'UPDATE');
 
             if (isset($id)) {
-                return $id;
-            } else {
-                return true;
+                $data[$this->primaryKey] = $id;
             }
+
+            return (object) $data;
         } //Fin del try
 
         catch (\Exception $ex) {
@@ -197,8 +189,7 @@ abstract class Model
     } //Fin del método
 
     /**Seleccionar una columna especifica de la tabla */
-    public function select($nombreCampo)
-    {
+    public function select($nombreCampo) {
         $campos = $this->campos;
 
         $campos[] = $nombreCampo;
@@ -209,8 +200,7 @@ abstract class Model
     } //Fin del select
 
     /**Crear la sentencia para seleccionar columnas especificas */
-    private function sentenciaSelect()
-    {
+    private function sentenciaSelect() {
         $campos = $this->campos;
 
         if (empty($campos)) {
@@ -232,8 +222,7 @@ abstract class Model
         return $select;
     } //Fin de la funcion
 
-    private function sentenciaLike()
-    {
+    private function sentenciaLike() {
         $camposLike = $this->camposLike;
 
         $sentencia = '`';
@@ -255,8 +244,7 @@ abstract class Model
     } //Fin del metodo
 
     /** Funcion para crear la sentencia where */
-    private function sentenciaWhere()
-    {
+    private function sentenciaWhere() {
         $camposWhere = $this->camposWhere;
 
         $sentencia = 'WHERE `';
@@ -278,8 +266,7 @@ abstract class Model
     } //Fin de la funcion
 
     /**Filtrar una cunsulta en la base de datos */
-    public function where(string $nombreCampo, string $valor)
-    {
+    public function where(string $nombreCampo, string $valor) {
         $camposWhere = $this->camposWhere;
 
         $camposWhere[$nombreCampo] = $valor;
@@ -290,8 +277,7 @@ abstract class Model
     } //Fin del where
 
     /**Obtener las filas que contenga un valor en la columna especifica */
-    public function like(string $columna, string $valor)
-    {
+    public function like(string $columna, string $valor) {
         $camposLike = $this->camposLike;
 
         $camposLike[$columna] = '%' . $valor . '%';
@@ -302,15 +288,13 @@ abstract class Model
     } //Fin de la funcion
 
     /**Asignar los campos para hacer el filtro de la consulta*/
-    private function setCamposWhere(array $camposWhere)
-    {
+    private function setCamposWhere(array $camposWhere) {
         $this->camposWhere = $camposWhere;
         return $this;
     } //Fin de setCamposWhere
 
     /**Generar los campos de la tabla del modelo */
-    private function generarCampos()
-    {
+    private function generarCampos() {
         $campos = $this->campos;
 
         //var_dump($campos);
@@ -320,22 +304,22 @@ abstract class Model
 
             $data = array();
 
-            $pk_tabla = $this->pk_tabla;
-            $camposTabla = $this->camposTabla;
-            $camposVista = $this->camposVista;
+            $primaryKey = $this->primaryKey;
+            $tableFields = $this->tableFields;
+            $tableExtraViewFields = $this->tableExtraViewFields;
 
-            if ($pk_tabla) {
-                $data[$espacio] = $pk_tabla;
+            if ($primaryKey) {
+                $data[$espacio] = $primaryKey;
                 $espacio = $espacio + 1;
             }
 
-            foreach ($camposTabla as $campo) {
+            foreach ($tableFields as $campo) {
                 $data[$espacio] = $campo;
                 $espacio = $espacio + 1;
             } //Fin del ciclo para llenar los campos
 
-            if (isset($this->vistaTabla)) {
-                foreach ($camposVista as $campo) {
+            if (isset($this->tableView)) {
+                foreach ($tableExtraViewFields as $campo) {
                     $espacio = $espacio + 1;
 
                     $data[$espacio] = $campo;
@@ -357,23 +341,20 @@ abstract class Model
     } //Fin de generarCampos
 
     /**Agrupar los resultados de la bae de datos */
-    public function groupBy($nombreCampo)
-    {
+    public function groupBy($nombreCampo) {
         $this->group = $nombreCampo;
 
         return $this;
     } //Fin de la funcion
 
     /**Agrupar los resultados de la bae de datos */
-    public function OrderBy($nombreCampo)
-    {
+    public function OrderBy($nombreCampo) {
         $this->order = $nombreCampo;
     } //Fin de la funcion
 
     /**Crear la sentencia de sql a utilizar en la ejecucion */
-    private function crearQuery(string $tipo = "SELECT")
-    {
-        $tabla = $this->nombreTabla;
+    private function crearQuery(string $tipo = "SELECT") {
+        $tabla = $this->tableName;
         $where = $this->sentenciaWhere();
         $like = $this->sentenciaLike();
         $group = $this->group;
@@ -418,7 +399,7 @@ abstract class Model
                 break;
 
             case 'UPDATE':
-                $sql = 'UPDATE ' . $this->nombreTabla . ' SET `';
+                $sql = 'UPDATE ' . $this->tableName . ' SET `';
 
                 $data = $this->camposUpdate;
 
@@ -484,13 +465,12 @@ abstract class Model
     } //Fin de crear query
 
     /** Validar si la llave primaria debe ser autoincremental o no */
-    private function insertPk(array $data)
-    {
+    private function insertPk(array $data) {
         if ($this->autoIncrement = true) {
             $db = $this->query();
 
             try {
-                $this->setMax($this->pk_tabla);
+                $this->setMax($this->primaryKey);
 
                 $sql = $this->crearQuery('MAX');
 
@@ -500,7 +480,7 @@ abstract class Model
 
                 $result = $max->fetch();
 
-                $data[$this->pk_tabla] = $result[0] + 1;
+                $data[$this->primaryKey] = $result[0] + 1;
             } catch (\Exception $ex) {
                 $this->insertError($ex);
             } //Fin del catch
@@ -510,16 +490,18 @@ abstract class Model
         return $data;
     } //Fin de insertPk
 
-    /**Obtener la primera fila de la tabla */
-    public function fila()
-    {
+    /**
+     * Obtener un registro de la base de datos
+     * @return object|bool Primer registro de la base de datos
+     */
+    public function fila() {
         try {
             $db = $this->query();
 
             //Si la conexion a la base de datos no es nula
             if ($db != null) {
-                if (isset($this->vistaTabla)) {
-                    $this->table($this->vistaTabla);
+                if (isset($this->tableView)) {
+                    $this->table($this->tableView);
                 }
 
                 //Crear la sentencia de ejecucion
@@ -541,9 +523,9 @@ abstract class Model
                 if ($result) {
                     $data = array();
 
-                    $camposTabla = $this->generarCampos();
+                    $tableFields = $this->generarCampos();
 
-                    foreach ($camposTabla as $campoTabla) {
+                    foreach ($tableFields as $campoTabla) {
                         if (isset($result[$campoTabla])) {
                             $data[$campoTabla] = $result[$campoTabla];
                         }
@@ -560,31 +542,27 @@ abstract class Model
     } //Fin de fila
 
     /** Determinar el tipo de objeto a retornar (array o json) */
-    public function setType(string $tipo)
-    {
+    public function setType(string $tipo) {
         $this->tipo = $tipo;
         return $this;
     } //Fin del metodo
 
     /**Obtener el valor maximo de un campo */
-    public function max($nombreCampo)
-    {
+    public function max($nombreCampo) {
         $this->setMax($nombreCampo);
 
         return $this;
     } //Fin de la funcion para seleccionar el valor maximo de una columna
 
     /**Agregar el campo para la seleccion del max */
-    private function setMax($campoMax)
-    {
+    private function setMax($campoMax) {
         /**Añadir el valor al un campo del array camposMax */
         $this->camposMax[] = $campoMax;
         return $this;
     } //Fin de la funcion
 
     /** Contar la cantidad de filas de todo el modelo*/
-    public function count()
-    {
+    public function count() {
         $db = $this->query();
 
         //Si la conexion a la base de datos no es nula
@@ -597,14 +575,13 @@ abstract class Model
         } //Fin del if
     } //Fin de count
 
-    private function camposInsert(array $data)
-    {
-        $pk = $this->pk_tabla;
+    private function camposInsert(array $data) {
+        $pk = $this->primaryKey;
 
         if ($this->autoIncrement = true) {
             //Campos para la tabla
             $campos = "(" . $pk;
-            $camposTabla = $this->camposTabla;
+            $tableFields = $this->tableFields;
 
             $values = "(:" . $pk;
 
@@ -613,7 +590,7 @@ abstract class Model
             //Ciclo para crear la sentencia con los campos y valores que seran agregados a la tabla
             foreach ($data as $clave => $valor) {
                 //Ciclo para validar si el campo se encuentra en la tabla
-                foreach ($camposTabla as $campo) {
+                foreach ($tableFields as $campo) {
                     if ($clave == $campo) {
                         $campos = $campos . ", " . $clave;
                         $values = $values . ", :" . $clave;
@@ -625,7 +602,7 @@ abstract class Model
         else {
             //Campos para la tabla
             $campos = "(";
-            $camposTabla = $this->camposTabla;
+            $tableFields = $this->tableFields;
 
             $values = "(";
 
@@ -636,7 +613,7 @@ abstract class Model
             //Ciclo para crear la sentencia con los campos y valores que seran agregados a la tabla
             foreach ($data as $clave => $valor) {
                 //Ciclo para validar si el campo se encuentra en la tabla
-                foreach ($camposTabla as $campo) {
+                foreach ($tableFields as $campo) {
                     if ($clave == $campo) {
                         switch ($espacio) {
                             case '1':
@@ -678,9 +655,12 @@ abstract class Model
         return $data;
     } //Fin de camposInsert
 
-    /**  Insertar un registro en la base de datos */
-    public function insert(array $data)
-    {
+    /** 
+     * Insertar un registro en la base de datos
+     * @param array $data
+     * @return object|bool
+     */
+    public function insert(array $data) {
         $db = $this->query();
 
         try {
@@ -701,14 +681,9 @@ abstract class Model
 
                 if ($insert->execute()) {
                     //Insertar auditoria
-                    $this->insertAuditoria($data[$this->pk_tabla], $this->nombreTabla, 'INSERT');
+                    $this->insertAuditoria($data[$this->primaryKey], $this->tableName, 'INSERT');
 
-                    //Si hay un dato en el campo de la llave primaria
-                    if ($this->pk_tabla) {
-                        return $data[$this->pk_tabla];
-                    }
-
-                    return true;
+                    return (object) $data;
                 } //Fin de la ejecucion 
             } //Fin del if
         } catch (\Exception $ex) {
@@ -719,16 +694,15 @@ abstract class Model
     } //Fin de la funcion
 
     /** Obtener todos los elementos de una tabla */
-    public function getAll()
-    {
+    public function getAll() {
         $db = $this->query();
 
         //Realizar intento
         try {
             //Si la conexion a la base de datos no es nula
             if ($db != null) {
-                if (isset($this->vistaTabla))
-                    $this->table($this->vistaTabla);
+                if (isset($this->tableView))
+                    $this->table($this->tableView);
 
                 //Crear la sentencia de ejecucion
                 $sql = $this->crearQuery();
@@ -768,13 +742,13 @@ abstract class Model
                 //Limpiar las variables del sql
                 //$this->clean();
 
-                $camposTabla = $this->generarCampos();
+                $tableFields = $this->generarCampos();
                 $objetos = [];
 
                 foreach ($result as $objeto) {
                     $data = [];
 
-                    foreach ($camposTabla as $campoTabla) {
+                    foreach ($tableFields as $campoTabla) {
                         if (isset($objeto[$campoTabla]))
                             $data[$campoTabla] = $objeto[$campoTabla];
                     }
@@ -794,22 +768,20 @@ abstract class Model
     } //Fin de buscar
 
     /**Utilizar una tabla personalizada */
-    public function table($nombreTabla)
-    {
-        $this->nombreTabla = $nombreTabla;
+    public function table($tableName) {
+        $this->tableName = $tableName;
 
         return $this;
     } //Fin de la funcion
 
     //la función para obtener un objeto por el id
-    public function getById($id)
-    {
+    public function getById($id) {
         $db = $this->query();
 
         try {
             //Si la conexion a la base de datos no es nula
             if ($db != null) {
-                $this->where($this->pk_tabla, $id);
+                $this->where($this->primaryKey, $id);
 
                 $result = $this->fila();
 
@@ -826,8 +798,7 @@ abstract class Model
     } //Fin de getByID
 
     /**Obtener uno o varios objetos de la base de datos */
-    public function obtener($id)
-    {
+    public function obtener($id) {
         if ($id == 'all') {
             return $this->getAll();
         } else {
@@ -836,14 +807,13 @@ abstract class Model
     } //Fin de la funcion obtener
 
     /**Eliminar un registro de la base de datos */
-    public function delete($id)
-    {
+    public function delete($id) {
         $db = $this->query();
 
         try {
             //Si la base de datos no es nula
             if ($db != null) {
-                $this->where($this->pk_tabla, $id);
+                $this->where($this->primaryKey, $id);
 
                 $sql = $this->crearQuery('DELETE');
 
@@ -858,7 +828,7 @@ abstract class Model
 
                 if ($delete->execute()) {
                     //Insertar auditoria
-                    $this->insertAuditoria($id, $this->nombreTabla, 'DELETE');
+                    $this->insertAuditoria($id, $this->tableName, 'DELETE');
 
                     return $id;
                 } //Fin del if
@@ -870,8 +840,7 @@ abstract class Model
         } //Fin del catch
     } //Fin de la funcion delete
 
-    private function query()
-    {
+    private function query() {
         if ($this->db == null) {
             $this->db = Conexion::getConnect();
         }

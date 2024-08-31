@@ -16,7 +16,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="nombre_usuario">Nombre de usuario</label>
-                    <input type="text" class="form-control inp perfil nombre_usuario" name="nombre_usuario"
+                    <input type="text" class="form-control inp perfil userName" name="userName"
                         value="<?php if (isset($nombre_usuario)) echo $nombre_usuario ?>" placeholder="Nombre de usuario">
                 </div>
             </div>
@@ -32,7 +32,7 @@
                             </span>
                         </div>
 
-                        <select required class="form-control inp id_rol" name="id_rol">
+                        <select required class="form-control inp rolId" name="rolId">
                             <option value="">Seleccione</option>
                             <?php foreach ($roles as $rol): ?>
                                 <option value="<?php echo $rol->id_rol; ?>"
@@ -56,12 +56,12 @@
                             </span>
                         </div>
 
-                        <select required class="form-control inp id_empresa" name="id_empresa">
+                        <select required class="form-control inp taxpayerId" name="taxpayerId">
                             <option value="">Seleccione</option>
                             <?php foreach ($empresas as $empresa): ?>
-                                <option value="<?php echo $empresa->id_empresa; ?>"
-                                    <?php if (isset($id_empresa) && $id_empresa == $empresa->id_empresa) echo 'selected'; ?>>
-                                    <?php echo $empresa->nombre; ?>
+                                <option value="<?php echo $empresa->taxpayerId; ?>"
+                                    <?php if (isset($id_empresa) && $id_empresa == $empresa->taxpayerId) echo 'selected'; ?>>
+                                    <?php echo $empresa->businessName; ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>

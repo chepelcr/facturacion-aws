@@ -14,9 +14,9 @@ $default_controller = 'Inicio';
 $default_action = 'index';
 
 //Ocultar errores
-error_reporting(0);
+error_reporting(1);
 
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 
 /**Crear instancia de la clase rutas */
 $app = new Routes();
@@ -25,5 +25,3 @@ $app->setDefault($default_controller, $default_action);
 
 /**Realizar una solicitud a la aplicacion */
 $app->llamar();
-
-?>

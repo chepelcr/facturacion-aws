@@ -6,7 +6,7 @@ class Controllers
 {
     public function __construct($default_controller, $default_action)
     {
-        load_helpers(['entorno', 'web']);
+        load_helpers(['web']);
 
         $this->default_controller = $default_controller;
         $this->default_action = $default_action;

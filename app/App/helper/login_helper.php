@@ -9,8 +9,7 @@ use App\Models\UsuariosModel;
  * Validar si un usuario ha iniciado sesion
  * @return boolean True si ha iniciado sesion, false en caso contrario
  */
-function is_login()
-{
+function is_login() {
 	$session = getSession();
 
 	if ($session) {
@@ -26,8 +25,7 @@ function is_login()
  * @param int $largo Longitud de la contraseña
  * @return string Contraseña generada
  */
-function generar_password_complejo($largo)
-{
+function generar_password_complejo($largo) {
 	$cadena_base =  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 	$cadena_base .= '0123456789';
 	$cadena_base .= '!@#%&*';
@@ -46,8 +44,7 @@ function generar_password_complejo($largo)
  * @param string $texto Texto a encriptar
  * @return string Texto encriptado
  */
-function encriptar_texto($texto)
-{
+function encriptar_texto($texto) {
 	$key = getEnt('app.config.key');
 	$texto = $texto . $key;
 
@@ -60,8 +57,7 @@ function encriptar_texto($texto)
  * @param string $texto Texto a validar
  * @return boolean True si el texto no esta vacio, false en caso contrario
  */
-function validar($texto)
-{
+function validar($texto) {
 	if ($texto && $texto != '') {
 		return true;
 	}
@@ -75,8 +71,7 @@ function validar($texto)
  * @param string $pswd Contraseña del usuario
  * @return int 0 si la contraseña no coincide, 1 si la contraseña es correcta, 2 si la contraseña ha expirado, 3 si la contraseña esta bloqueada
  */
-function validar_contrasenia($id_usuario, $pswd)
-{
+function validar_contrasenia($id_usuario, $pswd) {
 	$contraseniaModel = new ContraseniaModel();
 	$contrasenia = $contraseniaModel->contrasenia($id_usuario);
 
@@ -155,8 +150,7 @@ function validar_contrasenia($id_usuario, $pswd)
  * Obtener el perfil del usuario que ha iniciado sesion
  * @return array Datos del perfil del usuario
  */
-function getPerfil()
-{
+function getPerfil() {
 	if (is_login()) {
 		$usuariosModel = new UsuariosModel();
 		$perfil = $usuariosModel->getById(getSession('id_usuario'));
@@ -217,93 +211,33 @@ function getPerfil()
 } //Fin del metodo para obtener el perfil del usuario
 
 /**
- * Obtener la empresa del usuario que ha iniciado sesion
- * @return array Datos de la empresa
+ * Obtener la informacion de la empresa
  */
-function getEmpresa()
-{
-	/*if (getSession('empresa')) {
-		return json_decode(getSession('empresa'));
+function getTaxpayerId() {
+	if (is_login()) {
+		return getSession('id_empresa');
 	} else {
-		*/
-	$idNumber = getEnt("ivois.api.taxpayer.idNumber");
-
-	$taxpayersApi = new TaxpayersApi();
-	$empresa = $taxpayersApi->getTaxpayerByNationalityAndIdNumber(getCountryCode(), $idNumber);
-
-	$datos_personales = array(
-		'businessName' => $empresa->businessName,
-		'identification' => $empresa->identification,
-		'nationality' => $empresa->nationality,
-		'identificaciones' => array(
-			(object) array(
-				'typeId' => $empresa->identification->typeId,
-				'description' => $empresa->identification->description
-			),
-		),
-		'countries' => array(
-			$empresa->nationality,
-		),
-	);
-
-	$locationsApi = new LocationsApi();
-
-	$countries = $locationsApi->get_countries();
-
-	$datos_contacto = array(
-		'personalPhone' => $empresa->personalPhone,
-		'fax' => $empresa->fax ?? null,
-		'businessPhone' => $empresa->businessPhone,
-		'email' => $empresa->email,
-		'countries' => $countries,
-	);
-
-	$residenceCountry = $empresa->residence->countryCode;
-
-	$provincias = $locationsApi->get_states_by_iso_code($residenceCountry);
-	$cantones = $locationsApi->get_counties_by_state_id_and_iso_code($empresa->residence->stateId, $residenceCountry);
-	$distritos = $locationsApi->get_districts_by_county_id_and_state_id_and_iso_code($empresa->residence->countyId, $empresa->residence->stateId, $residenceCountry);
-	$barrios = $locationsApi->get_neighborhoods_by_district_id_and_county_id_and_state_id_and_iso_code($empresa->residence->districtId, $empresa->residence->countyId, $empresa->residence->stateId, $residenceCountry);
-
-	$dataProvincias = array(
-		#'cod_provincia' => $empresa->residence->stateId,
-		'countries' => $countries,
-		'states' => $provincias,
-		#'cod_canton' => $empresa->residence->countyId,
-		#'canton' => $empresa->residence->countyName,
-		'counties' => $cantones,
-		#'cod_distrito' => $empresa->residence->districtId,
-		#'distrito' => $empresa->residence->districtName,
-		'districts' => $distritos,
-		#'cod_barrio' => $empresa->residence->neighborhoodId,
-		#'barrio' => $empresa->residence->neighborhoodName,
-		'neighborhoods' => $barrios,
-		'residence' => $empresa->residence
-		#'otras_senas'=>$empresa->residence->address
-	);
-
-	$datos_empresa = array(
-		'tradeName' => $empresa->tradeName,
-	);
-
-	$datos_empresa = array(
-		'taxpayerId' => $empresa->taxpayerId,
-		'datos_personales' => $datos_personales,
-		'datos_contacto' => $datos_contacto,
-		'dataProvincias' => $dataProvincias,
-		'datos_empresa' => $datos_empresa,
-		'activities' => $empresa->activities,
-	);
-
-	return $datos_empresa;
-	//}
-}//Fin de la funcion para obtener la empresa del usuario que ha iniciado sesión
+		return null;
+	}
+}
 
 /**
  * Obtiene el código de país del contribuyente
  * @return string Código de país
  */
-function getCountryCode()
-{
-	return getEnt("ivois.api.taxpayer.nationality");
+function getCountryCode() {
+	if (is_login()) {
+		$empresa = getSession('empresa');
+		
+		if (!$empresa) {
+			$taxpayersApi = new TaxpayersApi();
+			$empresa = $taxpayersApi->getTaxpayerById(getSession('id_empresa'));
+		} else {
+			$empresa = json_decode($empresa);
+		}
+
+		return $empresa->nationality->isoCode;
+	} else {
+		return null;
+	}
 }

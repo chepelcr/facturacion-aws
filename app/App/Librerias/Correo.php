@@ -18,6 +18,7 @@ use PHPMailer\PHPMailer\Exception;
  */
 class Correo
 {
+    
     /**
      * Funcion para enviar un correo
      * @param array $data Datos del correo

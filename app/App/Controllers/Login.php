@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Api\TaxpayersApi;
 use App\Models\EmpresasModel;
 use App\Models\UsuariosModel;
 use App\Services\UsuariosService;
@@ -12,12 +13,11 @@ use App\Services\UsuariosService;
  * @subpackage Login
  * @version 1.0
  * @autor jcampos
-*/
-class Login extends BaseController
-{
+ */
+class Login extends BaseController {
     /** Funcion para mostrar el login */
-    public function index()
-    {
+    public function index() {
+        //var_dump('hola');
         if (!is_login()) {
             return view('login');
         } else {
@@ -27,8 +27,7 @@ class Login extends BaseController
     } //Fin de la funcion
 
     /** Funcion para consultar si el usuario existe en la base de datos */
-    public function consultar()
-    {
+    public function consultar() {
         //Validar si el usuario ha iniciado sesion
         if (!is_login()) {
             $respuesta = array(
@@ -43,26 +42,6 @@ class Login extends BaseController
             $usuariosModel->where('correo', $user);
 
             $usuario = $usuariosModel->fila();
-
-            /*$data = array(
-                    'id_usuario'=>$usuario->id_usuario,
-                    'nombre_usuario'=>$usuario->nombre_usuario,
-                    'id_rol'=>$usuario->id_rol,
-                    'correo'=>$usuario->correo,
-                    'identificacion'=>$usuario->identificacion,
-                    'nombre'=>$usuario->nombre,
-                );
-
-                $empresa = (object) getEmpresa();
-
-                $data['id_empresa'] = $empresa->taxpayerId;
-                $data['empresa'] = json_encode($empresa);
-                $data['nombre_pagina'] = getEnt('app.name');
-                
-                setDataSession($data);
-
-                $respuesta = array(
-                    'estado' => '1',);*/
 
             if ($usuario && $usuario->estado != 0) {
                 //Obtener el estado de la contraseña del usuario
@@ -80,7 +59,8 @@ class Login extends BaseController
                             'nombre' => $usuario->nombre,
                         );
 
-                        $empresa = (object) getEmpresa();
+                        $taxpayersApi = new TaxpayersApi();
+                        $empresa = $taxpayersApi->getTaxpayerById($usuario->ivois_id);
 
                         $data['id_empresa'] = $empresa->taxpayerId;
                         $data['empresa'] = json_encode($empresa);
@@ -104,9 +84,11 @@ class Login extends BaseController
                             'contrasenia_expiro' => true,
                         );
 
-                        $empresa = (object) getEmpresa();
+                        $taxpayersApi = new TaxpayersApi();
+                        $empresa = $taxpayersApi->getTaxpayerById($usuario->ivois_id);
 
                         $data['id_empresa'] = $empresa->taxpayerId;
+                        $data['empresa'] = json_encode($empresa);
                         $data['nombre_pagina'] = getEnt('app.name');
 
                         setDataSession($data);
@@ -117,7 +99,7 @@ class Login extends BaseController
                         );
                         break;
 
-                    case '3':
+                    default:
                         $respuesta = array(
                             'estado' => '3',
                             'error' => 'Debe esperar un momento para volver a intentar.'
@@ -129,15 +111,15 @@ class Login extends BaseController
             return json_encode($respuesta);
         } //Fin de la validacion
 
-        else
+        else {
             return json_encode(array(
                 'estado' => '1',
             ));
+        }
     } //Fin de la funcion para consultar un usuario
 
     /**Salir de la aplicacion */
-    public function salir()
-    {
+    public function salir() {
         destroy();
 
         return json_encode(array(
@@ -145,8 +127,7 @@ class Login extends BaseController
         ));
     } //Fin de la funcion para salir de la aplicacion
 
-    public function olvido()
-    {
+    public function olvido() {
         if (!is_login())
             return view('seguridad/login/olvido');
 
@@ -156,8 +137,7 @@ class Login extends BaseController
     } //Fin de la funcion
 
     /**Recuperar la contrasenia de un usuario */
-    public function recuperar()
-    {
+    public function recuperar() {
         if (!is_login()) {
             if (post('correo')) {
                 $correo = post('correo');

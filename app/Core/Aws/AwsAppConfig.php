@@ -44,7 +44,8 @@ class AwsAppConfig
     public static function setConfigurations(){
         $client = new AppConfigDataClient([
             'version' => 'latest',
-            'region' => getEnt('app.aws.region')
+            'region' => getEnt('app.aws.region'),
+            'profile' => 'default'
         ]);
 
         $result = $client->getConfiguration([

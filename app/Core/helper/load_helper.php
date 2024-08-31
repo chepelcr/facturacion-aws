@@ -15,9 +15,9 @@ function load_helper($name = '', $tipo = 'Core')
 {
     /**Si es un archivo de la app */
     if ($tipo == 'Core') {
-        $file = 'Core/helper/' . $name . '_helper.php';
+        $file = '../Core/helper/' . $name . '_helper.php';
     } else {
-        $file = 'App/helper/' . $name . '_helper.php';
+        $file = '../App/helper/' . $name . '_helper.php';
     }
 
     require_once($file);

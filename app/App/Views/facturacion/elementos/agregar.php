@@ -29,7 +29,7 @@
     ?>
     <div class="card-header">
         <div class="row">
-            <div class="col-md-12 col-opciones">
+            <div class="col-md-12 col-opciones p-1">
                 <!--Crear factura electronica
                 <button class="btn bg-gradient-olive btn-block" title="Factura de venta" data-toggle="tooltip" onclick="agregar_documento(1")>
                     <i class="fas fa-receipt"></i>

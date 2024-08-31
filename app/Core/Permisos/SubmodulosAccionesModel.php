@@ -13,17 +13,17 @@ use Core\Model;
  */
 class SubmodulosAccionesModel extends Model
 {
-    protected $nombreTabla = "submodulos_acciones";
+    protected $tableName = "submodulos_acciones";
 
-    protected $vistaTabla = 'submodulos_acciones_view';
+    protected $tableView = 'submodulos_acciones_view';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'id_modulo',
         'id_submodulo',
         'id_accion',
     ];
 
-    protected $camposVista = [
+    protected $tableExtraViewFields = [
         'nombre_modulo',
         'nombre_submodulo',
         'nombre_accion',

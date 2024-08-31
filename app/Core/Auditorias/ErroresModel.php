@@ -6,10 +6,10 @@ use Core\Model;
 
 class ErroresModel extends Model
 {
-	protected $nombreTabla = "error";
-	protected $pk_tabla = "id_error";
+	protected $tableName = "error";
+	protected $primaryKey = "id_error";
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'sentencia',
 		'controlador',
 		'id_usuario',

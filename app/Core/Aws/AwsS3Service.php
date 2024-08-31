@@ -28,7 +28,8 @@ class AwsS3Service
         $this->bucket = $bucket;
         $this->client = new S3Client([
             'version' => 'latest',
-            'region' => getEnt('app.aws.region')
+            'region' => getEnt('app.aws.region'),
+            'profile' => 'default'
         ]);
     }
 

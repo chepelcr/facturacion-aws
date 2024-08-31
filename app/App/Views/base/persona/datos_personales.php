@@ -23,7 +23,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                                 </div>
-                                <input class="form-control inp identification_number" onblur="validar_identificacion(this.value)"
+                                <input class="form-control inp identification_number" onblur="obtener_contribuyente(this.value)"
                                     name="identification[number]" type="text" placeholder="Ingrese el número de cédula" value="<?php if (isset($identification)) {
                                                                                                                                     echo formatear_cedula($identification->number, $identification->code);
                                                                                                                                 } ?>" required max="100">
@@ -50,7 +50,7 @@
                                     class="form-control inp identification_typeId">
                                     <option value="">Seleccionar</option>
                                     <?php foreach ($identificaciones as $identificationType): ?>
-                                        <option value="<?= $identificationType->typeId ?>"
+                                        <option value="<?= $identificationType->typeId ?>" data-code="<?= $identificationType->code ?>"
                                             <?php if (isset($identification) && $identificationType->typeId == $identification->typeId) {
                                                 echo "selected";
                                             } ?>>

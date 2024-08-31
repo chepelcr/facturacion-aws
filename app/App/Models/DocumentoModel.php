@@ -6,11 +6,11 @@ use Core\Model;
 
 class DocumentoModel extends Model
 {
-    protected $nombreTabla = 'documentos';
+    protected $tableName = 'documentos';
 
-    protected $pk_tabla = 'id_documento';
+    protected $primaryKey = 'id_documento';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'consecutivo',
         'tipo_documento',
         'clave',

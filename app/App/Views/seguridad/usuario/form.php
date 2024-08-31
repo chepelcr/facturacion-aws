@@ -9,21 +9,22 @@
     <!-- Informacion de contacto -->
     <div class="col-md-12">
         <?php
-        if (isset($datos_contacto))
+        if (isset($datos_contacto)) {
             echo view('base/persona/contacto', $datos_contacto);
-        else
+        } else {
             echo view('base/persona/contacto');
+        }
         ?>
     </div>
 
     <!-- Informacion de usuario -->
     <div class="col-md-12">
         <?php
-        if (isset($datos_usuario))
+        if (isset($datos_usuario)) {
             echo view('base/persona/usuario', $datos_usuario);
-
-        else
+        } else {
             echo view('base/persona/usuario');
+        }
         ?>
     </div>
 </div>

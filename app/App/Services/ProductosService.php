@@ -7,8 +7,7 @@ use App\Api\DataServiceApi;
 
 use App\Models\CategoriasModel;
 
-class ProductosService extends BaseService
-{
+class ProductosService extends BaseService {
 
     /**
      * Obtener los datos de los productos
@@ -17,13 +16,14 @@ class ProductosService extends BaseService
      * @return object | array Datos de los productos
      * @throws \Exception
      */
-    public function getData($id = 'all', $filters = '')
-    {
+    public function getData($id = 'all', $filters = array()) {
         $productosApi = new ProductsApi(getTaxpayerId());
 
         if ($id == 'all') {
-            if (!empty($filters)) {
-                return $productosApi->getProductsBySearchFilter($filters);
+            if (isset($filters['search'])) {
+                return $productosApi->getProductsBySearchFilter($filters['search']);
+            } elseif (isset($filters['status'])) {
+                return $productosApi->getProductsByTaxpayerId($filters['status']);
             } else {
                 return $productosApi->getProductsByTaxpayerId();
             }
@@ -38,8 +38,7 @@ class ProductosService extends BaseService
      * @param array $data Datos del producto
      * @return object Respuesta de la API
      */
-    public function changeStatus($id, $data)
-    {
+    public function changeStatus($id, $data) {
         $productosApi = new ProductsApi(getTaxpayerId());
 
         return $productosApi->changeProductStatus($id, $data);
@@ -50,8 +49,7 @@ class ProductosService extends BaseService
      * @param string $filters Filtros de busqueda
      * @return string | object Vista de los productos
      */
-    public function getProductsListView($filters = '')
-    {
+    public function getProductsListView($filters = '') {
         $productos = $this->getData('all', $filters);
 
         if (isset($productos->error)) {
@@ -70,10 +68,10 @@ class ProductosService extends BaseService
             }
         }
 
-        $nombreTabla = 'empresa/producto/table';
+        $tableName = 'empresa/producto/table';
 
         $data_tabla = array(
-            'nombreTable' => $nombreTabla,
+            'nombreTable' => $tableName,
             'nombre_tabla' => 'listado_empresa_productos',
             'dataTable' => array(
                 'articulos' => $productos
@@ -126,8 +124,7 @@ class ProductosService extends BaseService
         return listado($data);
     }
 
-    public function validarExistencia($data)
-    {
+    public function validarExistencia($data) {
         #$productosApi = new ProductsApi(getEnt('taxpayerId'));
 
         #return $productosApi->validateProductExistence($data);
@@ -138,8 +135,7 @@ class ProductosService extends BaseService
      * @param string $id Identificador del producto
      * @param array $data Datos del producto
      */
-    public function update($id, $data)
-    {
+    public function update($id, $data) {
         $productosApi = new ProductsApi(getTaxpayerId());
 
         return $productosApi->updateProduct($id, $data);
@@ -150,8 +146,7 @@ class ProductosService extends BaseService
      * @param array $data Datos del producto
      
      */
-    public function create($data)
-    {
+    public function create($data) {
         $productosApi = new ProductsApi(getTaxpayerId());
 
         return $productosApi->saveProduct($data);

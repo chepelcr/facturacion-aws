@@ -31,8 +31,7 @@ class BaseController extends Controller
                                             timer: 2000
                                         }).then((result) => {
                                             cambio_contrasenia();
-                                        });
-                                    }, 6000);');
+                                        });');
 
                 //Si la data tiene un script, concatena el script
                 if (isset($data->script)) {

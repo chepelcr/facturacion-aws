@@ -83,7 +83,7 @@ docker push 205784505678.dkr.ecr.us-east-1.amazonaws.com/biller-frontend-ecr:lat
 ##  5. Update ECS Service
 
 ```Shell
-aws ecs update-service --cluster IvoisDevCluster --service Ivois-Dev-Biller-Frontend-SVC --force-new-deployment --profile IVOIS-DEV
+aws ecs update-service --cluster IvoisDevCluster --service Ivois-FrontEnd-SVC --force-new-deployment --profile IVOIS-DEV
 ```
 
 ## CloudFormation Templates

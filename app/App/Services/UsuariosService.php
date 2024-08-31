@@ -6,39 +6,82 @@ use App\Api\DataServiceApi;
 use App\Api\LocationsApi;
 use App\Api\TaxpayersApi;
 use App\Librerias\Correo;
+use App\Models\CodigosPaisesModel;
 use App\Models\ContraseniaModel;
-use App\Models\RolesModel;
+use App\Models\EmpresasModel;
 use App\Models\UsuariosModel;
+use Core\Permisos\RolesModel;
 
-class UsuariosService extends BaseService
-{
-    public function update($id, $data)
-    {
-        $data = array(
-            'nombre_usuario' => $data['nombre_usuario'],
-            'correo' => $data['correo'],
-            'telefono' => $data['telefono'],
-            'id_rol' => $data['id_rol'],
-            'id_empresa' => $data['id_empresa']
-        );
+class UsuariosService extends BaseService {
+    /**
+     * Api de datos
+     */
+    private $dataServiceApi;
+
+    /**
+     * Api de ubicaciones
+     */
+    private $locationsApi;
+
+    /**
+     * Api de contribuyentes
+     */
+    private $taxpayersApi;
+
+
+    public function __construct() {
+        $this->dataServiceApi = new DataServiceApi();
+        $this->locationsApi = new LocationsApi();
+        $this->taxpayersApi = new TaxpayersApi();
+    }
+
+    /**
+     * Actualizar un usuario
+     * @param int $id Identificador del usuario
+     * @param array $data Datos del usuario
+     * @return array Respuesta de la API
+     */
+    public function update($id, $data) {
 
         $model = new UsuariosModel();
+        $user = $model->getById($id);
 
-        if ($model->update($data, $id)) {
-            return array(
-                'estado' => 1,
-                'success' => 'Se actualizó el usuario correctamente.',
+        if ($user) {
+
+            $empresasModel = new EmpresasModel();
+            $empresa = $empresasModel->getByTaxpayerId($data['taxpayerId']);
+
+            $data = array(
+                'nombre_usuario' => $data['userName'],
+                'correo' => $data['email'],
+                'telefono' => $data['personalPhone']['number'],
+                'id_rol' => $data['rolId'],
+                'id_empresa' => $empresa->id_empresa
             );
+
+            $model = new UsuariosModel();
+            $data = $model->update($data, $id);
+
+            if (!is_bool($data)) {
+                return array(
+                    'estado' => 1,
+                    'success' => 'Se actualizó el usuario correctamente.',
+                );
+            } else {
+                return array(
+                    'error' => 'No se pudo actualizar el usuario',
+                    'status' => 500
+                );
+            }
         } else {
             return array(
-                'error' => 'No se pudo actualizar el usuario',
-                'status' => 500
+                'error' => 'No se encontro el usuario',
+                'status' => 404
             );
         }
     }
 
-    public function validarExistencia($data)
-    {
+    public function validarExistencia($data) {
         $model = new UsuariosModel();
 
         if (isset($data['correo'])) {
@@ -74,63 +117,56 @@ class UsuariosService extends BaseService
      * @param array $data
      * @return array
      */
-    public function create($data)
-    {
-        $model = new UsuariosModel();
+    public function create($data) {
+        $identificacion = $data['identification']['number'];
 
-        $identificacion = $data['identificacion'];
+        //var_dump($data);
+        //return;
 
         //Eliminar los guiónes del número de identificación
         $identificacion = desformatear_cedula($identificacion);
 
-        $correo = $data['correo'];
-        $model->where('correo', $correo);
+        $model = new UsuariosModel();
 
-        if (!$model->fila()) {
+        $correo = $data['email'];
+        $userData = $model->getByEmail($correo);
+
+        if (is_bool($userData)) {
             $model = new UsuariosModel();
-            $model->where('identificacion', $identificacion);
-            if (!$model->fila()) {
+            $userData = $model->getByIdentification($identificacion);
+
+            if (is_bool($userData)) {
+                $dataServiceApi = $this->dataServiceApi;
+                $identificationType = $dataServiceApi->getIdentificationTypeById($data['nationality'], $data['identification']['typeId']);
+
+                $codigosPaisesModel = new CodigosPaisesModel();
+                $pais = $codigosPaisesModel->getByIsoCode($data['nationality']);
+
+                $empresasModel = new EmpresasModel();
+                $empresa = $empresasModel->getByTaxpayerId($data['taxpayerId']);
+
                 $model = new UsuariosModel();
 
                 $data = array(
                     'identificacion' => $identificacion,
-                    'id_tipo_identificacion' => $data['id_tipo_identificacion'],
-                    'nombre' => $data['nombre'],
-                    'cod_pais' => $data['cod_pais'],
-                    'telefono' => $data['telefono'],
-                    'correo' => $data['correo'],
-                    'nombre_usuario' => $data['nombre_usuario'],
-                    'id_rol' => $data['id_rol'],
-                    'id_empresa' => $data['id_empresa'],
+                    'id_tipo_identificacion' => $identificationType->code,
+                    'nombre' => $data['businessName'],
+                    'cod_pais' => $pais->cod_pais,
+                    'telefono' => $data['personalPhone']['number'],
+                    'correo' => $data['email'],
+                    'nombre_usuario' => $data['userName'],
+                    'id_rol' => $data['rolId'],
+                    'id_empresa' => $empresa->id_empresa,
                 );
 
-                $id = $model->insert($data);
+                $userData = $model->insert($data);
 
-                if ($id) {
-                    $pass = generar_password_complejo(10);
-
-                    $data_pass = array(
-                        'id_usuario' => $id,
-                        'contrasenia' => $pass,
-                        'fecha_expiracion' => date('Y-m-d H:i:s'),
-                        'estado' => 1
-                    );
-
-                    $model = new ContraseniaModel();
-
-                    $id_contrasenia = $model->insert($data_pass);
-
-                    //Si el id de la contraseña es mayor a cero, se envia el correo
-                    if ($id_contrasenia != 0) {
-                        $mensaje = 'Estimado ' . $data['nombre'] . ',
+                //Validar si es booleano
+                if (!is_bool($userData)) {
+                    $mensaje = 'Estimado ' . $userData->nombre . ',
                                                     <br>
                                                     
-                                                    Se ha completado su registro en la plataforma de Modas Laura, debe cambiar la contraseña la primera vez que inicia sesión.
-                                                    <br>
-                                                    <br>
-                                                    Usuario: <b>' . $data['correo'] . '</b> <br>
-                                                    Contraseña: <b>' . $pass . '</b> <br>
-                                                    <br>
+                                                    Se ha completado su registro en la plataforma de' . getEnt('app.name') . '.<br>
                                                     <br>
 
                                                     Presione el siguiente enlace para iniciar sesión: <br>
@@ -139,56 +175,52 @@ class UsuariosService extends BaseService
                                                     Saludos,
                                                     <br>
                                                     <br>
-                                                    <b>Equipo de Modas Laura</b>';
+                                                    <b>Equipo de ' . getEnt('app.name') . '</b>';
 
-                        $correos = array(
-                            $data['nombre'] => $data['correo']
-                        );
+                    $correos = array(
+                        $userData->nombre => $userData->correo,
+                    );
 
-                        $data = array(
-                            'receptor' => $correos,
-                            'asunto' => 'Registro de usuario',
-                            'body' => $mensaje
-                        );
+                    $data = array(
+                        'receptor' => $correos,
+                        'asunto' => 'Registro de usuario',
+                        'body' => $mensaje
+                    );
 
-                        $correo = new Correo();
+                    $correo = new Correo();
 
-                        if ($correo->enviarCorreo($data)) {
-                            return array(
-                                'success' => 'El usuario se ha registrado correctamente',
-                            );
-                        } else {
-                            return array(
-                                'success' => 'No se pudo enviar el correo, debe enviar una contraseña manualmente al usuario',
-                                'status' => 200
-                            );
-                        }
-                    } //Fin de validacion de id_contrasenia
+                    if ($correo->enviarCorreo($data)) {
+                        $mensaje = 'Se ha registrado el usuario correctamente';
+                    } else {
+                        $mensaje = 'Se ha registrado el usuario correctamente, pero no se pudo enviar el correo de confirmación';
+                    }
 
-                    else {
+                    $envioContrasenia = $this->enviar_contrasenia_temporal($userData);
+
+                    if ($envioContrasenia['estado'] == 1) {
                         return array(
-                            'success' => 'No se pudo guardar la contraseña, debe enviar una contraseña manualmente al usuario',
-                            'status' => 200
+                            'status' => 200,
+                            'success' => $mensaje,
+                        );
+                    } else {
+                        return array(
+                            'error' => $envioContrasenia['mensaje'],
+                            'status' => 500
                         );
                     }
-                } //Fin de validacion de id
-
-                else {
+                } else {
                     return array(
                         'error' => 'No se pudo guardar el usuario.',
                         'status' => 500
                     );
                 }
-            } //Fin de validacion de identificacion
-
-            else {
+            } else {
                 return array(
                     'error' => 'Ya existe un usuario con la identificación ' . $identificacion,
                     'status' => 400
                 );
             }
-        } //Fin de validacion de correo
-        else {
+        } else {
             return array(
                 'error' => 'El correo ya se encuentra registrado.',
                 'status' => 400
@@ -196,25 +228,24 @@ class UsuariosService extends BaseService
         }
     }
 
-    public function getUsersView()
-    {
+    public function getUsersView() {
         $usuariosModel = new UsuariosModel();
         $usuarios = $usuariosModel->getAll();
 
-        $nombreTabla = 'seguridad/usuario/table';
+        $tableName = 'seguridad/usuario/table';
 
         $data_tabla = array(
-            'nombreTable' => $nombreTabla,
+            'nombreTable' => $tableName,
             'nombre_tabla' => 'listado_seguridad_usuarios',
             'dataTable' => array(
                 'usuarios' => $usuarios
             )
         );
 
-        $dataServiceApi = new DataServiceApi();
+        $dataServiceApi = $this->dataServiceApi;
         $identificaciones = $dataServiceApi->getIdentificationTypesByCountry(getCountryCode());
 
-        $locationsApi = new LocationsApi();
+        $locationsApi = $this->locationsApi;
         $countries = $locationsApi->get_countries();
 
         $datos_personales = array(
@@ -222,11 +253,15 @@ class UsuariosService extends BaseService
             'countries' => $countries
         );
 
+        $datos_contacto = array(
+            'countries' => $countries
+        );
+
         $rolesModel = new RolesModel();
-        $empresasModel = new TaxpayersApi();
+        $taxpayersApi = $this->taxpayersApi;
 
         $datos_usuario = array(
-            'empresas' => $empresasModel->getAllTaxpayers(),
+            'empresas' => $taxpayersApi->getAllTaxpayers(),
             'roles' => $rolesModel->getAll(),
         );
 
@@ -235,7 +270,8 @@ class UsuariosService extends BaseService
         $data_form = array(
             'dataForm' => array(
                 'datos_personales' => $datos_personales,
-                'datos_usuario' => $datos_usuario
+                'datos_usuario' => $datos_usuario,
+                'datos_contacto' => $datos_contacto
             ),
             'nombreForm' => $nombreForm,
             'nombre_form' => 'frm_seguridad_usuarios'
@@ -249,8 +285,7 @@ class UsuariosService extends BaseService
         return listado($data);
     }
 
-    public function changeStatus($id, $data)
-    {
+    public function changeStatus($id, $data) {
         $usersModel = new UsuariosModel();
         $usuario = $usersModel->getById($id);
 
@@ -259,7 +294,10 @@ class UsuariosService extends BaseService
                 'estado' => $data['status']
             );
 
-            if ($usersModel->update($data, $id)) {
+            $usersModel = new UsuariosModel();
+            $data = $usersModel->update($data, $id);
+
+            if (!is_bool($data)) {
                 return array(
                     'estado' => 1,
                     'success' => 'Se ha cambiado el estado del usuario correctamente',
@@ -278,8 +316,7 @@ class UsuariosService extends BaseService
         }
     }
 
-    public function getData($id = null, $filters = null)
-    {
+    public function getData($id = null, $filters = null) {
         $model = new UsuariosModel();
 
         if ($id == 'all') {
@@ -292,12 +329,35 @@ class UsuariosService extends BaseService
         } elseif ($id == 'perfil') {
             return $model->getById(getSession('id_usuario'));
         } else {
-            return $model->getById($id);
+            $data = $model->getById($id);
+
+            //$tipoIdentificacion = $this->dataServiceApi->getIdentificationTypeByCode($data->cod_pais, $data->id_tipo_identificacion);
+
+            $data = array(
+                'id_usuario' => $data->id_usuario,
+                'userName' => $data->nombre_usuario,
+                'email' => $data->correo,
+                'personalPhone' => array(
+                    'number' => $data->telefono,
+                    'countryCode' => $data->cod_pais
+                ),
+                'nationality' => array(
+                    'isoCode' => $data->cod_pais
+                ),
+                'rolId' => $data->id_rol,
+                'taxpayerId' => $data->ivois_id,
+                'businessName' => $data->nombre,
+                'identification' => array(
+                    'number' => $data->identificacion,
+                    'code' => $data->id_tipo_identificacion
+                )
+            );
+
+            return (object) $data;
         }
     }
 
-    public function updateUserProfile($data)
-    {
+    public function updateUserProfile($data) {
         $id = getSession('id_usuario');
 
         $data = array(
@@ -329,8 +389,7 @@ class UsuariosService extends BaseService
     }
 
     /**Cambiar la contrasenia de un usuario */
-    public function actualizar_contrasenia($id, $pass, $old_pass)
-    {
+    public function actualizar_contrasenia($id, $pass, $old_pass) {
         $id_usuario = $id;
 
         $model = new ContraseniaModel();
@@ -430,8 +489,7 @@ class UsuariosService extends BaseService
         }
     } //Fin del metodo para cambiar la contrasenia
 
-    public function enviarContraseniaTemporal($id_usuario)
-    {
+    public function enviarContraseniaTemporal($id_usuario) {
         $model = new UsuariosModel();
         $usuario = $model->getById($id_usuario);
 
@@ -460,8 +518,7 @@ class UsuariosService extends BaseService
         }
     }
 
-    public function enviarContraseniaTemporalPorCorreo($correo)
-    {
+    public function enviarContraseniaTemporalPorCorreo($correo) {
         $usuariosModel = new UsuariosModel();
         $usuario = $usuariosModel->getByEmail($correo);
 
@@ -490,8 +547,7 @@ class UsuariosService extends BaseService
     }
 
     /**Enviar una contrasenia temporal a un usuario por correo electronico */
-    private function enviar_contrasenia_temporal($usuario)
-    {
+    private function enviar_contrasenia_temporal($usuario) {
         $pass = generar_password_complejo(8);
 
         $contraseniaModel = new ContraseniaModel();
