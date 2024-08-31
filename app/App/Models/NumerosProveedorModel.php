@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class NumerosProveedorModel extends Model
 {
-	protected $nombreTabla = 'numeros_proveedor';
-	protected $pkTabla = 'id_proveedor';
+	protected $tableName = 'numeros_proveedor';
+	protected $primaryKey = 'id_proveedor';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'departamento',
         'cod_pais',
         'fecha_creacion',

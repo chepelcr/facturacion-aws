@@ -6,10 +6,10 @@ use Core\Model;
 /** Modelo para la tabla de tipos de documentos */
 class TiposDocumentosModel extends Model
 {
-	protected $nombreTabla = 'tipos_documentos';
-	protected $pkTabla = 'id_tipo';
+	protected $tableName = 'tipos_documentos';
+	protected $primaryKey = 'id_tipo';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'id_tipo_documento',
 		'descripcion',
 		'tipo_documento',

@@ -8,10 +8,10 @@ class TiposExoneracionModel extends Model
 {
 	
 
-	protected $nombreTabla = 'tipos_exoneracion';
-	protected $pkTabla = 'codigo_exoneracion';
+	protected $tableName = 'tipos_exoneracion';
+	protected $primaryKey = 'codigo_exoneracion';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'descripcion',
 		"fecha_creacion",
 		'estado',

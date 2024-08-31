@@ -6,10 +6,10 @@ use Core\Model;
 /** Modelo para la tabla de tipos de referencias */
 class TiposReferenciaModel extends Model
 {
-	protected $nombreTabla = 'tipos_referencia';
-	protected $pkTabla = 'id_codigo';
+	protected $tableName = 'tipos_referencia';
+	protected $primaryKey = 'id_codigo';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'tipo_referencia',
 		"fecha_creacion",
 		'estado',

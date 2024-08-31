@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class UnidadesMedidaModel extends Model
 {
-	protected $nombreTabla = 'unidades_medida';
-	protected $pkTabla = 'id_unidad';
+	protected $tableName = 'unidades_medida';
+	protected $primaryKey = 'id_unidad';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'descripcion',
 		'simbolo',
 	];

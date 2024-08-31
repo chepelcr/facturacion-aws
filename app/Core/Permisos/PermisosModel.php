@@ -7,14 +7,14 @@
     /**Manejar los permisos de la aplicacion */
     class PermisosModel extends Model
     {
-        protected $nombreTabla = "permisos_submodulos";
-        protected $pkTabla = "id_permiso";
+        protected $tableName = "permisos_submodulos";
+        protected $primaryKey = "id_permiso";
 
-        protected $vistaTabla = 'permisos_view';
+        protected $tableView = 'permisos_view';
 
         
 
-        protected $camposTabla = [
+        protected $tableFields = [
             'id_rol',
             'id_modulo',
             'id_submodulo',
@@ -27,7 +27,7 @@
             'estado',
         ];
 
-        protected $camposVista = [
+        protected $tableExtraViewFields = [
             'nombre_rol',
             'nombre_modulo',
             'nombre_submodulo',

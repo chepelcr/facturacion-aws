@@ -6,10 +6,10 @@ use Core\Model;
 
 /** Modelo para la tabla de categorias */
 class EmpresaAutenticacionModel extends Model {
-	protected $nombreTabla = 'empresa_autenticacion';
-	protected $pkTabla = 'id_empresa';
+	protected $tableName = 'empresa_autenticacion';
+	protected $primaryKey = 'id_empresa';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'llave_p12',
 		'llave_pin',
 		'user_token',

@@ -6,14 +6,14 @@ use Core\Model;
 
 class AuditoriaModel extends Model
 {
-	protected $nombreTabla = "auditoria";
-	protected $pkTabla = "id_auditoria";
+	protected $tableName = "auditoria";
+	protected $primaryKey = "id_auditoria";
 
-	protected $vistaTabla = "auditorias_view";
+	protected $tableView = "auditorias_view";
 
 	
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'id_fila',
 		'tabla',
 		'id_usuario',
@@ -21,7 +21,7 @@ class AuditoriaModel extends Model
 		'created_at'
 	];
 
-	protected $camposVista = [
+	protected $tableExtraViewFields = [
 		'nombre_usuario',
 	];
 

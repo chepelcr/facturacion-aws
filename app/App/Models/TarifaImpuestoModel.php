@@ -6,10 +6,10 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class TarifaImpuestoModel extends Model
 {
-	protected $nombreTabla = 'tarifa_impuestos';
-	protected $pkTabla = 'id_tarifa';
+	protected $tableName = 'tarifa_impuestos';
+	protected $primaryKey = 'id_tarifa';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'porcentaje',
 		'descripcion',
 		'tipo_tarifa',

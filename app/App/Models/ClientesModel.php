@@ -7,12 +7,12 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class ClientesModel extends Model
 {
-    protected $nombreTabla = 'clientes';
-    protected $vistaTabla = 'clientes_view';
+    protected $tableName = 'clientes';
+    protected $tableView = 'clientes_view';
 
-    protected $pkTabla = 'id_cliente';
+    protected $primaryKey = 'id_cliente';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'identificacion',
         'id_tipo_identificacion',
         'razon',
@@ -29,7 +29,7 @@ class ClientesModel extends Model
         'estado'
     ];
 
-    protected $camposVista = [
+    protected $tableExtraViewFields = [
         'tipo_identificacion',
         'nombre',
         'cod_provincia',

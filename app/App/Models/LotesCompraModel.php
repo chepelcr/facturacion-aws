@@ -5,13 +5,13 @@
 
     class LotesCompraModel extends Model
     {
-        protected $nombreTabla = 'lotes';
+        protected $tableName = 'lotes';
         
-        protected $pkTabla = 'id_lote';
+        protected $primaryKey = 'id_lote';
 
-        protected $vistaTabla = 'lotes_compra_view';
+        protected $tableView = 'lotes_compra_view';
 
-        protected $camposTabla = [
+        protected $tableFields = [
             'tipo_lote',
             'valor_total',
             'fecha_creacion',

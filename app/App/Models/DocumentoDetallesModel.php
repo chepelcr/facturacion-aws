@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class DocumentoDetallesModel extends Model
 {
-	protected $nombreTabla = 'documentos_detalles';
-	protected $pkTabla = 'id_detalle';
+	protected $tableName = 'documentos_detalles';
+	protected $primaryKey = 'id_detalle';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'id_documento',
         'linea',
         'codigo',

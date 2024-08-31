@@ -95,10 +95,10 @@ class Empresa extends BaseController
 						}
 					}
 
-					$nombreTabla = 'empresa/cliente/table';
+					$tableName = 'empresa/cliente/table';
 
 					$data_tabla = array(
-						'nombreTable' => $nombreTabla,
+						'nombreTable' => $tableName,
 						'nombre_tabla' => 'listado_empresa_clientes',
 
 						'dataTable' => array(
@@ -181,10 +181,10 @@ class Empresa extends BaseController
 							}
 						}
 
-						$nombreTabla = 'empresa/producto/table';
+						$tableName = 'empresa/producto/table';
 
 						$data_tabla = array(
-							'nombreTable' => $nombreTabla,
+							'nombreTable' => $tableName,
 							'nombre_tabla' => 'listado_empresa_productos',
 
 							'dataTable' => array(

@@ -7,14 +7,14 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class UsuariosModel extends Model
 {
-	protected $nombreTabla = 'usuarios';
-	protected $vistaTabla = 'usuarios_view';
+	protected $tableName = 'usuarios';
+	protected $tableView = 'usuarios_view';
 
-	protected $pkTabla = 'id_usuario';
+	protected $primaryKey = 'id_usuario';
 
 	
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'nombre',
 		'nombre_usuario',
 		'identificacion',
@@ -30,7 +30,7 @@ class UsuariosModel extends Model
 		'estado'
 	];
 
-	protected $camposVista = [
+	protected $tableExtraViewFields = [
         'tipo_identificacion',
         'codigo_telefono',
         'nombre_pais',

@@ -10,12 +10,12 @@ use Core\Permisos\PermisosModel;
 */
 class RolesModel extends Model
 {
-	protected $nombreTabla = "roles";
-	protected $pkTabla = "id_rol";
+	protected $tableName = "roles";
+	protected $primaryKey = "id_rol";
 
 	
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'nombre_rol',
 		'estado',
 		'fecha_creacion',

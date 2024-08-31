@@ -14,19 +14,19 @@ use Core\Config\Conexion;
 
 class Model {
     /** Nombre de la tabla del modelo */
-    protected $nombreTabla;
+    protected $tableName;
 
     /**Nombre de la vista que usara la tabla */
-    protected $vistaTabla;
+    protected $tableView;
 
     /** Nombre de la llave primaria */
-    protected $pkTabla = false;
+    protected $primaryKey = false;
 
     /** Columnas que se deben ingresar al modelo */
-    protected $camposTabla = [];
+    protected $tableFields = [];
 
     /**Campos que solo se utilizan en la vista */
-    protected $camposVista = [];
+    protected $tableExtraViewFields = [];
 
     /** Usar variables para almacenar la fecha de creacion y actualizacion */
     protected $useTimesnaps = false;
@@ -100,7 +100,7 @@ class Model {
 
     /**Establecer el nombre de una vista en el modelo */
     public function vista($nombreVista) {
-        $this->vistaTabla = $nombreVista;
+        $this->tableView = $nombreVista;
         return $this;
     } //Fin de la funcion
 
@@ -132,7 +132,7 @@ class Model {
 
         $data = array(
             'sentencia' => $messagecomplet,
-            'controlador' => $this->nombreTabla,
+            'controlador' => $this->tableName,
             'id_usuario' => $id_usuario
         );
 
@@ -154,7 +154,7 @@ class Model {
             $this->setCamposUpdate($data);
 
             if (isset($id))
-                $this->where($this->pkTabla, $id);
+                $this->where($this->primaryKey, $id);
 
             $sql = $this->crearQuery('UPDATE');
 
@@ -165,7 +165,7 @@ class Model {
             }
 
             if (isset($id)) {
-                $update->bindValue($this->pkTabla, $id);
+                $update->bindValue($this->primaryKey, $id);
             }
 
             $update->execute();
@@ -186,7 +186,7 @@ class Model {
 
                 $data = array(
                     'id_fila' => $id_fila,
-                    'tabla' => $this->nombreTabla,
+                    'tabla' => $this->tableName,
                     'accion' => 'UPDATE',
                     'id_usuario' => $id_usuario
                 );
@@ -195,7 +195,7 @@ class Model {
             }
 
             if (isset($id)) {
-                $data[$this->pkTabla] = $id;
+                $data[$this->primaryKey] = $id;
             }
 
             return (object) $data;
@@ -226,7 +226,7 @@ class Model {
             $this->setCamposUpdate($data);
 
             if (isset($id))
-                $this->where($this->pkTabla, $id);
+                $this->where($this->primaryKey, $id);
 
             $sql = $this->crearQuery('UPDATE');
 
@@ -241,7 +241,7 @@ class Model {
             }
 
             if (isset($id)) {
-                $update->bindValue($this->pkTabla, $id);
+                $update->bindValue($this->primaryKey, $id);
             }
 
             $update->execute();
@@ -262,7 +262,7 @@ class Model {
 
                 $data = array(
                     'id_fila' => $id_fila,
-                    'tabla' => $this->nombreTabla,
+                    'tabla' => $this->tableName,
                     'accion' => 'UPDATE',
                     'id_usuario' => $id_usuario
                 );
@@ -271,7 +271,7 @@ class Model {
             }
 
             if (isset($id)) {
-                $data[$this->pkTabla] = $id;
+                $data[$this->primaryKey] = $id;
             }
 
             return $data;
@@ -404,22 +404,22 @@ class Model {
 
             $data = array();
 
-            $pkTabla = $this->pkTabla;
-            $camposTabla = $this->camposTabla;
-            $camposVista = $this->camposVista;
+            $primaryKey = $this->primaryKey;
+            $tableFields = $this->tableFields;
+            $tableExtraViewFields = $this->tableExtraViewFields;
 
-            if ($pkTabla) {
-                $data[$espacio] = $pkTabla;
+            if ($primaryKey) {
+                $data[$espacio] = $primaryKey;
                 $espacio = $espacio + 1;
             }
 
-            foreach ($camposTabla as $campo) {
+            foreach ($tableFields as $campo) {
                 $data[$espacio] = $campo;
                 $espacio = $espacio + 1;
             } //Fin del ciclo para llenar los campos
 
-            if (isset($this->vistaTabla)) {
-                foreach ($camposVista as $campo) {
+            if (isset($this->tableView)) {
+                foreach ($tableExtraViewFields as $campo) {
                     $espacio = $espacio + 1;
 
                     $data[$espacio] = $campo;
@@ -454,7 +454,7 @@ class Model {
 
     /**Crear la sentencia de sql a utilizar en la ejecucion */
     private function crearQuery(string $tipo = "SELECT") {
-        $tabla = $this->nombreTabla;
+        $tabla = $this->tableName;
         $where = $this->sentenciaWhere();
         $like = $this->sentenciaLike();
         $group = $this->group;
@@ -499,7 +499,7 @@ class Model {
                 break;
 
             case 'UPDATE':
-                $sql = 'UPDATE ' . $this->nombreTabla . ' SET `';
+                $sql = 'UPDATE ' . $this->tableName . ' SET `';
 
                 $data = $this->camposUpdate;
 
@@ -570,7 +570,7 @@ class Model {
             $db = $this->query();
 
             try {
-                $this->setMax($this->pkTabla);
+                $this->setMax($this->primaryKey);
 
                 $sql = $this->crearQuery('MAX');
 
@@ -580,7 +580,7 @@ class Model {
 
                 $result = $max->fetch();
 
-                $data[$this->pkTabla] = $result[0] + 1;
+                $data[$this->primaryKey] = $result[0] + 1;
             } catch (\Exception $ex) {
                 if ($this->auditorias) {
                     $this->insertError($ex);
@@ -599,8 +599,8 @@ class Model {
         try {
             //Si la conexion a la base de datos no es nula
             if ($db != null) {
-                if (isset($this->vistaTabla)) {
-                    $this->table($this->vistaTabla);
+                if (isset($this->tableView)) {
+                    $this->table($this->tableView);
                 }
 
                 //Crear la sentencia de ejecucion
@@ -627,9 +627,9 @@ class Model {
 
                 $data = array();
 
-                $camposTabla = $this->generarCampos();
+                $tableFields = $this->generarCampos();
 
-                foreach ($camposTabla as $campoTabla) {
+                foreach ($tableFields as $campoTabla) {
                     if (isset($result[$campoTabla]))
                         $data[$campoTabla] = $result[$campoTabla];
                 } //Fin del ciclo
@@ -682,12 +682,12 @@ class Model {
     } //Fin de count
 
     private function camposInsert(array $data) {
-        $pk = $this->pkTabla;
+        $pk = $this->primaryKey;
 
         if ($this->autoIncrement = true) {
             //Campos para la tabla
             $campos = "(" . $pk;
-            $camposTabla = $this->camposTabla;
+            $tableFields = $this->tableFields;
 
             $values = "(:" . $pk;
 
@@ -696,7 +696,7 @@ class Model {
             //Ciclo para crear la sentencia con los campos y valores que seran agregados a la tabla
             foreach ($data as $clave => $valor) {
                 //Ciclo para validar si el campo se encuentra en la tabla
-                foreach ($camposTabla as $campo) {
+                foreach ($tableFields as $campo) {
                     if ($clave == $campo) {
                         $campos = $campos . ", " . $clave;
                         $values = $values . ", :" . $clave;
@@ -708,7 +708,7 @@ class Model {
         else {
             //Campos para la tabla
             $campos = "(";
-            $camposTabla = $this->camposTabla;
+            $tableFields = $this->tableFields;
 
             $values = "(";
 
@@ -719,7 +719,7 @@ class Model {
             //Ciclo para crear la sentencia con los campos y valores que seran agregados a la tabla
             foreach ($data as $clave => $valor) {
                 //Ciclo para validar si el campo se encuentra en la tabla
-                foreach ($camposTabla as $campo) {
+                foreach ($tableFields as $campo) {
                     if ($clave == $campo) {
                         switch ($espacio) {
                             case '1':
@@ -795,15 +795,15 @@ class Model {
                             $id_usuario = getSession('id_usuario');
                         }
 
-                        if ($this->pkTabla) {
-                            $id_fila = $data[$this->pkTabla];
+                        if ($this->primaryKey) {
+                            $id_fila = $data[$this->primaryKey];
                         } else {
                             $id_fila = 1;
                         }
 
                         $audit = array(
                             'id_fila' => $id_fila,
-                            'tabla' => $this->nombreTabla,
+                            'tabla' => $this->tableName,
                             'accion' => 'INSERT',
                             'id_usuario' => $id_usuario
                         );
@@ -880,15 +880,15 @@ class Model {
                             $id_usuario = getSession('id_usuario');
                         }
 
-                        if ($this->pkTabla) {
-                            $id_fila = $data[$this->pkTabla];
+                        if ($this->primaryKey) {
+                            $id_fila = $data[$this->primaryKey];
                         } else {
                             $id_fila = 1;
                         }
 
                         $audit = array(
                             'id_fila' => $id_fila,
-                            'tabla' => $this->nombreTabla,
+                            'tabla' => $this->tableName,
                             'accion' => 'INSERT',
                             'id_usuario' => $id_usuario
                         );
@@ -920,10 +920,10 @@ class Model {
         try {
             //Si la conexion a la base de datos no es nula
             if ($db != null) {
-                if (isset($this->vistaTabla))
-                    $this->table($this->vistaTabla);
+                if (isset($this->tableView))
+                    $this->table($this->tableView);
 
-                //var_dump($this->nombreTabla);
+                //var_dump($this->tableName);
 
                 //Crear la sentencia de ejecucion
                 $sql = $this->crearQuery();
@@ -963,13 +963,13 @@ class Model {
                 //Limpiar las variables del sql
                 //$this->clean();
 
-                $camposTabla = $this->generarCampos();
+                $tableFields = $this->generarCampos();
                 $objetos = [];
 
                 foreach ($result as $objeto) {
                     $data = [];
 
-                    foreach ($camposTabla as $campoTabla) {
+                    foreach ($tableFields as $campoTabla) {
                         if (isset($objeto[$campoTabla]))
                             $data[$campoTabla] = $objeto[$campoTabla];
                     }
@@ -993,8 +993,8 @@ class Model {
     } //Fin de buscar
 
     /**Utilizar una tabla personalizada */
-    public function table($nombreTabla) {
-        $this->nombreTabla = $nombreTabla;
+    public function table($tableName) {
+        $this->tableName = $tableName;
 
         return $this;
     } //Fin de la funcion
@@ -1006,7 +1006,7 @@ class Model {
         try {
             //Si la conexion a la base de datos no es nula
             if ($db != null) {
-                $this->where($this->pkTabla, $id);
+                $this->where($this->primaryKey, $id);
 
                 $result = $this->fila();
 
@@ -1040,7 +1040,7 @@ class Model {
         try {
             //Si la base de datos no es nula
             if ($db != null) {
-                $this->where($this->pkTabla, $id);
+                $this->where($this->primaryKey, $id);
 
                 $sql = $this->crearQuery('DELETE');
 
@@ -1063,7 +1063,7 @@ class Model {
 
                         $data = array(
                             'id_fila' => $id,
-                            'tabla' => $this->nombreTabla,
+                            'tabla' => $this->tableName,
                             'accion' => 'DELETE',
                             'id_usuario' => $id_usuario
                         );

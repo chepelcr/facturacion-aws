@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class FormatosModel extends Model
 {
-	protected $nombreTabla = 'formatos';
-	protected $pkTabla = 'id_formato';
+	protected $tableName = 'formatos';
+	protected $primaryKey = 'id_formato';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'nombre_formato',
 		'fecha_creacion',
         'estado',

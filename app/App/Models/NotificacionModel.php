@@ -7,17 +7,17 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class TiendasModel extends Model
 {
-	protected $nombreTabla = 'notificaciones';
+	protected $tableName = 'notificaciones';
 	
-	protected $pkTabla = 'id_notificacion';
+	protected $primaryKey = 'id_notificacion';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'descripcion',
 		'fecha',
 		'estado',
 	];
 
-	protected $camposVista = [
+	protected $tableExtraViewFields = [
 		'id_usuario',
 	];
 

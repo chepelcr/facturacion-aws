@@ -6,10 +6,10 @@ use Core\Model;
 /**Modelo para puntos de venta */
 class UbicacionesModel extends Model
 {
-    protected $nombreTabla = 'ubicaciones';
-    protected $pkTabla = 'id_ubicacion';
+    protected $tableName = 'ubicaciones';
+    protected $primaryKey = 'id_ubicacion';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'cod_provincia',
         'provincia',
         'cod_canton',

@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class TipoIdentificacionModel extends Model
 {
-	protected $nombreTabla = 'tipos_identificaciones';
-	protected $pkTabla = 'id_tipo_identificacion';
+	protected $tableName = 'tipos_identificaciones';
+	protected $primaryKey = 'id_tipo_identificacion';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'tipo_identificacion',
 	];
 } //Fin de la clase

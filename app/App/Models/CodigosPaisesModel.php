@@ -6,14 +6,13 @@
     /**Codigos de los paises */
     class CodigosPaisesModel extends Model
     {
-        protected $nombreTabla = 'codigos_paises';
-        protected $pkTabla = 'cod_pais';
+        protected $tableName = 'codigos_paises';
+        protected $primaryKey = 'cod_pais';
 
-        protected $camposTabla = [
+        protected $tableFields = [
             'nombre',
             'iso3',
             'codigo_telefono'
         ];
-
         
     }//Fin de la clase

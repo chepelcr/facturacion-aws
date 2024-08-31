@@ -6,10 +6,10 @@ use Core\Model;
 /** Modelo para la tabla de descuentos */
 class DocumentoDescuentosModel extends Model
 {
-	protected $nombreTabla = 'documentos_descuentos';
-	protected $pkTabla = 'id_descuento';
+	protected $tableName = 'documentos_descuentos';
+	protected $primaryKey = 'id_descuento';
 
-	protected $camposTabla = [
+	protected $tableFields = [
         'id_detalle',
         'monto',
         'motivo',

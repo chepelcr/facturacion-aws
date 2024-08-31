@@ -6,10 +6,10 @@ use Core\Model;
 /**Manejar el consecutivo de los documentos */
 class ConsecutivosModel extends Model
 {
-    protected $nombreTabla = 'consecutivos';
-    protected $pkTabla = 'id_consecutivo';
+    protected $tableName = 'consecutivos';
+    protected $primaryKey = 'id_consecutivo';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'ambiente',
         'tipo_documento',
         'consecutivo'

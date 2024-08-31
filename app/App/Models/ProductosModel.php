@@ -5,12 +5,12 @@
 
     class ProductosModel extends Model
     {
-        protected $nombreTabla = 'productos';
-        protected $pkTabla = 'id_producto';
+        protected $tableName = 'productos';
+        protected $primaryKey = 'id_producto';
 
-        protected $vistaTabla = 'productos_view';
+        protected $tableView = 'productos_view';
 
-        protected $camposTabla = [
+        protected $tableFields = [
             'id_unidad',
             'unidad_empaque',
             'id_empresa',
@@ -31,7 +31,7 @@
             'estado'
         ];
 
-        protected $camposVista = [
+        protected $tableExtraViewFields = [
             'simbolo_unidad',
             'nombre_unidad',
             'nombre_categoria',

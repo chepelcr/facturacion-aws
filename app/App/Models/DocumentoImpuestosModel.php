@@ -6,10 +6,10 @@ use Core\Model;
 /** Modelo para la tabla de impuestos de las lineas de detalle de un documento electronico */
 class DocumentoImpuestosModel extends Model
 {
-	protected $nombreTabla = 'documentos_impuestos';
-	protected $pkTabla = 'id_impuesto';
+	protected $tableName = 'documentos_impuestos';
+	protected $primaryKey = 'id_impuesto';
 
-	protected $camposTabla = [
+	protected $tableFields = [
         'id_detalle',
         'codigo',
         'codigo_tarifa',

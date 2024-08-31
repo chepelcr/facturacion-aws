@@ -5,13 +5,13 @@
 
     class ProductosCompraModel extends Model
     {
-        protected $nombreTabla = 'productos';
+        protected $tableName = 'productos';
         
-        protected $pkTabla = 'id_producto';
+        protected $primaryKey = 'id_producto';
 
-        protected $vistaTabla = 'productos_compras_view';
+        protected $tableView = 'productos_compras_view';
         
-        protected $camposTabla = [
+        protected $tableFields = [
             'id_unidad',
             'codigo_cabys',
             'codigo_venta',

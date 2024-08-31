@@ -66,10 +66,10 @@ class Seguridad extends BaseController {
 				$usuariosModel = new UsuariosModel();
 				$usuarios = $usuariosModel->getAll();
 
-				$nombreTabla = 'seguridad/usuario/table';
+				$tableName = 'seguridad/usuario/table';
 
 				$data_tabla = array(
-					'nombreTable' => $nombreTabla,
+					'nombreTable' => $tableName,
 					'nombre_tabla' => 'listado_seguridad_usuarios',
 					'dataTable' => array(
 						'usuarios' => $usuarios
@@ -141,10 +141,10 @@ class Seguridad extends BaseController {
 				$rolesModel = new RolesModel();
 				$roles = $rolesModel->getAll();
 
-				$nombreTabla = 'seguridad/rol/table';
+				$tableName = 'seguridad/rol/table';
 
 				$data_tabla = array(
-					'nombreTable' => $nombreTabla,
+					'nombreTable' => $tableName,
 					'nombre_tabla' => 'listado_seguridad_roles',
 					'dataTable' => array(
 						'roles' => $roles

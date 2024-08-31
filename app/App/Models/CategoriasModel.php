@@ -6,10 +6,10 @@ use Core\Model;
 /** Modelo para la tabla de categorias */
 class CategoriasModel extends Model
 {
-	protected $nombreTabla = 'categorias';
-	protected $pkTabla = 'id_categoria';
+	protected $tableName = 'categorias';
+	protected $primaryKey = 'id_categoria';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'nombre_categoria',
 		'created_at',
 		'updated_at'

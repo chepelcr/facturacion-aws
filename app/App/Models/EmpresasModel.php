@@ -6,12 +6,12 @@ use Core\Model;
 /**Manejador de la tabla Empresas */
 class EmpresasModel extends Model
 {
-    protected $nombreTabla = 'empresas';
-    protected $vistaTabla = 'empresas_view';
+    protected $tableName = 'empresas';
+    protected $tableView = 'empresas_view';
 
-    protected $pkTabla = 'id_empresa';
+    protected $primaryKey = 'id_empresa';
 
-    protected $camposTabla = [
+    protected $tableFields = [
         'identificacion',
         'id_tipo_identificacion',
         'razon',
@@ -26,7 +26,7 @@ class EmpresasModel extends Model
         'estado'
     ];
 
-    protected $camposVista = [
+    protected $tableExtraViewFields = [
         'tipo_identificacion',
         'nombre',
         'codigo_telefono',

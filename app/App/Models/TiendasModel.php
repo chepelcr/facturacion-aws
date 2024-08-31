@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class TiendasModel extends Model
 {
-	protected $nombreTabla = 'tiendas';
-	protected $pkTabla = 'id_tienda';
+	protected $tableName = 'tiendas';
+	protected $primaryKey = 'id_tienda';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'nombre',
         'id_formato',
         'cod_pais',

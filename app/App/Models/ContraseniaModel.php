@@ -5,12 +5,12 @@ use Core\Model;
 
 class ContraseniaModel extends Model
     {
-        protected $nombreTabla = 'contrasenia_usuarios';
-        protected $pkTabla = 'id_contrasenia';
+        protected $tableName = 'contrasenia_usuarios';
+        protected $primaryKey = 'id_contrasenia';
 
         
 
-        protected $camposTabla = [
+        protected $tableFields = [
             'id_usuario',
             'contrasenia',
             'fecha_expiracion',

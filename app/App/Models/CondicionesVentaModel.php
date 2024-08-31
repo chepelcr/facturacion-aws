@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de categorias */
 class CondicionesVentaModel extends Model
 {
-	protected $nombreTabla = 'condiciones_venta';
-	protected $pkTabla = 'id_condicion';
+	protected $tableName = 'condiciones_venta';
+	protected $primaryKey = 'id_condicion';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'codigo',
 		'nombre',
 		'created_at',

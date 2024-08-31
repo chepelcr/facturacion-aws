@@ -7,10 +7,10 @@ use Core\Model;
 /** Modelo para la tabla de usuarios */
 class DocumentoReferenciasModel extends Model
 {
-	protected $nombreTabla = 'documentos_referencias';
-	protected $pkTabla = 'id_referencia';
+	protected $tableName = 'documentos_referencias';
+	protected $primaryKey = 'id_referencia';
 
-	protected $camposTabla = [
+	protected $tableFields = [
 		'id_documento',
         'referencia_tipo_documento',
         'referencia_clave',

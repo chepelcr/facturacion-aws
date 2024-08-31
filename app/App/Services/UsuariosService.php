@@ -201,10 +201,10 @@ class UsuariosService extends BaseService
         $usuariosModel = new UsuariosModel();
         $usuarios = $usuariosModel->getAll();
 
-        $nombreTabla = 'seguridad/usuario/table';
+        $tableName = 'seguridad/usuario/table';
 
         $data_tabla = array(
-            'nombreTable' => $nombreTabla,
+            'nombreTable' => $tableName,
             'nombre_tabla' => 'listado_seguridad_usuarios',
             'dataTable' => array(
                 'usuarios' => $usuarios
