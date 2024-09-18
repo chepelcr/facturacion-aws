@@ -240,7 +240,7 @@ function recargar_listado(id_estado = "all") {
     $.ajax({
       url: url,
       data: {
-        id_estado: id_estado,
+        status: id_estado,
       },
       type: "GET",
     })

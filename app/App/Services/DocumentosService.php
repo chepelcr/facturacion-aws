@@ -19,6 +19,28 @@ use App\Models\EmpresasModel;
  * Servicio para la gestion de documentos
  */
 class DocumentosService {
+
+    /**
+     * Api de data service
+     */
+    private $dataServiceApi;
+
+    /**
+     * Api de documentos electronicos
+     */
+    private $documentsApi;
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->dataServiceApi = new DataServiceApi();
+        $this->documentsApi = new DocumentsApi(getTaxpayerId());
+    }
+
+    /**
+     * Obtener la informacion de los clientes
+     */
     public function buscarCliente($idCliente) {
         $customersApi = new CustomersApi(getTaxpayerId());
 
@@ -1634,10 +1656,8 @@ class DocumentosService {
      */
     private function validateDocumentStructure($document) {
         $document = json_encode($document);
-        //var_dump($document);
 
         $document = json_decode($document, true);
-        //var_dump($document);
 
         //Si hay un receiver
         if (isset($document['receiver'])) {
@@ -1648,72 +1668,67 @@ class DocumentosService {
             $document['receiver'] = $receiver;
         }
 
+        //Validar la estructura de los pagos
+        if (isset($document['payments'])) {
+            $payments = $document['payments'];
+            $newPayments = array();
+
+            foreach ($payments as $key => $payment) {
+                if ($payment['type'] != '') {
+                    $newPayments[] = $payment;
+                }
+            }
+
+            $document['payments'] = $newPayments;
+        }
+
+        $documentTypeCode = $document['documentTypeCode'];
+
+        //Si el tipo de documento no es una nota de credito o debito, se debe agregar al menos un pago
+        if (empty($document['payments']) && $documentTypeCode != '02' && $documentTypeCode != '03') {
+            return array(
+                'error' => 'No se han ingresado pagos',
+                'status' => '400',
+            );
+        }
+
+        unset($document['documentTypeCode']);
+
         if (isset($document['details'])) {
             $details = $document['details'];
             $newDetails = array();
 
-            /**
-             * Validar que el detalle traiga los campos
-             * 
-             * {
-			"productId": 10,
-			"quantity": 5,
-			"description":"Almohada",
-			"salePrice": 1500.0
-		} o descartar la linea
-             */
+            //Recorrer los detalles del documento
             foreach ($details as $key => $detail) {
-                //var_dump($detail);
                 if ($detail['productId'] == "" && $detail['quantity'] == "0" && $detail['description'] == "" && $detail['salePrice'] == "0") {
                     unset($details[$key]);
                 } else {
                     //Recorrer los descuentos de la linea si existen y validar que existan los campos o eliminar la linea
-                    /**
-                     * {
-					"percentage": 10,
-					"reason": "Centralizacion"
-				}
-                     */
                     if (isset($detail['discounts'])) {
                         $discounts = $detail['discounts'];
                         $newDiscounts = array();
 
                         foreach ($discounts as $key => $discount) {
-                            //var_dump($discount);
-
                             if ($discount["reason"] != '' && $discount["percentage"] != '0') {
                                 $newDiscounts[] = $discount;
                             }
                         }
 
                         //Si los descuentos no estan vacios, se agregan al detalle
-                        if (count($newDiscounts) > 0) {
+                        if (!empty($newDiscounts)) {
                             $detail['discounts'] = $newDiscounts;
                         } else {
                             unset($detail['discounts']);
                         }
                     }
 
-                    // Se debe recorrer cada uno de los detalles del documento para eliminar lineas de descuentos o impuestos que se encuentren vacias
-
-                    /**
-                     * Formato de las lineas de impuestos
-                     * 
-                     * "taxes": [
-				{
-					"taxTypeId": 1,
-					"taxRateId": 2,
-					"rate":1
-				}
-			]
-                     */
+                    //Recorrer los impuestos de la linea si existen y validar que existan los campos o eliminar la linea
                     if (isset($detail['taxes'])) {
                         $taxes = $detail['taxes'];
                         $newTax = array();
 
                         foreach ($taxes as $key => $tax) {
                             if (($tax['taxTypeId'] != '' && $tax['taxRateId'] != '') || ($tax['taxTypeId'] != '' && $tax['rate'] != '0')) {
-                                //var_dump("Validando impuesto");
                                 if (isset($tax['exemption'])) {
                                     $exemption = $tax['exemption'];
 
@@ -1724,15 +1739,11 @@ class DocumentosService {
                                     }
                                 }
 
-                                //var_dump($tax);
-
                                 $newTax[] = $tax;
                             } else {
                                 unset($taxes[$key]);
                             }
                         }
-
-                        //var_dump($newTax);
 
                         //Si los impuestos no estan vacios, se agregan al detalle
                         if (count($newTax) > 0) {
@@ -1750,15 +1761,6 @@ class DocumentosService {
         }
 
         // Validar si existen referencias en el documento y luego validar cada linea
-
-        /**
-         * "referenceType": 16,
-			"referenceCode": "04",
-			"referenceNumber": "1202125451245",
-			"referenceReason": "Compra de papas.",
-			"referenceDate": "2022-12-07"
-         */
-
         if (isset($document['references'])) {
             $references = $document['references'];
 
@@ -1771,37 +1773,7 @@ class DocumentosService {
             $document['references'] = $references;
         }
 
-        /**
-         * Validar que los pagos que se envian contengan informacion
-         * 
-         * {
-			"type": 2,
-			"amount": 7500.0
-		}
-         */
-
-        if (isset($document['payments'])) {
-            $payments = $document['payments'];
-            $newPayments = array();
-
-            foreach ($payments as $key => $payment) {
-                //var_dump($payment);
-                if ($payment['type'] != '' && $payment['amount'] != '') {
-                    $newPayments[] = $payment;
-                }
-            }
-
-            $document['payments'] = $newPayments;
-        }
-
         //Validar la estructura de otros campos (otherFields)
-
-        /**
-         * {
-			"code": "WMNumeroVendedor",
-			"otherText": "019596262"
-		},
-         */
         if (isset($document['otherFields'])) {
             $otherFields = $document['otherFields'];
 
@@ -1814,6 +1786,10 @@ class DocumentosService {
             $document['otherFields'] = $otherFields;
         }
 
+
+        //unset el documentTypeCode para que no se envie en el documento
+        unset($document['documentTypeCode']);
+
         return $document;
     }
 
@@ -1825,6 +1801,10 @@ class DocumentosService {
      */
     public function guardarDocumento($data) {
         $document = $this->validateDocumentStructure($data);
+
+        if (isset($document['error'])) {
+            return $document;
+        }
 
         $documentsApi = new DocumentsApi(getTaxpayerId());
 

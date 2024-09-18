@@ -91,6 +91,15 @@ if (is_login()) {
     <!-- Core | Productos | Calculos -->
     <?= getScript('core/productos/calculos') ?>
 
+    <!-- Core | Productos | Descuentos -->
+    <?= getScript('core/productos/descuentos') ?>
+
+    <!-- Core | Productos | Impuestos -->
+    <?= getScript('core/productos/impuestos') ?>
+
+    <!-- Core | Productos | Unidades -->
+    <?= getScript('core/productos/unidades') ?>
+
     <!-- Facturacion | Inicio | Documentos -->
     <?= getScript('core/facturacion/inicio/acciones') ?>
 

@@ -16,6 +16,16 @@
         <?= view('empresa/producto/elementos/hacienda', $data_hacienda) ?>
     </div>
 
+    <!-- Descuentos -->
+    <div class="col-md-12">
+        <?= view('empresa/producto/elementos/descuentos') ?>
+    </div>
+
+    <!-- Impuestos -->
+    <div class="col-md-12">
+        <?= view('empresa/producto/elementos/impuestos', $data_impuestos) ?>
+    </div>
+
     <!-- Comercial-->
     <div class="col-md-12">
         <?= view('empresa/producto/elementos/valor') ?>

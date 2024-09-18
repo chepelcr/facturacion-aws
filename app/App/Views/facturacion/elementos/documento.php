@@ -6,6 +6,7 @@
                 <?= $documentType->description; ?>
             </option>
         </select>
+        <input type="hidden" class="documentTypeCode" name="documentTypeCode" value="<?= $documentType->code ?>">
         <!-- Select con la version del documento -->
         <select class="form-control form-control-sm version" name="versionId">
             <option value="<?= $documentVersion->versionId ?>" selected>
@@ -41,7 +42,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-handshake"></i></span>
                                             </div>
-                                            <select class="form-control slc-saleCondition" id="condicion_venta" name="saleConditionId" required onchange="agregar_termino_credito(this)">
+                                            <select class="form-control slc-saleCondition required" name="saleConditionId" required onchange="agregar_termino_credito(this)">
                                                 <option value="">Seleccionar</option>
                                                 <?php
                                                 foreach ($saleConditions as $condicion_venta) :
@@ -75,7 +76,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                                     </div>
-                                                    <select class="form-control currencyCode" name="currencyCode[currencyCode]" required onchange="selectTipoCambio()">
+                                                    <select class="form-control currencyCode required" name="currencyCode[currencyCode]" required onchange="selectTipoCambio()">
                                                         <?php
                                                         foreach ($countries as $moneda) :
                                                             if ($moneda->currencyCode == 'CRC' || $moneda->currencyCode == 'USD') :
@@ -120,7 +121,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="actividad_economica">Actividad económica</label>
-                                        <select class="form-control form-control-sm activityCode inp-fct" name="activityCode" <?= count($empresa->activities) == 1 ? 'disabled' : '' ?>>
+                                        <select class="form-control form-control-sm activityCode required inp-fct" name="activityCode" <?= count($empresa->activities) == 1 ? 'disabled' : '' ?>>
                                             <option value="">Seleccionar</option>
                                             <?php foreach ($empresa->activities as $actividad_economica) : ?>
                                                 <option value="<?= $actividad_economica->code ?>" <?= (count($empresa->activities) == 1 || $actividad_economica->type == 'Primaria') ? 'selected' : '' ?>>

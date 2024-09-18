@@ -6,7 +6,7 @@
                     <form id="frmCabys">
                         <div class="input-group">
                             <!-- Ingresar nombre del producto -->
-                            <input type="search" class="form-control form-control-sm" placeholder="Nombre del producto" name="q_cabys" id="q_cabys">
+                            <input type="search" class="form-control form-control-sm q_cabys" placeholder="Nombre del producto">
                             <div class="input-group-append">
                                 <!-- Boton para buscar el producto -->
                                 <button type="submit" class="btn btn-sm btn-default" onclick="obtener_cabys()">

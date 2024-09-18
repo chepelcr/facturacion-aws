@@ -7,6 +7,34 @@ function finalizar_documento() {
   $("#" + factura_activa)
     .find(".modal-cierre")
     .modal("show");
+
+  //Validar si el documento tiene los campos requeridos
+  if (validar_documento()) {
+    //Habilitar el boton de finalizar
+    $("#" + factura_activa)
+      .find(".btn-guardar-documento")
+      .attr("disabled", false);
+  } else {
+    //Deshabilitar el boton de finalizar
+    $("#" + factura_activa)
+      .find(".btn-guardar-documento")
+      .attr("disabled", true);
+  }
+}
+
+function validar_documento() {
+  var valido = true;
+
+  //Validar si los campos que tienen la clase .required estan llenos
+  $("#" + factura_activa)
+    .find(".required")
+    .each(function () {
+      if ($(this).val() == "") {
+        valido = false;
+      }
+    });
+
+  return valido;
 }
 
 /**Eliminar el documento activo en la pantalla */
@@ -84,12 +112,9 @@ function ver_factura(id_factura) {
     $("#" + factura_activa).show();
 
     //Obtener el id de tipo de documento
-    var documentType = $("#" + factura_activa)
-      .find(".documentTypeId")
-      .find("option:selected");
-
-    //Obtener el valor data-code del option
-    var documentTypeId = $(documentType).data("code");
+    var documentTypeCode = $("#" + factura_activa)
+      .find(".documentTypeCode")
+      .val();
 
     //Collapse .card-opciones-documentos
     $(".card-opciones-documentos").CardWidget("collapse");
@@ -102,7 +127,7 @@ function ver_factura(id_factura) {
       .addClass("btn-dark");
 
     //Validar el tipo de documento
-    switch (documentTypeId) {
+    switch (documentTypeCode) {
       case "01":
         //Activar el boton de la factura
         $("#btn_factura_" + id_factura)

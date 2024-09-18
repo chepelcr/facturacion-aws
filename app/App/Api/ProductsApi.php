@@ -2,6 +2,8 @@
 
 namespace App\Api;
 
+use App\Errors\ProductsEnum;
+
 /**
  * Clase para consumir el API de productos de un contribuyente de IVOIS
  * @package App\Api
@@ -17,7 +19,7 @@ class ProductsApi extends IvoisApi
      */
     public function __construct($taxpayerId)
     {
-        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.details.products.url"));
+        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.details.products.url"), ProductsEnum::class);
     }
 
     /**

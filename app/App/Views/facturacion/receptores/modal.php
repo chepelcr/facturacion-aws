@@ -15,7 +15,7 @@
             </div>
 
             <!-- Inicio del formulario -->
-            <form id="frm">
+            <form id="frm_cliente">
                 <!-- Contenido del modal -->
                 <div class="modal-body">
                     <div class="container">

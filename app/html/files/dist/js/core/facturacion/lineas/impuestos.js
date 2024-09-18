@@ -77,6 +77,8 @@ function limpiar_linea_impuesto(taxLine) {
 
     campos_exoneracion(taxLine, false);
 
+    setExcemptionMax(taxLine);
+
     taxLine.find(".collapse_impuesto").collapse("hide");
 
     return taxLine;
@@ -237,6 +239,8 @@ function agregar_impuesto_linea(taxLine, impuesto) {
         //Colocar el porcentaje en el campo .taxPercentage
         taxLine.find(".taxPercentage").val(taxPercentage);
     }
+
+    setExcemptionMax(taxLine);
 
     return taxPercentage;
 }
@@ -459,12 +463,23 @@ $(document).ready(function () {
         buscar_exoneracion($(this).val(), $(this).parents(".taxLine"));
     });
 
-
     //Cuando cambia el campo .excemption_percentage
     $(document).on("change keyup", ".excemption_percentage", function () {
-        //Colocar la fecha en el campo .excemption_percentage
-
         //Calcular la linea activa
         calcular($(this).parents(".detail"));
     });
+
+    //Cuando cambia el campo .taxPercentage
+    $(document).on("change keyup", ".taxPercentage", function () {
+        //Colocar el valor en el max de excemption_percentage
+        const taxLine = $(this).parents(".taxLine");
+
+        setExcemptionMax(taxLine);
+    });
 });
+
+function setExcemptionMax(taxLine) {
+    const taxPercentage = taxLine.find(".taxPercentage").val();
+
+    taxLine.find(".excemption_percentage").attr("max", taxPercentage);
+}

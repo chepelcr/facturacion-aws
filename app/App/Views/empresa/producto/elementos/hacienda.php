@@ -26,7 +26,7 @@
                                 <i class="fas fa-keyboard"></i>
                             </span>
                         </div>
-                        <input class="form-control inp cabys category_code" name="cabys" required max="13">
+                        <input class="form-control inp category_code" name="cabys" required max="13">
 
                         <!-- Buscar codigo -->
                         <div class="input-group-append">
@@ -48,7 +48,7 @@
                                 <i class="fas fa-cart-plus"></i>
                             </span>
                         </div>
-                        <select class="form-control inp category_productType_id">
+                        <select class="form-control inp category_productType_id cabys">
                             <option value="">Seleccionar</option>
                             <?php foreach ($productos as $tipo_producto) : ?>
                                 <option value="<?= $tipo_producto->id ?>">

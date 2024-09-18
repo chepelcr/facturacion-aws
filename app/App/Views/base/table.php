@@ -20,18 +20,18 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="input-group">
-                    <label for="id_estado" class="pr-1">Mostrar:</label>
-                    <select class="form-control form-control-sm" id="id_estado" name="id_estado" onchange="recargar_listado(this.value)">
-                        <option value="all" <?php if ((isset($id_estado) && $id_estado == 'all') || !isset($id_estado)) {
+                    <label for="status" class="pr-1">Mostrar:</label>
+                    <select class="form-control form-control-sm" id="status" name="status" onchange="recargar_listado(this.value)">
+                        <option value="all" <?php if ((isset($status) && $status == 'all') || !isset($status)) {
                                                 echo 'selected';
                                             } ?>>Todos</option>
-                        <option value="1" <?php if (isset($id_estado) && $id_estado == '1') {
+                        <option value="1" <?php if (isset($status) && $status == '1') {
                                                 echo 'selected';
                                             } ?>>Activos</option>
-                        <option value="2" <?php if (isset($id_estado) && $id_estado == '2') {
+                        <option value="2" <?php if (isset($status) && $status == '2') {
                                                 echo 'selected';
                                             } ?>>Inactivos</option>
-                        <option value="3" <?php if (isset($id_estado) && $id_estado == '3') {
+                        <option value="3" <?php if (isset($status) && $status == '3') {
                                                 echo 'selected';
                                             } ?>>Eliminados</option>
                     </select>

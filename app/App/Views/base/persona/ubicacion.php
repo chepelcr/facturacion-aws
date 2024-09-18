@@ -15,7 +15,7 @@
     <div class="card-body">
         <div class="row">
             <!-- País de residencia -->
-            <div class="col-md-6">
+            <div class="col-md-6 ubicacion">
                 <div class="form-group">
                     <label class="text-left" for="residence[countryCode]">País de residencia</label>
                     <div class="input-group">
@@ -25,7 +25,7 @@
                         <select onchange="obtener_provincias(this.value)" class="form-control inp residence_countryCode" name="residence[countryCode]" required>
                             <option value="">Seleccionar</option>
                             <?php foreach ($countries as $country): ?>
-                            <option value="<?=$country->isoCode?>"
+                            <option value="<?=$country->isoCode?>" data-serviceStatus="<?=$country->serviceStatus?>"
                                 <?php
                                     if((isset($residence->countryCode) && $residence->countryCode == $country->isoCode) || (!isset($residence->countryCode) && getCountryCode() == $country->isoCode)) {echo "selected";} ?>>
                                 <?= ucfirst($country->name)?>
@@ -37,7 +37,7 @@
             </div>
 
 
-            <div class="col-md-6">
+            <div class="col-md-6 ubicacion">
                 <div class="form-group">
                     <label class="text-left">Provincia</label>
                     <div class="input-group">
@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4 ubicacion">
                 <div class="form-group">
                     <label class="text-left">Cantón</label>
                     <div class="input-group">
@@ -81,7 +81,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4 ubicacion">
                 <div class="form-group">
                     <label class="text-left">Distrito</label>
                     <div class="input-group">
@@ -104,7 +104,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-4 ubicacion">
                 <div class="form-group">
                     <label class="text-left">Barrio</label>
                     <div class="input-group">

@@ -102,7 +102,7 @@ function activar_campos_cedula(estado = 'agregar', nombre_elemento = '') {
 
         activar_campo_clase('businessName', true, nombre_elemento);
         activar_campo_clase('identification_typeId', true, nombre_elemento);
-        activar_campo_clase('nationality', true, nombre_elemento);
+        activar_campo_clase('nationality', false, nombre_elemento);
 
         activar_campo_clase('btn-eliminar', true, nombre_elemento);
     } else if (estado == 'editar' || estado == 'ver') {

@@ -28,7 +28,7 @@ function obtener_cliente(identificacion = '') {
                 $('#' + factura_activa).find('.customerId').val(data.id);
 
                 //Si el nombre del cliente es igual a Walmart y es una factura (tipo_documento = "01")
-                if (data.identification.number == '3102007223' && $('#' + factura_activa).find('.documentTypeId').val() == '01') {
+                if (data.identification.number == '3102007223' && $('#' + factura_activa).find('.documentTypeCode').val() == '01') {
                     //Mostrar el boton de walmart
                     $('.col-walmart').show();
 
@@ -158,10 +158,7 @@ function ver_modal_cliente() {
 }
 
 function validarCliente() {
-    //Obtener todos los inputs del formulario y validar si tienen el atributo required y tienen valor
-    var inputs = $('#frm_cliente').find('input, select');
-
-    var clienteValido = true;
+    var clienteValido = validarDataForm('frm_cliente');
 
     inputs.each(function (index, input) {
         if ($(input).attr('required') && $(input).val() == '') {

@@ -33,8 +33,8 @@ class ClientesService extends BaseService
         $customersApi = new CustomersApi(getTaxpayerId());
 
         if ($id == 'all') {
-            if (!empty($filters) && isset($filters['id_estado']) && $filters['id_estado'] != 'all') {
-                return $customersApi->getCustomersByStatus($filters['id_estado']);
+            if (!empty($filters) && isset($filters['status']) && $filters['status'] != 'all') {
+                return $customersApi->getCustomersByStatus($filters['status']);
             } else {
                 return $customersApi->getCustomersByTaxpayerId();
             }
@@ -79,8 +79,8 @@ class ClientesService extends BaseService
             return $clientes;
         }
 
-        if (isset($filters['id_estado'])) {
-            $estado = $filters['id_estado'];
+        if (isset($filters['status'])) {
+            $estado = $filters['status'];
         } else {
             $estado = 'all';
         }
@@ -94,7 +94,7 @@ class ClientesService extends BaseService
             'dataTable' => array(
                 'clientes' => $clientes,
             ),
-            'id_estado' => $estado,
+            'status' => $estado,
         );
 
         $dataServiceApi = new DataServiceApi();

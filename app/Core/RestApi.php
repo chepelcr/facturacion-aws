@@ -7,8 +7,7 @@ namespace Core;
  * @author jcampos
  * @version 1.0
  */
-abstract class RestApi
-{
+abstract class RestApi {
     /**
      * Url base de la API
      */
@@ -24,41 +23,43 @@ abstract class RestApi
 
     private $error = "";
 
+    private $errorEnum;
+
     /**
      * Constructor de la clase
+     * 
+     * @param string $url Url base de la API
+     * @param BaseEnum $errorEnum Enumeración de errores
+     * @param string $contentType Tipo de contenido
+     * @param boolean $isArray Indica si la respuesta es un arreglo
      */
-    public function __construct($url, $contentType = "application/json", $isArray = false)
-    {
+    public function __construct($url, $errorEnum, $contentType = "application/json", $isArray = false) {
         $this->url = $url;
         $this->headers["Content-Type"] = $contentType;
         $this->isArray = $isArray;
+        $this->errorEnum = $errorEnum;
     }
 
     /**
      * Agrega el token de acceso a la API
      */
-    public function setBearerToken($token)
-    {
+    public function setBearerToken($token) {
         $this->headers["Authorization"] = "Bearer " . $token;
     }
 
-    private function constructUrl($url)
-    {
+    private function constructUrl($url) {
         return $this->url . $url;
     }
 
-    public function addHeader($name, $value)
-    {
+    public function addHeader($name, $value) {
         $this->headers[$name] = $value;
     }
 
-    public function setContentType($contentType)
-    {
+    public function setContentType($contentType) {
         $this->headers["Content-Type"] = $contentType;
     }
 
-    private function createHeaders()
-    {
+    private function createHeaders() {
         if (count($this->headers) > 0) {
             foreach ($this->headers as $key => $value) {
                 $headers[] = $key . ": " . $value;
@@ -68,8 +69,7 @@ abstract class RestApi
         return $headers;
     }
 
-    public function makeGetRequestUrl($url, $data = array())
-    {
+    public function makeGetRequestUrl($url, $data = array()) {
         $url = $this->constructUrl($url);
 
         $curl = curl_init();
@@ -107,8 +107,7 @@ abstract class RestApi
         return $response;
     }
 
-    private function validateCurlResponse($curl, $response, $url = "")
-    {
+    private function validateCurlResponse($curl, $response, $url = "") {
         $this->hasError = false;
 
         $className = get_class($this);
@@ -127,8 +126,22 @@ abstract class RestApi
         } else {
             $info = curl_getinfo($curl);
 
+            //Validar si la respuesta es un error y tiene mensaje
+            if (isset($response) && isset($response->error) && isset($response->message)) {
+                $message = $this->errorEnum::getMessageFromCode($response->message);
 
-            if ($info['http_code'] == 404) {
+                if ($message != null) {
+                    $response->message = $message;
+                }
+
+                $this->error = $response;
+
+                $message = "Error: " . $response->error . " - " . $response->message . " - " . $url;
+
+                insertError($message, $className);
+
+                $this->hasError = true;
+            } elseif ($info['http_code'] == 404) {
                 $this->error = json_encode(array(
                     "error" => "No se encontró la página",
                     "status" => "404",
@@ -203,8 +216,7 @@ abstract class RestApi
     /**
      * Crea una solicitud POST
      */
-    public function makePostRequest($data, $url = "")
-    {
+    public function makePostRequest($data, $url = "") {
         $url = $this->url . $url;
 
         $curl = curl_init();
@@ -242,8 +254,7 @@ abstract class RestApi
     /**
      * Crea una solicitud PUT
      */
-    public function makePutRequest($data, $url = "")
-    {
+    public function makePutRequest($data, $url = "") {
         $url = $this->url . $url;
 
         $curl = curl_init();
@@ -277,8 +288,7 @@ abstract class RestApi
         return $response;
     }
 
-    public function makePatchRequest($data, $url = "")
-    {
+    public function makePatchRequest($data, $url = "") {
         $url = $this->url . $url;
 
         $curl = curl_init();

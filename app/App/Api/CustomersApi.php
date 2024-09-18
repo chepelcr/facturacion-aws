@@ -2,6 +2,8 @@
 
 namespace App\Api;
 
+use App\Errors\CustomersEnum;
+
 /**
  * Clase para consumir el API de clientes de IVOIS
  * @author jcampos
@@ -16,7 +18,7 @@ class CustomersApi extends IvoisApi {
      * @param $taxpayerId Identificador del contribuyente
      */
     public function __construct($taxpayerId) {
-        parent::__construct(getEnt("ivois.api.taxpayers.url").$taxpayerId.getEnt("ivois.api.customers.url"));
+        parent::__construct(getEnt("ivois.api.taxpayers.url").$taxpayerId.getEnt("ivois.api.customers.url"), CustomersEnum::class);
     }
 
     /**

@@ -12,30 +12,29 @@
 
     <div class="card-body">
         <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="text-left" for="nationality">Nacionalidad</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        </div>
+                        <select name="nationality" class="form-control inp nationality" onchange="validar_extranjero(this)">
+                            <option value="">Seleccionar</option>
+                            <?php foreach ($countries as $country) : ?>
+                                <option value="<?= $country->isoCode ?>" <?php if (isset($nationality) && $nationality->isoCode == $country->isoCode) {
+                                                                                echo "selected";
+                                                                            } ?> data-serviceStatus="<?= $country->serviceStatus ?>">
+                                    <?= $country->name ?>
+                                </option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-8">
                 <div class="row">
-                    <!-- Cédula del cliente -->
-                    <div class="col-md-7">
-                        <div class="form-group">
-                            <label class="text-left">Número de cédula</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                                </div>
-                                <input class="form-control inp identification_number" onchange="obtener_contribuyente(this.value)" name="identification[number]" type="text" placeholder="Ingrese el número de cédula" value="<?php if (isset($identification)) {
-                                                                                                                                                                                                                                    echo formatear_cedula($identification->number, $identification->code);
-                                                                                                                                                                                                                                } ?>" required max="100">
-
-                                <div class="input-group-append">
-                                    <!-- Boton para eliminar el contenido del campo -->
-                                    <button class="btn btn-danger inp identificacion btn-eliminar" disabled type="button" onclick="vaciar_cedula()" data-toggle="tooltip" data-placement="top" title="Eliminar">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Tipo de cedula-->
                     <div class="col-md-5">
                         <div class="form-group">
@@ -56,26 +55,26 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    <!-- Cédula del cliente -->
+                    <div class="col-md-7">
+                        <div class="form-group">
+                            <label class="text-left">Número de cédula</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                </div>
+                                <input class="form-control inp identification_number" onchange="obtener_contribuyente(this.value)" name="identification[number]" type="text" placeholder="Ingrese el número de cédula" value="<?php if (isset($identification)) {
+                                                                                                                                                                                                                                    echo formatear_cedula($identification->number, $identification->code);
+                                                                                                                                                                                                                                } ?>" required max="100">
 
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="text-left" for="nationality">Nacionalidad</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                <div class="input-group-append">
+                                    <!-- Boton para eliminar el contenido del campo -->
+                                    <button class="btn btn-danger inp identificacion btn-eliminar" disabled type="button" onclick="vaciar_cedula()" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <select name="nationality" class="form-control inp nationality">
-                            <option value="">Seleccionar</option>
-                            <?php foreach ($countries as $country) : ?>
-                                <option value="<?= $country->isoCode ?>" <?php if (isset($nationality) && $nationality->isoCode == $country->isoCode) {
-                                                                                echo "selected";
-                                                                            } ?>>
-                                    <?= $country->name ?>
-                                </option>
-                            <?php endforeach ?>
-                        </select>
                     </div>
                 </div>
             </div>

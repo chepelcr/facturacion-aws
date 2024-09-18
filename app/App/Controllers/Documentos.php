@@ -11,19 +11,16 @@ use App\Services\DocumentosService;
  * @version 2.0
  * @author jcampos
  */
-class Documentos extends BaseController
-{
+class Documentos extends BaseController {
     private $documentosService;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->documentosService = new DocumentosService();
     }
 
     /**Cargar los documentos electronicos */
-    public function index()
-    {
+    public function index() {
         //if (is_login()) {
         $script = cargar('cargar_inicio_modulo("documentos");');
 
@@ -40,8 +37,7 @@ class Documentos extends BaseController
     } //Fin de la funcion index
 
     /**Abrir el submodulo de ventas*/
-    public function facturacion()
-    {
+    public function facturacion() {
         if (is_login()) {
             $script = cargar('cargar_inicio_modulo("documentos"); agregar_documento(1);');
 
@@ -56,8 +52,7 @@ class Documentos extends BaseController
     } //Fin de la funcion facturacion
 
     /**Cargar documentos emitidos */
-    public function emitidos()
-    {
+    public function emitidos() {
         if (is_login()) {
             $script = cargar('cargar_inicio_modulo("documentos");');
 
@@ -72,8 +67,7 @@ class Documentos extends BaseController
     } //Fin de la funcion emitidos
 
     /**Validar el estado los documentos que se encuentran en proceso en el ministerio de hacienda */
-    public function validar_documentos()
-    {
+    public function validar_documentos() {
         if (!is_login()) {
             $data = array(
                 'error' => 'login',
@@ -88,15 +82,13 @@ class Documentos extends BaseController
     } //Fin de la funcion validar_documentos
 
     /**Obtener los indicadores de compra y venta desde el banco central */
-    public function indicadores()
-    {
+    public function indicadores() {
         $indicador = getSegment(3);
         return $this->documentosService->obtenerIndicadores($indicador);
     } //Fin de la funcion indicadores
 
     /**Enviar un document por correo electronico */
-    public function enviar_documento()
-    {
+    public function enviar_documento() {
         if (is_login()) {
             if (getSegment(3)) {
                 //Validar si se envia un correo por $_GET
@@ -123,8 +115,7 @@ class Documentos extends BaseController
     }
 
     /**Cargar los documentos de la empresa */
-    public function cargar_documentos()
-    {
+    public function cargar_documentos() {
         if (is_login()) {
             if (isset($_GET['reportType']) && isset($_GET['documentTypeId']) && isset($_GET['startDate']) && isset($_GET['endDate'])) {
                 $tipoReporte = $_GET['reportType'];
@@ -161,8 +152,7 @@ class Documentos extends BaseController
     /**
      * Obtener la vista para ver un PDF
      */
-    public function ver_pdf()
-    {
+    public function ver_pdf() {
         if (is_login()) {
             $documentUrl = $_GET['documentUrl'];
 
@@ -171,8 +161,7 @@ class Documentos extends BaseController
     }
 
     /**Validar el estado de un document en el ministerio de hacienda */
-    public function validar_documento()
-    {
+    public function validar_documento() {
         if (is_login()) {
             if (getSegment(3)) {
                 $id_documento = getSegment(3);
@@ -199,8 +188,7 @@ class Documentos extends BaseController
     }
 
     /**Enviar un document al ministerio de hacienda */
-    public function enviar_hacienda()
-    {
+    public function enviar_hacienda() {
         if (!is_login()) {
             $error = array(
                 'estado' => 'error',
@@ -226,8 +214,7 @@ class Documentos extends BaseController
             "respuesta-xml": "PD94bWwgdmVyc2lvbj0iMS4wIiA/Pg0KDQo8ZG9tYWluIHhtbG5zPSJ1cm46amJvc3M6ZG9tYWluOjQuMCI+DQogICAgPGV4dGVuc2lvbnM+DQogICAgICAgIDxleHRlbnNpb24gbW9kdWxlPSJvcmcuamJvc3MuYXMuY2x1c3RlcmluZy5pbmZpbmlzcGFuIi8+DQogICAgICAgIDxleHRlbnNpb24gbW9kdWxlPSJvcmcuamJvc3MuYXMuY2x1c3RlcmluZy5qZ3JvdXBzIi8+DQogICAgICAgIDxleHRlbnNpb24gbW9kdWxlPSJvcmcuamJvc3MuYXMuY29ubmVjdG9yIi8+DQogICAgICAgIDxleHRlbnNpb24gbW..."
             }
      */
-    public function esperar_respuesta()
-    {
+    public function esperar_respuesta() {
         //Colocar el header para que el navegador sepa que es un json
         header('Content-Type: application/json');
 
@@ -238,8 +225,7 @@ class Documentos extends BaseController
     }
 
     /**Obtener todos los productos */
-    public function get_productos()
-    {
+    public function get_productos() {
         if (is_login()) {
             return $this->documentosService->getProductos();
         } else {
@@ -254,8 +240,7 @@ class Documentos extends BaseController
     } //Fin de la funcion get_productos
 
     /**Obtener todos los clientes */
-    public function get_clientes()
-    {
+    public function get_clientes() {
         if (is_login()) {
             $documentTypeCode = $_GET['documentTypeCode'];
 
@@ -279,8 +264,7 @@ class Documentos extends BaseController
     /**
      * Crear un document electronico
      */
-    public function crear_documento()
-    {
+    public function crear_documento() {
         if (is_login()) {
             $documentTypeId = getSegment(3);
 
@@ -299,8 +283,7 @@ class Documentos extends BaseController
     }
 
     /**Buscar un cliente por identificacion */
-    public function buscar_cliente()
-    {
+    public function buscar_cliente() {
         if (is_login()) {
             if (getSegment(3)) {
                 $customerId = getSegment(3);
@@ -334,16 +317,10 @@ class Documentos extends BaseController
      * @param array $data Documento electrónico
      * @return string
      */
-    public function guardar($data)
-    {
+    public function guardar($data) {
         if (is_login()) {
-            //var_dump($data);
-
-            //return;
 
             $response = $this->documentosService->guardarDocumento($data);
-
-            //var_dump($response);
 
             if (isset($response->error)) {
                 return $this->error($response);
@@ -363,8 +340,7 @@ class Documentos extends BaseController
 
 
     /**Obtener el modal de agregar los elementos de Walmart */
-    public function get_walmart()
-    {
+    public function get_walmart() {
         if (is_login()) {
             return $this->documentosService->getWalmart();
         } else {
@@ -403,8 +379,7 @@ class Documentos extends BaseController
     } //Fin de la funcion  para descargar un archivo zip */
 
     /**Buscar un producto por codigo en la base de datos */
-    public function buscar_producto()
-    {
+    public function buscar_producto() {
         if (is_login()) {
             if (getSegment(3)) {
                 $code = getSegment(3);
@@ -432,8 +407,7 @@ class Documentos extends BaseController
         }
     } //Fin de la funcion buscar_producto
 
-    public function reporte()
-    {
+    public function reporte() {
         if (is_login()) {
             $documentos = $_POST['documentos'];
 

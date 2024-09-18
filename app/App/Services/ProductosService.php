@@ -13,20 +13,24 @@ class ProductosService extends BaseService {
      * Obtener los datos de los productos
      * @param string $id Identificador del producto
      * @param string $filters Filtros de busqueda
-     * @return object | array Datos de los productos
+     * @return object|array Datos de los productos
      * @throws \Exception
      */
     public function getData($id = 'all', $filters = array()) {
         $productosApi = new ProductsApi(getTaxpayerId());
 
         if ($id == 'all') {
+
             if (isset($filters['search'])) {
-                return $productosApi->getProductsBySearchFilter($filters['search']);
-            } elseif (isset($filters['status'])) {
-                return $productosApi->getProductsByTaxpayerId($filters['status']);
+                $data = $productosApi->getProductsBySearchFilter($filters['search']);
+            } elseif (isset($filters['status']) && $filters['status'] != 'all') {
+                $search = 'status:' . $filters['status'];
+                $data = $productosApi->getProductsBySearchFilter($search);
             } else {
-                return $productosApi->getProductsByTaxpayerId();
+                $data = $productosApi->getProductsByTaxpayerId();
             }
+
+            return $data;
         } else {
             return (object) $productosApi->getProductById($id);
         }
@@ -56,7 +60,11 @@ class ProductosService extends BaseService {
             return $productos;
         }
 
-        $estado = 'all';
+        if (isset($filters['status'])) {
+            $estado = $filters['status'];
+        } else {
+            $estado = 'all';
+        }
 
         if (isset($filters['search'])) {
             # Separar los valores de la busqueda en un array (vienen separados por comas)
@@ -76,7 +84,7 @@ class ProductosService extends BaseService {
             'dataTable' => array(
                 'articulos' => $productos
             ),
-            'id_estado' => $estado
+            'status' => $estado
         );
 
         $dataServiceApi = new DataServiceApi();
@@ -87,6 +95,9 @@ class ProductosService extends BaseService {
         $unidades = $dataServiceApi->getMeasurementUnits();
         $codigos = $dataServiceApi->getCodesByCountry(getCountryCode());
         $productTypes = $dataServiceApi->getProductTypes();
+
+        $taxTypes = $dataServiceApi->getTaxTypesByCountry(getCountryCode());
+        $taxRates = $dataServiceApi->getTaxRatesByCountry(getCountryCode());
 
         $nombreForm = 'empresa/producto/form';
 
@@ -103,11 +114,17 @@ class ProductosService extends BaseService {
             'productos' => $productTypes
         );
 
+        $data_impuestos = array(
+            'taxTypes' => $taxTypes,
+            'taxRates' => $taxRates
+        );
+
         $data_form = array(
             'dataForm' => array(
                 'datos_generales' => $datos_generales,
                 'data_codigos' => $data_codigos,
-                'data_hacienda' => $data_hacienda
+                'data_hacienda' => $data_hacienda,
+                'data_impuestos' => $data_impuestos
             ),
             'nombreForm' => $nombreForm,
             'nombre_form' => 'frm_empresa_productos'
@@ -144,7 +161,6 @@ class ProductosService extends BaseService {
     /**
      * Crear un producto
      * @param array $data Datos del producto
-     
      */
     public function create($data) {
         $productosApi = new ProductsApi(getTaxpayerId());
