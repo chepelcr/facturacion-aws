@@ -1,6 +1,7 @@
 <?php
 
 use PHPBook\View as View;
+use NumberFormatter;
 
 View\Configuration\View::setViewsPathRoot('main', '../App/Views');
 
@@ -29,16 +30,14 @@ function view($nombreVista, $data = null) {
 /**
  * Formatear un numero para mostrarlo en formato de moneda
  */
-function formatMoney($number = 0) {
-    #Obtener el signo de la moneda desde el pais en el que se encuentra el usuario
-    $signo = getEnt('moneda.signo');
+function formatMoney($number, $currency = "CRC") {
+    $locale = getEnt('app.locale');
 
-    // Si el numero es diferente de 0, se debe formatear en formato numerico y agregar el signo de la moneda del pais
-    if ($number != 0) {
-        return $signo . number_format($number, 2);
-    } else {
-        return 0;
-    }
+    // Seleccionar el signo de la moneda
+    $numberFormat = new NumberFormatter($locale, NumberFormatter::CURRENCY);
+    $numberFormat->setAttribute(NumberFormatter::FRACTION_DIGITS, 2);
+    
+    return $numberFormat->formatCurrency($number, $currency);   
 }
 
 /**

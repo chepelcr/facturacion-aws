@@ -42,7 +42,6 @@ class BaseController extends Controller
             }
 
             $dataServiceApi = new DataServiceApi();
-            $documentsService = new DocumentosService();
 
             $data->modulos = getModulos();
 
@@ -51,8 +50,7 @@ class BaseController extends Controller
             );
 
             $data->facturacion = (object) array(
-                'infoAgregar' => $infoAgregar,
-                'infoClientes' => $documentsService->getInfoClientes(),
+                'infoAgregar' => $infoAgregar
             );
 
             return view('layout', $data);

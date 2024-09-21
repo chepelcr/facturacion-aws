@@ -1526,9 +1526,9 @@ class DocumentosService {
 
             return $this->error($error);
         }
-    } //Fin de la funcion create
+    } //Fin de la funcion old create
 
-    public function getInfoClientes() {
+    public function getInfoClientes($numero_documento) {
         $locationsApi = new LocationsApi();
         $dataServiceApi = new DataServiceApi();
 
@@ -1537,21 +1537,20 @@ class DocumentosService {
         $states = $locationsApi->get_states_by_iso_code(getCountryCode());
 
         return array(
-            'buscar_cliente' => array(
-                'dataForm' => array(
-                    'datos_personales' => array(
-                        'identificaciones' => $identificationTypes,
-                        'countries' => $countries
-                    ),
-                    'datos_contacto' => array(
-                        'countries' => $countries,
-                    ),
-                    'dataProvincias' => array(
-                        'countries' => $countries,
-                        'states' => $states,
-                    ),
-                )
+            'dataForm' => array(
+                'datos_personales' => array(
+                    'identificaciones' => $identificationTypes,
+                    'countries' => $countries
+                ),
+                'datos_contacto' => array(
+                    'countries' => $countries,
+                ),
+                'dataProvincias' => array(
+                    'countries' => $countries,
+                    'states' => $states,
+                ),
             ),
+            'numero_documento' => $numero_documento,
         );
     }
 
@@ -1631,6 +1630,8 @@ class DocumentosService {
             'referenceCodes' => $referenceCodes,
         );
 
+        $data_cliente = $this->getInfoClientes($numero_documento);
+
         $taxpayersApi = new TaxpayersApi();
         $empresa = $taxpayersApi->getTaxpayerById(getTaxpayerId());
 
@@ -1646,6 +1647,7 @@ class DocumentosService {
             'modalCierreDocumento' => $modalCierreDocumento,
             'data_referencias' => $data_referencias,
             'modalLinea' => $modalLinea,
+            'data_cliente' => $data_cliente,
         );
 
         return view($nombreVista, $dataView);

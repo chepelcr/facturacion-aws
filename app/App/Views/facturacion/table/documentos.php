@@ -66,7 +66,7 @@
                             </td>
                             <td><?= date('d-m-Y', strtotime($documento->saleDate)) ?></td>
                             <td><?= $documento->consecutiveNumber ?></td>
-                            <td>¢ <?= number_format($documento->summary->voucherTotal, "2", ",", ".") ?></td>
+                            <td><?= formatMoney($documento->summary->voucherTotal, $documento->summary->currencyCode->currencyCode) ?></td>
                             <td>
                                 <div class="dropdown dropleft">
                                     <!-- Descargar -->

@@ -276,7 +276,7 @@
                                                         <!-- Cantidad -->
                                                         <div class="col-md-3 col-sm-6 mb-2">
                                                             <div class="input-group input-group-sm">
-                                                                <input value="0" class="form-control form-control-sm quantity calcular inp-fct" min="1" type="number" name="details[0][quantity]" required>
+                                                                <input value="0" class="form-control form-control-sm quantity calcular inp-fct" min="1" type="number" name="details[0][quantity]" required max="99">
                                                             </div>
                                                         </div>
 
@@ -411,6 +411,8 @@
     <?= view('facturacion/modal/cierre_documento', $modalCierreDocumento) ?>
 
     <?= view('facturacion/modal/referencias', $data_referencias) ?>
+
+    <?= view('facturacion/modal/receptor', $data_cliente) ?>
 
     <div class="contenedor-walmart">
 

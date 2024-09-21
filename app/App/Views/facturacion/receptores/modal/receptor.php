@@ -1,4 +1,4 @@
-<div class="modal fade modal-clientes" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade modal-receptor" tabindex="-1" role="dialog" aria-hidden="true" id="modal-receptor-<?= $numero_documento ?>">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
 
         <!-- Contenido del modal -->
@@ -6,8 +6,7 @@
             <!-- Titulo del modal -->
             <div class="modal-header bg-dark">
                 <h5 class="modal-title">
-                    <i class="fas fa-user"></i>
-                    Clientes
+                    <i class="fas fa-user"></i> Informacion del receptor
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -15,14 +14,12 @@
             </div>
 
             <!-- Inicio del formulario -->
-            <form id="frm_cliente">
+            <form id="frm-receptor-<?= $numero_documento ?>">
                 <!-- Contenido del modal -->
                 <div class="modal-body">
                     <div class="container">
                         <div class="container-fluid">
-                            <?php
-                            echo view('facturacion/receptores/busqueda', $buscar_cliente);
-                            ?>
+                            <?= view('facturacion/receptores/form', $data_form) ?>
                         </div>
                     </div>
                 </div>
@@ -40,14 +37,7 @@
                                     </button>
                                 </div>
 
-                                <div class="col-md-2 btt-add-clt">
-                                    <!-- Agregar -->
-                                    <button type="button" onclick="agregar_cliente()" class="btn btn-warning btn-block">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="row">
                                         <div class="col-md-6 btt-edt-clt">
                                             <!-- Editar -->

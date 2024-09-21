@@ -66,7 +66,7 @@
                         <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                     </div>
 
-                    <input class="form-control form-control-sm inp-fct quantity quantity-det" type="number" placeholder="Cantidad" min="1">
+                    <input class="form-control form-control-sm inp-fct quantity quantity-det" type="number" placeholder="Cantidad" min="1" max="99">
                 </div>
             </div>
 

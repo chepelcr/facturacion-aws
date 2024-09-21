@@ -44,7 +44,7 @@
 <?php
 echo view('facturacion/modal/productos');
 
-echo view('facturacion/receptores/modal', $infoClientes);
+echo view('facturacion/receptores/modal/busqueda');
 
 echo view('facturacion/modal/notificar');
 ?>
