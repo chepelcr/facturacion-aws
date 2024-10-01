@@ -25,8 +25,6 @@ function getModulos()
                 foreach ($acciones as $accion) {
                     $nombre_accion = $accion->nombre_accion;
 
-                    //var_dump( $accion->estado, $nombre_submodulo);
-
                     setSession($nombre_modulo . '_' . $nombre_submodulo . '_' . $nombre_accion, $accion->estado);
                 } //Fin del foreach
             } //Fin de la validacion

@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Enums\BaseEnum;
+
 /**
  * Clase abstracta que contiene los metodos base para la ejecución de solicitudes a una API REST
  * @author jcampos
@@ -23,21 +25,17 @@ abstract class RestApi {
 
     private $error = "";
 
-    private $errorEnum;
-
     /**
      * Constructor de la clase
      * 
      * @param string $url Url base de la API
-     * @param BaseEnum $errorEnum Enumeración de errores
      * @param string $contentType Tipo de contenido
      * @param boolean $isArray Indica si la respuesta es un arreglo
      */
-    public function __construct($url, $errorEnum, $contentType = "application/json", $isArray = false) {
+    public function __construct($url, $contentType = "application/json", $isArray = false) {
         $this->url = $url;
         $this->headers["Content-Type"] = $contentType;
         $this->isArray = $isArray;
-        $this->errorEnum = $errorEnum;
     }
 
     /**
@@ -112,6 +110,23 @@ abstract class RestApi {
 
         $className = get_class($this);
 
+        //Validar si la respuesta es un error y tiene mensaje
+        if (isset($response)) {
+            $response = json_decode($response, $this->isArray);
+
+            if (isset($response->error) && isset($response->message)) {
+                $message = $response->message;
+
+                $message = $this->getErrorName($message);
+
+                if ($message != null) {
+                    $response->message = $message;
+                }
+            }
+
+            $response = json_encode($response);
+        }
+
         if (curl_errno($curl)) {
             $this->error = json_encode(array(
                 "error" => self::ERROR_RESPONSE,
@@ -127,20 +142,23 @@ abstract class RestApi {
             $info = curl_getinfo($curl);
 
             //Validar si la respuesta es un error y tiene mensaje
-            if (isset($response) && isset($response->error) && isset($response->message)) {
-                $message = $this->errorEnum::getMessageFromCode($response->message);
+            if (isset($response)) {
+                $response = json_decode($response, $this->isArray);
 
-                if ($message != null) {
-                    $response->message = $message;
+                if (isset($response->error) && isset($response->message)) {
+                    $message = "Error: " . $response->error . " - " . $response->message . " - " . $url;
+
+                    $this->error = json_encode(array(
+                        "error" => $message,
+                        "status" => $info['http_code'],
+                        "url" => $url,
+                        "response" => $response
+                    ));
+
+                    insertError($message, $className);
+
+                    $this->hasError = true;
                 }
-
-                $this->error = $response;
-
-                $message = "Error: " . $response->error . " - " . $response->message . " - " . $url;
-
-                insertError($message, $className);
-
-                $this->hasError = true;
             } elseif ($info['http_code'] == 404) {
                 $this->error = json_encode(array(
                     "error" => "No se encontró la página",
@@ -321,4 +339,6 @@ abstract class RestApi {
 
         return $response;
     }
+
+    public abstract function getErrorName($error);
 }

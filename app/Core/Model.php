@@ -297,8 +297,6 @@ abstract class Model {
     private function generarCampos() {
         $campos = $this->campos;
 
-        //var_dump($campos);
-
         if (empty($campos)) {
             $espacio = 0;
 
@@ -386,8 +384,6 @@ abstract class Model {
                 if ($order) {
                     $sql .= " ORDER BY :order";
                 }
-
-                //var_dump($sql);
 
                 break;
 
@@ -736,8 +732,6 @@ abstract class Model {
                 $select->execute();
 
                 $result = $select->fetchAll();
-
-                //var_dump($result);
 
                 //Limpiar las variables del sql
                 //$this->clean();

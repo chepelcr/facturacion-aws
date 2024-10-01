@@ -18,13 +18,13 @@ abstract class IvoisApi extends RestApi {
      * @param $base_url Url base de la API
      * @param $errorEnum Enumeración de errores de la API
      */
-    public function __construct($base_url = "", $errorEnum = null) {
+    public function __construct($base_url = "") {
         $url = getEnt("ivois.api.url");
 
-        if($base_url) {
-            $url = $url.$base_url;
+        if ($base_url) {
+            $url = $url . $base_url;
         }
 
-        parent::__construct($url, $errorEnum, "application/json");
+        parent::__construct($url, "application/json");
     }
 }

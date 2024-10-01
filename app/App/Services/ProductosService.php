@@ -155,6 +155,8 @@ class ProductosService extends BaseService {
     public function update($id, $data) {
         $productosApi = new ProductsApi(getTaxpayerId());
 
+        $data = $this->validateDataStructure($data);
+
         return $productosApi->updateProduct($id, $data);
     }
 
@@ -165,6 +167,39 @@ class ProductosService extends BaseService {
     public function create($data) {
         $productosApi = new ProductsApi(getTaxpayerId());
 
+        $data = $this->validateDataStructure($data);
+
         return $productosApi->saveProduct($data);
+    }
+
+    private function validateDataStructure($data) {
+        //Si el producto tiene impuestos
+        if (isset($data['taxes'])) {
+            $taxes = $data['taxes'];
+            $newTaxes = array();
+
+            foreach ($taxes as $tax) {
+                if ($tax['taxTypeId'] != '' && ($tax['rate'] != '' && $tax['rate'] > 0)) {
+                    $newTaxes[] = $tax;
+                }
+            }
+
+            $data['taxes'] = $newTaxes;
+        }
+
+        //Si el producto tiene descuentos
+        if (isset($data['discounts'])) {
+            $discounts = $data['discounts'];
+            $newDiscounts = array();
+            foreach ($discounts as $discount) {
+                if ($discount['reason'] != '' && ($discount['percentage'] != '' && $discount['percentage'] > 0)) {
+                    $newDiscounts[] = $discount;
+                }
+            }
+
+            $data['discounts'] = $newDiscounts;
+        }
+
+        return $data;
     }
 }

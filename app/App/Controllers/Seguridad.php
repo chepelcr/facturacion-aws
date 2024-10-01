@@ -437,8 +437,6 @@ class Seguridad extends BaseController {
                                             );
 
                                             $model->update($data, $id_permiso);
-
-                                            //var_dump('Estoy llegando a '.$nombreModulo.'_'.$nombre_submodulo.'_'.$nombre_accion);
                                         }
                                     }
                                 }

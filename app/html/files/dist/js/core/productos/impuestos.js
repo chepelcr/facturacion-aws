@@ -33,22 +33,19 @@ function agregar_impuesto_producto() {
 }
 
 function limpiar_impuesto_producto(taxLine) {
-    //Vaciar los campos .impuesto_txt de la nueva linea input
-    taxLine.find(".impuesto_txt").val("");
-
     //Colocar '' en los select
     taxLine.find("select").val("");
 
-    //Vaciar los campos .impuesto_number
-    taxLine.find(".impuesto_number").val(0);
+    //Vaciar los campos .taxPercentage
+    taxLine.find(".taxPercentage").val(0);
 
-    //Colocar 0 en los campos hide_num
-    taxLine.find(".hide_num").val(0);
+    //Colocar 0 en los campos tax_amount
+    taxLine.find(".tax_amount").val(0);
 
-    //Colocar un 0 con formato en .money_value
-    taxLine.find(".money_value").val(formato_moneda(0));
+    //Colocar un 0 con formato en .tax_amount_money
+    taxLine.find(".tax_amount_money").val(formato_moneda(0));
 
-    taxLine.find(".taxRates").attr("disabled", true);
+    activar_porcentajes_producto(taxLine.find(".taxTypes"));
 
     return taxLine;
 }
@@ -111,21 +108,42 @@ function activar_porcentajes_producto(select) {
     //Obtener el valor data-code del select
     var code = $(select).find("option:selected").data("code");
 
+    let selectValue = $(select).val();
+
+    validateTaxLines(form_activo);
+
+    taxLine.find(".taxPercentage").val("");
+    calcular_valor_producto(form_activo);
+
     //Si el valor del select es '01' o '07' activar el select de taxRates
     if (code == "01" || code == "07") {
-        taxLine.find(".taxRates").attr("disabled", false);
-
         //Activar el campo del porcentaje
         taxLine.find(".taxPercentage").attr("disabled", true);
+
+        //Recorrer los option de .taxRates y escondelos
+        const taxRates = taxLine.find(".taxRates option");
+
+        $.each(taxRates, function (i, option) {
+            if ($(option).val() != "") {
+                $(option).prop("hidden", false);
+            }
+        });
     } else {
-        taxLine.find(".taxRates").attr("disabled", true);
+        //taxLine.find(".taxRates").attr("disabled", true);
         taxLine.find(".taxRates").val("");
 
         //Activar el campo del porcentaje
         taxLine.find(".taxPercentage").attr("disabled", false);
-    }
 
-    taxLine.find(".taxPercentage").val("");
+        //Recorrer los option de .taxRates y escondelos
+        const taxRates = taxLine.find(".taxRates option");
+
+        $.each(taxRates, function (i, option) {
+            if ($(option).val() != "") {
+                $(option).prop("hidden", true);
+            }
+        });
+    }
 }
 
 /**Colocar el porcentaje de impuesto en el campo .taxPercentage de la linea de impuesto */
@@ -142,9 +160,6 @@ function colocar_tarifa_producto(select = null) {
 
         // Desactivar el campo del porcentaje
         taxLine.find(".taxPercentage").attr("disabled", true);
-
-        //Habilitar el boton de eliminar
-        taxLine.find(".btn-elm").attr("disabled", false);
 
         //Calcular la linea activa
         calcular_valor_producto(form_activo);
@@ -205,7 +220,7 @@ function colocar_impuesto(taxLine, impuesto) {
             }
         });
     } else {
-        taxPercentage = impuesto.taxPercentage;
+        taxPercentage = impuesto.rate;
 
         //Colocar '' en el taxRates
         taxLine.find(".taxRates").val("");
@@ -242,6 +257,8 @@ function agregar_impuestos_producto(impuestos) {
             taxPercentage += colocar_impuesto(taxLine, impuesto);
         }
     }
+
+    validateTaxLines(form_activo);
 
     return taxPercentage;
 }
@@ -343,45 +360,45 @@ function calcular_impuestos_producto() {
 
     const form = $("#" + form_activo);
 
-    var subtotal = form.find(".subtotal").val();
+    var netValue = form.find(".netValue").val();
 
-    let totalValue = 0;
+    if (netValue == "" || isNaN(netValue)) {
+        netValue = 0;
+    }
 
     //Obtener la tabla de impuestos
     var taxesTable = form.find(".taxesTable");
 
     //Obtener todas las lineas de impuestos
-    var lineas_impuestos = taxesTable.find(".taxLine");
+    var taxLines = taxesTable.find(".taxLine");
 
     //Recorrer todas las lineas de impuestos
-    lineas_impuestos.each(function (index, taxLine) {
+    taxLines.each(function (index, taxLine) {
         //Calcular el impuesto de la linea
-        var impuesto = calcular_impuesto_producto(taxLine, subtotal);
+        var impuesto = calcular_impuesto_producto(taxLine, netValue);
 
         //Sumar el impuesto a la variable impuestoTotal
         impuestoTotal += impuesto;
     });
 
-    //Colocar el impuesto total en el campo .ivNeto y .ivNetoVL
-    form.find(".ivNeto").val(impuestoTotal);
+    //Colocar el impuesto total en el campo .ivNetoVL
     form.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 2, monedaDocumento));
-
-    totalValue = parseFloat(subtotal) + parseFloat(impuestoTotal);
-
-    //Colocar el valor total en el campo .totalValue
-    form.find(".totalValue").val(formato_moneda(totalValue, 2, monedaDocumento));
 
     return impuestoTotal;
 }
 
 /**Calcular una linea de impuesto */
-function calcular_impuesto_producto(taxLine = null, subtotal = 0) {
+function calcular_impuesto_producto(taxLine = null, netValue = 0) {
     if (taxLine != null) {
         taxLine = $(taxLine);
 
         var taxPercentage = taxLine.find(".taxPercentage").val();
 
-        var impuesto = (subtotal * taxPercentage) / 100;
+        if (taxPercentage == undefined || taxPercentage == "") {
+            taxPercentage = 0;
+        }
+
+        var impuesto = (netValue * taxPercentage) / 100;
 
         var impuesto_neto = impuesto;
 
@@ -398,7 +415,7 @@ function calcular_impuesto_producto(taxLine = null, subtotal = 0) {
  * @returns  porcentaje del impuesto
  *
  */
-function contar_porcentaje_impuesto() {
+function contar_porcentaje_impuesto(form_activo) {
     const form = $("#" + form_activo);
 
     var porcentaje = 0;
@@ -407,15 +424,116 @@ function contar_porcentaje_impuesto() {
     var taxesTable = form.find(".taxesTable");
 
     //Obtener todas las lineas de impuestos
-    var lineas_impuestos = taxesTable.find(".taxLine");
+    const taxLines = taxesTable.find(".taxLine");
 
     //Recorrer todas las lineas de impuestos
-    lineas_impuestos.each(function (index, taxLine) {
+    taxLines.each(function (index, taxLine) {
         //Calcular el impuesto de la linea
         var taxPercentage = $(taxLine).find(".taxPercentage").val();
+
+        if (taxPercentage == "" || isNaN(taxPercentage)) {
+            taxPercentage = 0;
+        }
 
         porcentaje += parseFloat(taxPercentage);
     });
 
     return porcentaje;
 }
+
+function validateTaxLines(form_activo) {
+    const form = $("#" + form_activo);
+    let validLines = true;
+
+    //Obtener la tabla de impuestos
+    var taxesTable = form.find(".taxesTable");
+
+    //Obtener todas las lineas de impuestos
+    const taxLines = taxesTable.find(".taxLine");
+
+    //Recorrer todas las lineas de impuestos
+    taxLines.each(function (index, taxLine) {
+        //Obtener el taxType de la linea
+        var taxtype = $(taxLine).find(".taxTypes").val();
+        var taxPercentage = $(taxLine).find(".taxPercentage").val();
+
+        if (taxtype == "") {
+            //Eliminar el borde rojo de los campos
+            $(taxLine).find(".taxTypes").removeClass("border-danger");
+
+            $(taxLine).find(".taxPercentage").removeClass("border-danger");
+
+            //Eliminar el borde rojo del campo de taxRate
+            $(taxLine).find(".taxRates").removeClass("border-danger");
+
+            //Desabilitar el campo de porcentaje
+            $(taxLine).find(".taxPercentage").attr("disabled", true);
+            $(taxLine).find(".taxRates").attr("disabled", true);
+
+            //Poner los campos en readonly
+            $(taxLine).find(".taxPercentage").attr("readonly", true);
+            $(taxLine).find(".taxRates").attr("readonly", true);
+
+            //Si solo hay una linea de impuesto y el taxType no esta seleccionado, deshabilitar el boton de eliminar
+            if (taxLines.length == 1) {
+                $(taxLine).find(".btn-elm").attr("disabled", true);
+            }
+        } else {
+            //Habilitar el boton de eliminar
+            $(taxLine).find(".btn-elm").attr("disabled", false);
+
+            const taxCode = $(taxLine).find(".taxTypes option:selected").data("code");
+
+            //Si el taxCode es '01' o '07', validar que el taxRate no este vacio
+            if (taxCode == "01" || taxCode == "07") {
+                const taxRate = $(taxLine).find(".taxRates").val();
+
+                //Habilitar el campo de taxRate
+                $(taxLine).find(".taxRates").attr("disabled", false);
+                $(taxLine).find(".taxRates").attr("readonly", false);
+
+                //Desabilitar el campo de porcentaje
+                $(taxLine).find(".taxPercentage").attr("disabled", true);
+                $(taxLine).find(".taxPercentage").attr("readonly", true);
+
+                if (taxRate == "") {
+                    $(taxLine).find(".taxRates").addClass("border-danger");
+
+                    validLines = false;
+                } else {
+                    $(taxLine).find(".taxRates").removeClass("border-danger");
+                }
+
+                $(taxLine).find(".taxPercentage").removeClass("border-danger");
+            } else {
+                $(taxLine).find(".taxRates").removeClass("border-danger");
+
+                //Habilitar el campo de porcentaje
+                $(taxLine).find(".taxPercentage").attr("disabled", false);
+                $(taxLine).find(".taxPercentage").attr("readonly", false);
+
+                //Desabilitar el campo de taxRate
+                $(taxLine).find(".taxRates").attr("disabled", true);
+                $(taxLine).find(".taxRates").attr("readonly", true);
+
+                //Agregar el borde rojo al campo de porcentaje si esta vacio
+                if (taxPercentage == "") {
+                    $(taxLine).find(".taxPercentage").addClass("border-danger");
+
+                    validLines = false;
+                } else {
+                    $(taxLine).find(".taxPercentage").removeClass("border-danger");
+                }
+            }
+        }
+    });
+
+    return validLines;
+}
+
+$(document).ready(function () {
+    //Cuando cambia el netValue
+    $(document).on("change keyup", ".tax-inp", function () {
+        validateTaxLines(form_activo);
+    });
+}); //Fin del document ready

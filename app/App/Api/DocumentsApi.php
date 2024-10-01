@@ -9,15 +9,13 @@ namespace App\Api;
  * @subpackage DocumentsApi
  * @author jcampos
  */
-class DocumentsApi extends IvoisApi
-{
+class DocumentsApi extends IvoisApi {
     /**
      * Constructor de la clase
      * 
      * @param string $taxpayerId Identificación del contribuyente
      */
-    public function __construct($taxpayerId)
-    {
+    public function __construct($taxpayerId) {
         parent::__construct(getEnt('ivois.api.taxpayers.url') . $taxpayerId . getEnt('ivois.api.documents.url'));
     }
 
@@ -27,8 +25,7 @@ class DocumentsApi extends IvoisApi
      * @param array $data Datos del documento
      * @return object Documento en proceso
      */
-    public function sendDocument($data)
-    {
+    public function sendDocument($data) {
         return $this->makePostRequest($data);
     }
 
@@ -37,8 +34,7 @@ class DocumentsApi extends IvoisApi
      * @param string $documentId Identificador del documento
      * @return array Notificaciones enviadas
      */
-    public function resendDocumentNotification($documentId)
-    {
+    public function resendDocumentNotification($documentId) {
         $url = $documentId . '/notifications/resend';
 
         return $this->makeGetRequestUrl($url);
@@ -50,8 +46,7 @@ class DocumentsApi extends IvoisApi
      * @param string $email Correo electrónico
      * @return array Notificaciones enviadas
      */
-    public function sendDocumentNotification($documentId, $email)
-    {
+    public function sendDocumentNotification($documentId, $email) {
         $url = $documentId . '/notifications/send?email=' . $email;
 
         return $this->makeGetRequestUrl($url);
@@ -63,8 +58,7 @@ class DocumentsApi extends IvoisApi
      * @param string $clave Clave del documento
      * @return object Documento electrónico
      */
-    public function getDocumentByKey($clave)
-    {
+    public function getDocumentByKey($clave) {
         return $this->makeGetRequestUrl($clave);
     }
 
@@ -74,8 +68,7 @@ class DocumentsApi extends IvoisApi
      * @param string $filter Filtro de busqueda
      * @return array Lista de documentos electrónicos
      */
-    public function getDocumentsByFilter($filter = '')
-    {
+    public function getDocumentsByFilter($filter = '') {
         if (empty($filter)) {
             return $this->makeGetRequestUrl('all');
         } else {

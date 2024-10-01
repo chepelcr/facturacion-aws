@@ -21,7 +21,7 @@
 
                     <!-- Agregar descuento -->
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-outline-primary btn-sm btn-block" onclick="agregar_descuento_producto()" data-toggle="tooltip" title="Agregar descuento">
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-block inp" onclick="agregar_descuento_producto()" data-toggle="tooltip" title="Agregar descuento">
                             <i class="fa fa-plus"></i>
                         </button>
                     </div>
@@ -61,7 +61,7 @@
                                                 <i class="fas fa-align-justify"></i>
                                             </span>
                                         </div>
-                                        <input class="form-control form-control-sm inp discount_reason" type="text" name="discounts[0][reason]" placeholder="Motivo de descuento">
+                                        <input class="form-control form-control-sm inp discount-inp discount_reason" type="text" name="discounts[0][reason]" placeholder="Motivo de descuento">
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                                             </span>
                                         </div>
 
-                                        <input class="form-control form-control-sm discount_percentage calcular-producto inp" name="discounts[0][percentage]" min="0" type="number" max="100" value="0">
+                                        <input class="form-control form-control-sm discount-inp discount_percentage calcular-producto inp" name="discounts[0][percentage]" min="0" type="number" max="100" value="0">
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
                             <!-- Acciones -->
                             <div class="col-1">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-outline-danger btn-sm btn-block btn-dlt" disabled onclick="eliminar_descuento_producto(this)">
+                                    <button type="button" class="btn btn-outline-danger btn-sm btn-block btn-dlt inp" disabled onclick="eliminar_descuento_producto(this)">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </div>

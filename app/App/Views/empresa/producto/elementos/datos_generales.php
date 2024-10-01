@@ -21,7 +21,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <input class="form-control inp name" name="name" type="text" required max="100">
+                        <input class="form-control inp name" name="name" type="text" required max="128">
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <textarea class="form-control inp description" name="description" required max="100"></textarea>
+                        <textarea class="form-control inp description" name="description" required max="256"></textarea>
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                                 <i class="fas fa-shopping-basket"></i>
                             </span>
                         </div>
-                        <input class="form-control inp measurementUnit_commercialUnit required" name="commercialUnitMeasure" type="text" disabled readonly>
+                        <input class="form-control inp measurementUnit_commercialUnit" required name="commercialUnitMeasure" type="text" disabled readonly>
                     </div>
                 </div>
             </div>
@@ -85,7 +85,7 @@
                                 <i class="fas fa-marker"></i>
                             </span>
                         </div>
-                        <input class="form-control inp quantity calcular" name="quantity" required type="number" value="1" min="1">
+                        <input class="form-control inp quantity calcular" required name="quantity" type="number" value="1" min="1" max="1000">
                     </div>
                 </div>
             </div>

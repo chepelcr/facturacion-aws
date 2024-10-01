@@ -2,12 +2,27 @@
 
 namespace App\Api;
 
+use App\Enums\CategoriesEnum;
+
 class CategoriesApi extends IvoisApi {
     /**
      * Constructor de la clase
      */
     public function __construct() {
         parent::__construct(getEnt("ivois.api.countries.url"));
+    }
+
+    /**
+     * Obtiene el nombre del error para el modulo de productos
+     */
+    public function getErrorName($error) {
+        $error = CategoriesEnum::tryFrom($error);
+
+        if ($error == null) {
+            return 'Ha ocurrido un error al realizar la solicitud';
+        } else {
+            return $error->getName();
+        }
     }
 
     /**

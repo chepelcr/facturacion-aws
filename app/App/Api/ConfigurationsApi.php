@@ -9,14 +9,12 @@ namespace App\Api;
  * @package App\Api
  * @subpackage ConfigurationsApi
  */
-class ConfigurationsApi extends IvoisApi
-{
+class ConfigurationsApi extends IvoisApi {
 
     /**
      * Constructor de la clase
      */
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct(getEnt("ivois.api.taxpayers.url"));
     }
 
@@ -25,8 +23,7 @@ class ConfigurationsApi extends IvoisApi
      * @param $taxpayer_id Identificador del contribuyente.
      * @return object Configuraciones del contribuyente.
      */
-    public function get_configurations_by_taxpayer_id($taxpayer_id)
-    {
+    public function get_configurations_by_taxpayer_id($taxpayer_id) {
         $configurations_url = $taxpayer_id . getEnt("ivois.api.configurations.url");
 
         return $this->makeGetRequestUrl($configurations_url);
@@ -38,8 +35,7 @@ class ConfigurationsApi extends IvoisApi
      * @param $configurations Configuraciones del contribuyente.
      * @return object Configuraciones del contribuyente.
      */
-    public function update_configurations_by_taxpayer_id($taxpayer_id, $configurations)
-    {
+    public function update_configurations_by_taxpayer_id($taxpayer_id, $configurations) {
         $configurations_url = $taxpayer_id . getEnt("ivois.api.configurations.url");
 
         return $this->makePutRequest($configurations, $configurations_url);
@@ -51,8 +47,7 @@ class ConfigurationsApi extends IvoisApi
      * @param $cryptographic_key Llave criptográfica.
      * @return object Respuesta de la validación.
      */
-    public function validate_cryptographic_key($taxpayer_id, $cryptographic_key)
-    {
+    public function validate_cryptographic_key($taxpayer_id, $cryptographic_key) {
         $cryptographic_key_url = $taxpayer_id . getEnt("ivois.api.configurations.url") . "/validate-cryptographic-key";
 
         return $this->makePostRequest($cryptographic_key, $cryptographic_key_url);

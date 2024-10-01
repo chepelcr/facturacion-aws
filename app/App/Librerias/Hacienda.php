@@ -50,8 +50,6 @@ class Hacienda
                 'password' => getEnt('factura.userPass')
             );
 
-            //var_dump($data);
-
             $curl = curl_init(getEnt('factura.tokenURL'));
             curl_setopt($curl, CURLOPT_HEADER, true);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -64,8 +62,6 @@ class Hacienda
             $response = curl_exec($curl);
             $respuesta = json_decode($response);
             $status = curl_getinfo($curl);
-
-            //var_dump($respuesta);
 
             curl_close($curl);
 

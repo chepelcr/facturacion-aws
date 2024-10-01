@@ -97,6 +97,9 @@ if (is_login()) {
     <!-- Core | Productos | Impuestos -->
     <?= getScript('core/productos/impuestos') ?>
 
+    <!-- Core | Productos | Codigos -->
+    <?= getScript('core/productos/codigos') ?>
+
     <!-- Core | Productos | Unidades -->
     <?= getScript('core/productos/unidades') ?>
 

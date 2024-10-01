@@ -2,7 +2,7 @@
 
 namespace App\Api;
 
-use App\Errors\CustomersEnum;
+use App\Enums\CustomersEnum;
 
 /**
  * Clase para consumir el API de clientes de IVOIS
@@ -18,7 +18,20 @@ class CustomersApi extends IvoisApi {
      * @param $taxpayerId Identificador del contribuyente
      */
     public function __construct($taxpayerId) {
-        parent::__construct(getEnt("ivois.api.taxpayers.url").$taxpayerId.getEnt("ivois.api.customers.url"), CustomersEnum::class);
+        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.customers.url"));
+    }
+
+    /**
+     * Obtiene el nombre del error para el modulo de clientes
+     */
+    public function getErrorName($error) {
+        $error = CustomersEnum::tryFrom($error);
+
+        if ($error == null) {
+            return 'Ha ocurrido un error al realizar la solicitud';
+        } else {
+            return $error->getName();
+        }
     }
 
     /**
@@ -36,7 +49,6 @@ class CustomersApi extends IvoisApi {
      */
     public function getCustomersByTaxpayerId() {
         return $this->makeGetRequestUrl('all');
-
     }
 
     /**

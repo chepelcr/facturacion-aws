@@ -7,6 +7,8 @@ var form_activo = "";
 /**ID del objeto que se muestra en el formulario */
 var id_objeto = 0;
 
+var estado_form = "";
+
 /**Abrir el formulario para agregar un objeto */
 function agregar(titulo = "") {
     modulo = modulo_activo;
@@ -46,33 +48,27 @@ function agregar(titulo = "") {
             .find(".card-table")
             .hide();
 
+        const form = $("#" + form_activo);
+
         //Abrir el card-frm
-        $("#" + form_activo)
-            .find(".card-form")
-            .CardWidget("collapse");
+        form.find(".card-form").CardWidget("collapse");
 
         switch (modulo) {
             case "empresa":
                 switch (submodulo) {
                     case "productos":
                         campos_cabys(estado, form_activo);
+                        getUnitCode(form.find(".measurementUnit_unitId"));
 
                         //activar_campo_clase('slc_code', true, form_activo);
 
-                        $("#" + form_activo)
-                            .find(".salePrice")
-                            .val(0);
-                        $("#" + form_activo)
-                            .find(".taxValue")
-                            .val(0);
-                        $("#" + form_activo)
-                            .find(".unitPrice")
-                            .val(0);
+                        form.find(".salePrice").val(0);
+                        form.find(".taxValue").val(0);
+                        form.find(".unitPrice").val(0);
+                        form.find(".netValue").val(0);
 
                         //Enfocar el campo de descripcion
-                        $("#" + form_activo)
-                            .find(".description")
-                            .focus();
+                        form.find(".name").focus();
 
                         break;
                     case "clientes":
@@ -80,9 +76,7 @@ function agregar(titulo = "") {
                         vaciar_ubicacion(estado);
 
                         //Poner el foco en el campo de cedula
-                        $("#" + form_activo)
-                            .find(".identification_number")
-                            .focus();
+                        form.find(".identification_number").focus();
                         break;
                 }
                 break;
@@ -97,17 +91,13 @@ function agregar(titulo = "") {
                         activar_campos_cedula(estado, form_activo);
 
                         //Poner el foco en el campo de cedula
-                        $("#" + form_activo)
-                            .find(".identification_number")
-                            .focus();
+                        form.find(".identification_number").focus();
                 }
                 break;
         }
 
         //Abrir el card-frm
-        $("#" + form_activo)
-            .find(".card-form")
-            .CardWidget("expand");
+        form.find(".card-form").CardWidget("expand");
     }
 } //Fin de la funcion
 
@@ -121,22 +111,16 @@ function cancelar_accion() {
 
     form_activo = "";
 
-    //Cerrar el card-frm
-    $("#" + elemento_activo)
-        .find(".card-frm")
-        .hide();
+    const activeElement = $("#" + elemento_activo);
 
-    $("#" + elemento_activo)
-        .find(".card-table")
-        .show();
-    $("#" + elemento_activo)
-        .find(".card-table")
-        .CardWidget("expand");
+    //Cerrar el card-frm
+    activeElement.find(".card-frm").hide();
+
+    activeElement.find(".card-table").show();
+    activeElement.find(".card-table").CardWidget("expand");
 
     //Poner el nombre del submodulo en el titulo con la primera letra en mayuscula
-    $("#" + elemento_activo)
-        .find(".titulo-submodulo")
-        .html(nombre_vista_submodulo);
+    activeElement.find(".titulo-submodulo").html(nombre_vista_submodulo);
 }
 
 function llenarObjeto(nombre_form, objeto, estado) {
@@ -144,6 +128,12 @@ function llenarObjeto(nombre_form, objeto, estado) {
     $("#" + nombre_form)
         .find(".card")
         .CardWidget("collapse");
+
+    if (modulo_activo == "empresa" && submodulo_activo == "productos") {
+        eliminarDescuentosProducto();
+        eliminar_impuestos_producto();
+        eliminarCodigosProducto();
+    }
 
     $.each(objeto, function (key, valor) {
         if (key == "identification") {
@@ -176,45 +166,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
                 llenarUbicacion(valor, false);
             }
         } else if (key == "codes" && modulo_activo == "empresa" && submodulo_activo == "productos") {
-            //Recorrer la lista de codigos
-            $.each(valor, function (i, code) {
-                //Si el codigo del code es igual a '01'
-                if (code.typeCode == "01") {
-                    //Colocar el valor del codigo en el campo de codigo de venta saleCode
-                    $("#" + nombre_form)
-                        .find(".saleCode")
-                        .val(code.codeNumber);
-
-                    options = $("#" + nombre_form).find(".slc_saleCode option");
-
-                    //Recorrer los options
-                    $.each(options, function (i, option) {
-                        //Si el data-code es igual al code.typeCode
-                        if ($(option).data("code") == code.typeCode) {
-                            option.selected = true;
-                        } else {
-                            option.selected = false;
-                        }
-                    });
-                } else if (code.typeCode == "04") {
-                    //Colocar el valor del codigo en el campo de codigo interno internalCode
-                    $("#" + nombre_form)
-                        .find(".internalCode")
-                        .val(code.codeNumber);
-
-                    options = $("#" + nombre_form).find(".slc_internalCode option");
-
-                    //Recorrer los options
-                    $.each(options, function (i, option) {
-                        //Si el data-code es igual al code.typeCode
-                        if ($(option).data("code") == code.typeCode) {
-                            option.selected = true;
-                        } else {
-                            option.selected = false;
-                        }
-                    });
-                }
-            });
+            agregarCodigosProducto(valor, nombre_form);
         } else if (key == "nationality") {
             $("#" + nombre_form)
                 .find(".nationality")
@@ -230,11 +182,15 @@ function llenarObjeto(nombre_form, objeto, estado) {
                 .find(".measurementUnit_unitId")
                 .val(valor.unitId);
 
-            getUnitCode($("#" + nombre_form).find(".measurementUnit_unitId"));
+            var commercialUnit = valor.commercialUnit;
+
+            if (commercialUnit == null || commercialUnit == "") {
+                commercialUnit = valor.code;
+            }
 
             $("#" + nombre_form)
                 .find(".measurementUnit_commercialUnit")
-                .val(valor.commercialUnit);
+                .val(commercialUnit);
         } else {
             // Validar si el elemento es un objeto
             if (typeof valor == "object") {
@@ -268,30 +224,17 @@ function llenarObjeto(nombre_form, objeto, estado) {
         }
     });
 
-    if (estado == "ver") {
-        campos_activos(true, nombre_form);
-    } else {
-        campos_activos(false, nombre_form);
-    }
-
     if (modulo_activo == "empresa" && submodulo_activo == "clientes") {
-        activar_campos_cedula(estado, nombre_form);
-
         if (objeto.tradeName == null) {
             $("#" + nombre_form)
                 .find(".tradeName")
                 .val(objeto.businessName);
         }
     } else if (modulo_activo == "empresa" && submodulo_activo == "productos") {
-        console.log("Calculando valores de producto");
         calcular_con_precio_venta(nombre_form, objeto.salePrice);
-        campos_cabys(estado, nombre_form);
-        //activarUnidadComercial(estado, nombre_form);
-    } else if (modulo_activo == "seguridad" && submodulo_activo == "usuarios") {
-        activar_campos_cedula(estado, nombre_form);
-
-        activar_campo_clase("email", true, nombre_form);
     }
+
+    activar_campos_formulario(nombre_form, estado);
 
     //Abrir el card
     $("#" + nombre_form)
@@ -299,23 +242,46 @@ function llenarObjeto(nombre_form, objeto, estado) {
         .CardWidget("expand");
 }
 
+function activar_campos_formulario(nombre_form, estado = "ver") {
+    let modulo = modulo_activo;
+    let submodulo = submodulo_activo;
+
+    if (estado == "ver") {
+        campos_activos(true, nombre_form);
+    } else {
+        campos_activos(false, nombre_form);
+    }
+
+    //Si el modulo es empresa y el submodulo es productos
+    if (modulo == "empresa" && submodulo == "productos") {
+        campos_cabys(estado, nombre_form);
+        activarUnidadComercial(estado, nombre_form);
+    } else if (modulo == "empresa" && submodulo == "clientes") {
+        activar_campos_cedula(estado, nombre_form);
+    } else if (modulo == "seguridad" && submodulo == "usuarios") {
+        activar_campos_cedula(estado, nombre_form);
+
+        activar_campo_clase("email", true, nombre_form);
+    }
+
+    activar_botones_accion(elemento_activo, estado);
+
+    estado_form = estado;
+}
+
 /**Lenar un formulario con la informacion enviada */
 function llenarFrm(objeto, titulo, nombre_form = "", estado = "") {
     form_activo = nombre_form;
 
+    const activeElement = $("#" + elemento_activo);
+
     if (objeto) {
         llenarObjeto(nombre_form, objeto, estado);
 
-        $("#" + elemento_activo)
-            .find(".titulo-form")
-            .html(titulo);
+        activeElement.find(".titulo-form").html(titulo);
 
         //Mostrar el card-frm
-        $("#" + elemento_activo)
-            .find(".card-frm")
-            .show();
-
-        activar_botones_accion(elemento_activo, estado);
+        activeElement.find(".card-frm").show();
     } //Fin de la validacion
 } //Fin de la funcion
 
@@ -404,39 +370,16 @@ function activar_botones_accion(elemento, estado = "agregar") {
 /**Editar el contenido de un formulario */
 function editar() {
     estado = "editar";
-    activar_botones_accion(elemento_activo, estado);
 
-    campos_activos(false, form_activo);
-
-    switch (modulo_activo) {
-        case "empresa":
-            switch (submodulo_activo) {
-                case "clientes":
-                    activar_campos_cedula(estado, form_activo);
-                    break;
-
-                case "productos":
-                    campos_cabys(estado, form_activo);
-                    activarUnidadComercial(estado, form_activo);
-                    break;
-            }
-            break;
-
-        case "seguridad":
-            switch (submodulo_activo) {
-                case "usuarios":
-                    activar_campos_cedula(estado, form_activo);
-
-                    activar_campo_clase("email", true, form_activo);
-                    break;
-            }
-            break;
-    }
+    activar_campos_formulario(form_activo, estado);
 } //Fin de la funcion editar
 
 /**Verificar si existe un elemento en la base de datos */
 function validar(elemento = "", objeto = "") {
     if (elemento != "" && elemento) {
+        const form = $("#" + form_activo);
+        const activeElement = $("#" + elemento_activo);
+
         $.ajax({
             url: base + modulo_activo + "/validar/" + elemento + "/" + submodulo_activo,
             dataType: "json",
@@ -446,23 +389,15 @@ function validar(elemento = "", objeto = "") {
 
                 campos_activos(true, form_activo);
 
-                $("#" + elemento_activo)
-                    .find(".btn-grd")
-                    .attr("disabled", true);
+                activeElement.find(".btn-grd").attr("disabled", true);
 
                 if (objeto == "usuario" || objeto == "cliente") {
-                    $("#" + form_activo)
-                        .find(".btn-eliminar")
-                        .attr("disabled", false);
+                    form.find(".btn-eliminar").attr("disabled", false);
                 }
 
                 if (objeto == "producto") {
-                    $("#" + form_activo)
-                        .find("#codigo_venta")
-                        .attr("disabled", false);
-                    $("#" + form_activo)
-                        .find("#codigo_venta")
-                        .attr("readonly", false);
+                    form.find("#codigo_venta").attr("disabled", false);
+                    form.find("#codigo_venta").attr("readonly", false);
                 }
             } //Fin del usuario existente
             else {
@@ -476,9 +411,7 @@ function validar(elemento = "", objeto = "") {
                     campos_cabys(true, form_activo);
                 }
 
-                $("#" + elemento_activo)
-                    .find(".btn-grd")
-                    .attr("disabled", false);
+                activeElement.find(".btn-grd").attr("disabled", false);
             }
         });
     } //Fin de validacion de elemento
@@ -541,6 +474,8 @@ function deshabilitar(id, objeto) {
 function obtener(id, objeto, estado) {
     id_objeto = id;
 
+    const activeElement = $("#" + elemento_activo);
+
     $.ajax({
         url: base + modulo_activo + "/obtener/" + submodulo_activo + "/" + id,
         method: "get",
@@ -554,14 +489,10 @@ function obtener(id, objeto, estado) {
                 ruta_accion = modulo + "/update/" + submodulo_activo + "/" + id;
 
                 //Collapsar el listado
-                $("#" + elemento_activo)
-                    .find(".card-table")
-                    .CardWidget("collapse");
+                activeElement.find(".card-table").CardWidget("collapse");
 
                 //Cerrar el card
-                $("#" + elemento_activo)
-                    .find(".card-table")
-                    .hide();
+                activeElement.find(".card-table").hide();
 
                 llenarFrm(response, "Editar " + objeto, "frm_" + modulo_activo + "_" + submodulo_activo, estado);
             } else {
@@ -634,9 +565,9 @@ function enviar_formulario() {
                             response = JSON.parse(response);
                         }
 
-                        notificacion(response.error, "", "error");
+                        notificacion(response.message, "", "error");
 
-                        activar_botones_accion(elemento_activo, "error");
+                        activar_campos_formulario(nombre_form, estado_form);
                     });
             }); //Fin de track
         }
@@ -659,6 +590,11 @@ function validarDataForm(formulario) {
             $(input).removeClass("border-danger");
         }
     });
+
+    if(modulo_activo == empresa && submodulo_activo == productos){
+        dataValida = validateDiscountLines(formulario);
+        dataValida = validateTaxLines(formulario);
+    }
 
     return dataValida;
 }

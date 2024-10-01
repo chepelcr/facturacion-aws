@@ -1,7 +1,6 @@
 <?php
 
 use Core\Config\Header;
-use NumberFormatter;
 
 /**Retornar la direccion web de la aplicacion */
 function baseUrl($ext = false)

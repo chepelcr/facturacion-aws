@@ -177,12 +177,6 @@ class Empresa extends BaseController
 
 						return json_encode($result);
 					} else {
-						$result = array(
-							'error' => "Se ha generado un error al actualizar el $objeto",
-							'codigo' => $result->status,
-							'data' => $result->error,
-						);
-
 						return $this->error($result);
 					}
 				} else {
@@ -235,11 +229,6 @@ class Empresa extends BaseController
 
 						return json_encode($result);
 					} else {
-						$result = array(
-							'error' => "Se ha generado un error al guardar el $objeto",
-							'codigo' => $result->status
-						);
-
 						return $this->error($result);
 					}
 				} else {

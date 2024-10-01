@@ -68,7 +68,19 @@ abstract class Controller {
         //Poner el header en el codigo de error
         header('HTTP/1.0 ' . $error->status . $error->error);
 
-        return json_encode($error);
+        if(isset($error->response)) {
+            $response = $error->response;
+
+            if($response && is_string($response)) {
+                return $response;
+            } elseif($response && (is_array($response) || is_object($response))) {
+                return json_encode($response);
+            } else {
+                return json_encode($error);
+            }
+        } else {
+            return json_encode($error);
+        }
     } //Fin de la funcion error
 
     /**Establecer un modelo en el controlador */

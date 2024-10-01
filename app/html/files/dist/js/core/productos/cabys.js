@@ -102,6 +102,13 @@ function buscar_categorias(search) {
                 $("#" + elemento_activo)
                     .find(".card-cabys")
                     .CardWidget("expand");
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                json = JSON.parse(jqXHR.responseText);
+                mensajeAutomatico("Atencion", json.message, "error");
+
+                $("#" + elemento_activo)
+                    .find("#cabys")
+                    .html("");
             });
         });
     } //Fin del if

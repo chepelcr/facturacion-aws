@@ -120,9 +120,6 @@ class UsuariosService extends BaseService {
     public function create($data) {
         $identificacion = $data['identification']['number'];
 
-        //var_dump($data);
-        //return;
-
         //Eliminar los guiónes del número de identificación
         $identificacion = desformatear_cedula($identificacion);
 

@@ -1,7 +1,6 @@
 <?php
 
 use PHPBook\View as View;
-use NumberFormatter;
 
 View\Configuration\View::setViewsPathRoot('main', '../App/Views');
 
@@ -18,11 +17,6 @@ function view($nombreVista, $data = null) {
         }
         $view->setData($data);
     }
-
-    //$ds = DIRECTORY_SEPARATOR;
-    //$base_dir = realpath(dirname(__FILE__)  . $ds . '..'. $ds . '..') . $ds;
-
-    //include_once 'App/views/'.$nombreVista.'.php';
 
     return $view->render();
 } //Fin de la funcion

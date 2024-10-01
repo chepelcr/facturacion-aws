@@ -17,7 +17,6 @@ use App\Services\UsuariosService;
 class Login extends BaseController {
     /** Funcion para mostrar el login */
     public function index() {
-        //var_dump('hola');
         if (!is_login()) {
             return view('login');
         } else {

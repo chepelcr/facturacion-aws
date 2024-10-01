@@ -16,13 +16,12 @@
                                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                             </div>
                             <input class="form-control form-control-sm ivNetoVL" value="0" disabled readonly>
-                            <input value="0" class="ivNeto inp" type="hidden">
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <!-- Agregar impuesto -->
-                        <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-add-imp" onclick="agregar_impuesto_producto(this)" data-toggle="tooltip" title="Agregar impuesto">
+                        <button type="button" class="btn btn-outline-primary btn-sm btn-block btn-add-imp inp" onclick="agregar_impuesto_producto(this)" data-toggle="tooltip" title="Agregar impuesto">
                             <i class="fa fa-plus"></i>
                         </button>
                     </div>
@@ -63,7 +62,7 @@
                                         </div>
 
                                         <!-- Recorrer select de impuestos -->
-                                        <select class="form-control form-control-sm taxTypes" name="taxes[0][taxTypeId]" onchange="activar_porcentajes_producto(this)">
+                                        <select class="form-control form-control-sm taxTypes tax-inp inp" name="taxes[0][taxTypeId]" onchange="activar_porcentajes_producto(this)">
                                             <option value="">Seleccione un impuesto</option>
                                             <?php foreach ($taxTypes as $taxType) : ?>
                                                 <option value="<?= $taxType->taxId ?>" data-code="<?= $taxType->code ?>">
@@ -83,7 +82,7 @@
                                         </div>
 
                                         <!-- Recorrer los porcentajes de impuesto -->
-                                        <select class="form-control form-control-sm taxRates" name="taxes[0][taxRateId]" disabled onchange="colocar_tarifa_producto(this)">
+                                        <select class="form-control form-control-sm taxRates tax-inp inp" name="taxes[0][taxRateId]" disabled onchange="colocar_tarifa_producto(this)">
                                             <option value="">No aplica</option>
                                             <?php foreach ($taxRates as $taxRate) : ?>
                                                 <option value="<?= $taxRate->rateId ?>" data-percentage="<?= $taxRate->percentage ?>" data-rateTypeId="<?= $taxRate->rateTypeId ?>" data-code="<?= $taxRate->code ?>">
@@ -101,7 +100,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-percent"></i></span>
                                         </div>
-                                        <input value="0" class="form-control form-control-sm taxPercentage impuesto_number inp calcular-producto" type="text" name="taxes[0][rate]" placeholder="13%">
+                                        <input value="0" class="form-control form-control-sm taxPercentage tax-inp inp calcular-producto" type="text" name="taxes[0][rate]" placeholder="13%">
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +113,7 @@
                                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                         </div>
 
-                                        <input class="form-control form-control-sm money_value tax_amount_money" value="0" disabled readonly>
+                                        <input class="form-control form-control-sm tax_amount_money" value="0" disabled readonly>
 
                                         <input value="0" class="tax_amount hide_num" type="hidden">
                                     </div>
@@ -124,7 +123,7 @@
                             <!-- Acciones -->
                             <div class="col-2">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-outline-danger btn-block btn-sm btn-elm" title="Eliminar impuesto" onclick="eliminar_impuesto_producto(this)" data-toggle="tooltip" disabled>
+                                    <button type="button" class="btn btn-outline-danger btn-block btn-sm btn-elm inp" title="Eliminar impuesto" onclick="eliminar_impuesto_producto(this)" data-toggle="tooltip" disabled>
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </div>
