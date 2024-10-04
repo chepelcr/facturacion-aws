@@ -13,8 +13,6 @@
                 </button>
             </div>
 
-            <!-- Inicio del formulario -->
-            <form id="frm-receptor-<?= $numero_documento ?>">
                 <!-- Contenido del modal -->
                 <div class="modal-body">
                     <div class="container">
@@ -90,7 +88,6 @@
                         </div>
                     </div>
                 </div>
-            </form>
         </div>
     </div>
 </div>

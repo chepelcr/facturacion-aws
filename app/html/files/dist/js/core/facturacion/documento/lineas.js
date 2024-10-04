@@ -76,7 +76,7 @@ function agregar_linea_activa(producto, cantidad = 1, precio_final = 0) {
         //Si la linea es igual al producto
         if ($(this).find(".saleCode").val() == codigo_venta) {
           //Obtener la cantidad de la linea
-          var cantidad_linea = $(this).find(".quantity").val();
+          var cantidad_linea = $(this).find(".quantity-det").val();
 
           //Sumar la cantidad de la linea activa con la cantidad de la linea
           cantidad = parseFloat(cantidad) + parseFloat(cantidad_linea);
@@ -110,7 +110,7 @@ function agregar_linea_activa(producto, cantidad = 1, precio_final = 0) {
   linea.find(".description").val(producto.description);
   linea.find(".cabys").val(codigo);
   linea.find(".saleCode").val(codigo_venta);
-  linea.find(".quantity").val(cantidad);
+  linea.find(".quantity-det").val(cantidad);
   linea.find(".unitId").val(producto.measurementUnit.unitId);
 
   //Si el precio final es difernte de 0
@@ -203,7 +203,7 @@ function aumentar_linea() {
   $(linea).find(".reason").val("");
   $(linea).find(".neto").val(0);
   $(linea).find(".total_discount").val(0);
-  $(linea).find(".quantity").val(0);
+  $(linea).find(".quantity-det").val(0);
   $(linea).find(".subtotal").val(0);
   $(linea).find(".tax_amount").val(0);
   $(linea).find(".totalL").val(0);
@@ -302,7 +302,7 @@ function calcular(linea) {
   let moneda = monedaDocumento;
 
   if (precio != 0 && precio != "") {
-    var cantidad = linea.find(".quantity").val();
+    var cantidad = linea.find(".quantity-det").val();
 
     //Colocar los valores en la linea
     var neto = parseFloat(precio * cantidad);
@@ -409,7 +409,7 @@ $(document).ready(function () {
     calcular(linea_activa);
   });
 
-  //Al cambiar el valor de .quantity
+  //Cuando cambia el valor de .quantity
   $(document).on("keyup change", ".quantity-det", function () {
     //Obtener la linea activa
     linea_activa = $(this).parents(".detail");
@@ -419,16 +419,13 @@ $(document).ready(function () {
 
     //Si la cantidad es mayor a 0
     if (cantidad > 0) {
-      //Colocar en el campo de cantidad de la linea activa
-      linea_activa.find(".quantity").val(cantidad);
-
-      //Calcular el valor de la linea
-      calcular(linea_activa);
+      //Colocar en el campo de .quantity-det de la linea activa
+      linea_activa.find(".quantity-det-mod").val(cantidad);
     }
   });
 
-  //Cuando cambia el valor de .quantity
-  $(document).on("keyup change", ".quantity", function () {
+  //Cuando cambia el valor de .quantity-det-mod
+  $(document).on("keyup change", ".quantity-det-mod", function () {
     //Obtener la linea activa
     linea_activa = $(this).parents(".detail");
 

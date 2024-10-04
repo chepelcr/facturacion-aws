@@ -2,6 +2,8 @@
 
 namespace App\Api;
 
+use App\Enums\DocumentsGeneratorEnum;
+
 /**
  * Api para la enviar documentos electrónicos al API de IVOIS
  * @version 1.0
@@ -17,6 +19,22 @@ class DocumentsApi extends IvoisApi {
      */
     public function __construct($taxpayerId) {
         parent::__construct(getEnt('ivois.api.taxpayers.url') . $taxpayerId . getEnt('ivois.api.documents.url'));
+    }
+
+    /**
+     * Obtener el nombre del error
+     * 
+     * @param string $error Código del error
+     * @return string Nombre del error
+     */
+    public function getErrorName($error) {
+        $error = DocumentsGeneratorEnum::tryFrom($error);
+
+        if ($error == null) {
+            return 'Ha ocurrido un error al realizar la solicitud';
+        } else {
+            return $error->getName();
+        }
     }
 
     /**

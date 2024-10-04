@@ -9,6 +9,6 @@
     </div>
 
     <div class="col-md-12">
-        <?= view('facturacion/receptores/elementos/ubicacion', $dataProvincias) ?>
+        <?= view('facturacion/receptores/elementos/ubicacion', $data_ubicaciones) ?>
     </div>
 </div>

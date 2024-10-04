@@ -2,7 +2,7 @@
 <div class="card card-form">
     <div class="card-header">
         <h4 class="card-title">
-            <i class="fas fa-dollar-sign"></i> Valor comercial
+            <i class="fas fa-dollar-sign"></i> Valor del articulo
         </h4>
 
         <div class="card-tools">
@@ -97,7 +97,7 @@
             <!-- Valor total con impuestos -->
             <div class="col-md-3">
                 <div class="form-group">
-                    <label for="valor_total_impuestos" class="card-title">Precio total de venta</label>
+                    <label for="valor_total_impuestos" class="card-title">Precio de venta final</label>
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>

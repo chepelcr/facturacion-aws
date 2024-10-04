@@ -112,6 +112,7 @@ abstract class RestApi {
 
         //Validar si la respuesta es un error y tiene mensaje
         if (isset($response)) {
+
             $response = json_decode($response, $this->isArray);
 
             if (isset($response->error) && isset($response->message)) {

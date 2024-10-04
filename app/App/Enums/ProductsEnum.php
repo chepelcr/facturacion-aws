@@ -44,7 +44,10 @@ enum ProductsEnum: string {
     case OtherChargePercentageRequired = "029";
     case CategoryRequest = "030";
     case TaxAlreadyExists = "031";
-
+    case BaseAmountNotFound = "032";
+    case TaxIvaFound = "033";
+    case TaxRateFound = "034";
+    case TaxRateRequired = "035";
 
     public function getName(): string {
         return match($this) {
@@ -80,6 +83,10 @@ enum ProductsEnum: string {
             self::OtherChargePercentageRequired => "El porcentaje del cargo es requerido",
             self::CategoryRequest => "La categoría ingresada es incorrecta",
             self::TaxAlreadyExists => "El impuesto ya se encuentra registrado",
+            self::BaseAmountNotFound => "El monto base imponible es requerido",
+            self::TaxIvaFound => "Solo se permite un impuesto IVA",
+            self::TaxRateFound => "La tarifa de impuesto no es requerida",
+            self::TaxRateRequired => "La tarifa de impuesto es requerida",
             default => "No definido",
         };
     }

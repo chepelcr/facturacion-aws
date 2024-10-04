@@ -43,9 +43,9 @@
                 <tr>
                     <th class="col-4">Tipo de impuesto</th>
                     <th class="col-2">Tarifa</th>
-                    <th class="col-1">%</th>
+                    <th class="col-2">%</th>
                     <th class="col-3">Monto</th>
-                    <th class="col-2">Acciones</th>
+                    <th class="col-1">Acciones</th>
                 </tr>
             </thead>
 
@@ -94,13 +94,13 @@
                             </div>
 
                             <!-- Mostrar porcentaje -->
-                            <div class="col-1">
+                            <div class="col-2">
                                 <div class="form-group">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-percent"></i></span>
                                         </div>
-                                        <input value="0" class="form-control form-control-sm taxPercentage tax-inp inp calcular-producto" type="text" name="taxes[0][rate]" placeholder="13%">
+                                        <input value="0" class="form-control form-control-sm taxPercentage tax-inp inp" type="text" name="taxes[0][rate]" placeholder="13%">
                                     </div>
                                 </div>
                             </div>
@@ -121,7 +121,7 @@
                             </div>
 
                             <!-- Acciones -->
-                            <div class="col-2">
+                            <div class="col-1">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-outline-danger btn-block btn-sm btn-elm inp" title="Eliminar impuesto" onclick="eliminar_impuesto_producto(this)" data-toggle="tooltip" disabled>
                                         <i class="fa fa-trash"></i>

@@ -534,6 +534,35 @@ function validateTaxLines(form_activo) {
 $(document).ready(function () {
     //Cuando cambia el netValue
     $(document).on("change keyup", ".tax-inp", function () {
+        //Validar si el campo tiene la clase taxPercentage
+        if ($(this).hasClass("taxPercentage")) {
+            //Validar si el taxPercentage es un numero
+            if (isNaN($(this).val()) || $(this).val() == "") {
+                $(this).val(0);
+            }
+
+            //Si el taxPercentage tiene un 0 a la izquierda, quitarlo
+            if ($(this).val() != 0) {
+                let taxPercentage = $(this).val();
+
+                if (taxPercentage.charAt(0) == "0") {
+                    taxPercentage = taxPercentage.substring(1);
+                }
+
+                //Convertir el taxPercentage a un numero
+                taxPercentage = parseInt(taxPercentage);
+
+                //Si el taxPercentage es mayor a 100, colocar 100
+                if (taxPercentage > 100) {
+                    taxPercentage = 100;
+                }
+
+                $(this).val(taxPercentage);
+            }
+
+            calcular_valor_producto(form_activo);
+        }
+
         validateTaxLines(form_activo);
     });
 }); //Fin del document ready

@@ -85,7 +85,7 @@
                                 <i class="fas fa-marker"></i>
                             </span>
                         </div>
-                        <input class="form-control inp quantity calcular" required name="quantity" type="number" value="1" min="1" max="1000">
+                        <input class="form-control inp quantity" required name="quantity" type="number" value="1" min="1" max="999">
                     </div>
                 </div>
             </div>

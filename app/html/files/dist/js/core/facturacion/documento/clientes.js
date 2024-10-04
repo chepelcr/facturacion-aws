@@ -1,109 +1,90 @@
 /**Obtener un cliente de la base de datos */
 function obtener_cliente(identificacion = "") {
-    form_activo = "frm-receptor-" + id_factura;
+    elemento_activo = "modal-receptor-" + id_factura_activa;
 
-    //Collapse todos los card del elemento activo
-    $("#" + form_activo)
-        .find(".card")
-        .CardWidget("collapse");
+    const activeDocument = $("#" + factura_activa);
 
     if (identificacion && identificacion != "") {
-        //Solicitar el cliente por ajax
-        $.ajax({
-            url: base + "documentos/buscar_cliente/" + identificacion,
-            type: "GET",
-            dataType: "json",
-        })
-            .done(function (data) {
-                if (!data.error) {
-                    //Ocultar cart-clientes
-                    $(".card-clientes").hide();
+        Pace.track(function () {
+            //Solicitar el cliente por ajax
+            $.ajax({
+                url: base + "documentos/buscar_cliente/" + identificacion,
+                type: "GET",
+                dataType: "json",
+            })
+                .done(function (data) {
+                    if (!data.error) {
+                        llenarObjeto(elemento_activo, data, "ver");
 
-                    //Ocultar card-busqueda
-                    $(".card-busqueda-clientes").hide();
+                        //Colocar el nombre del cliente en el input .nombre-cliente de la factura activa
+                        activeDocument.find(".nombre-cliente").val(data.businessName);
 
-                    llenarObjeto(form_activo, data, "ver");
-
-                    //Colocar el nombre del cliente en el input .nombre-cliente de la factura activa
-                    $("#" + factura_activa)
-                        .find(".nombre-cliente")
-                        .val(data.businessName);
-
-                    //Si el nombre del cliente es igual a Walmart y es una factura (tipo_documento = "01")
-                    if (
-                        data.identification.number == "3102007223" &&
-                        $("#" + factura_activa)
-                            .find(".documentTypeCode")
-                            .val() == "01"
-                    ) {
-                        //Mostrar el boton de walmart
-                        $(".col-walmart").show();
-
-                        //Si el .contenedor-walmart no tiene un .modal-walmart
+                        //Si el nombre del cliente es igual a Walmart y es una factura (tipo_documento = "01")
                         if (
-                            !$("#" + factura_activa)
-                                .find(".contenedor-walmart")
-                                .find(".modal-walmart").length
+                            data.identification.number == "3102007223" &&
+                            activeDocument.find(".documentTypeCode").val() == "01"
                         ) {
-                            //Solicitar el modal de walmart
-                            $.ajax({
-                                url: base + "documentos/get_walmart",
-                                type: "GET",
-                                dataType: "html",
-                            }).done(function (data) {
-                                //Agregar el modal de walmart al documento activo
-                                $("#" + factura_activa)
-                                    .find(".contenedor-walmart")
-                                    .empty()
-                                    .append(data);
-                            });
-                        }
-                    } else {
-                        //Ocultar el boton de walmart
-                        $(".col-walmart").hide();
+                            //Mostrar el boton de walmart
+                            $(".col-walmart").show();
 
-                        //Eliminar el modal de walmart del documento activo
-                        $("#" + factura_activa)
-                            .find(".contenedor-walmart")
-                            .empty();
+                            //Si el .contenedor-walmart no tiene un .modal-walmart
+                            if (!activeDocument.find(".contenedor-walmart").find(".modal-walmart").length) {
+                                //Solicitar el modal de walmart
+                                $.ajax({
+                                    url: base + "documentos/get_walmart",
+                                    type: "GET",
+                                    dataType: "html",
+                                }).done(function (data) {
+                                    //Agregar el modal de walmart al documento activo
+                                    activeDocument.find(".contenedor-walmart").empty().append(data);
+                                });
+                            }
+                        } else {
+                            //Ocultar el boton de walmart
+                            $(".col-walmart").hide();
+
+                            //Eliminar el modal de walmart del documento activo
+                            activeDocument.find(".contenedor-walmart").empty();
+                        }
+
+                        //Ocultar el boton de guardar del modal de cliente
+                        $(".btt-grd-clt").hide();
+
+                        //Ocultar el boton de editar del modal de cliente
+                        $(".btt-edt-clt").show();
+
+                        //Ocultar el boton de guardar cambios del modal de cliente
+                        $(".btt-grd-clt-cambios").hide();
+
+                        //Mostrar el boton de aceptar cliente
+                        $(".btt-aceptar-clt").show();
+
+                        //Mostrar el boton de seleccionar otro
+                        $(".btt-sct-clt").show();
+
+                        //Mostrar el boton de agregar cliente
+                        $(".btt-add-clt").hide();
+
+                        //Mostrar el card de clientes
+                        $("#modal-receptor-" + id_factura_activa).modal("show");
+
+                        cerrar_clientes();
+                    } else {
+                        notificacion(data.error, "", "error");
+                    }
+                })
+                .fail(function (jqXHR, status, error) {
+                    response = jqXHR.responseText;
+
+                    if (response != null && response != "") {
+                        response = JSON.parse(response);
+                    } else {
+                        response = { error: "Error al obtener el cliente" };
                     }
 
-                    //Ocultar el boton de guardar del modal de cliente
-                    $(".btt-grd-clt").hide();
-
-                    //Ocultar el boton de editar del modal de cliente
-                    $(".btt-edt-clt").show();
-
-                    //Ocultar el boton de guardar cambios del modal de cliente
-                    $(".btt-grd-clt-cambios").hide();
-
-                    //Mostrar el boton de aceptar cliente
-                    $(".btt-aceptar-clt").show();
-
-                    //Mostrar el boton de seleccionar otro
-                    $(".btt-sct-clt").show();
-
-                    //Mostrar el boton de agregar cliente
-                    $(".btt-add-clt").hide();
-
-                    //Mostrar el card de clientes
-                    $("#modal-receptor-" + id_factura).show();
-
-                    //Cerrar el modal de clientes
-                    $(".modal-clientes").modal("hide");
-                } else {
-                    notificacion(data.error, "", "error");
-                }
-            })
-            .fail(function (jqXHR, status, error) {
-                response = jqXHR.responseText;
-
-                if (response != "") {
-                    response = JSON.parse(response);
-                }
-
-                notificacion(response.error, "", "error");
-            });
+                    notificacion(response.error, "", "error");
+                });
+        });
     }
 }
 
@@ -158,10 +139,10 @@ function editar_cliente() {
 
 /** Ver el modal del cliente del documento activo*/
 function ver_modal_cliente() {
+    const activeDocument = $("#" + factura_activa);
+
     //Obtener la identificacion del modal de la factura activa
-    var identificacion = $("#" + factura_activa)
-        .find(".identification_number")
-        .val();
+    var identificacion = activeDocument.find(".identification_number").val();
 
     if (identificacion) {
         abrir_receptor();
@@ -171,17 +152,20 @@ function ver_modal_cliente() {
 }
 
 function abrir_receptor() {
-    elemento_activo = "modal-receptor-" + id_factura;
+    elemento_activo = "modal-receptor-" + id_factura_activa;
 
     //Abrir el modal del receptor
     $("#" + elemento_activo).modal("show");
 
-    form_activo = "frm-receptor-" + id_factura;
+    form_activo = "frm-receptor-" + id_factura_activa;
 
     //Collapse todos los card del elemento activo
     $("#" + form_activo)
         .find(".card")
         .CardWidget("collapse");
+
+    //Cerrar el modal de clientes
+    cerrar_clientes();
 
     editar_cliente();
 }
@@ -191,6 +175,8 @@ function cerrar_clientes() {
 }
 
 function validarCliente() {
+    const activeDocument = $("#" + factura_activa);
+
     var clienteValido = validarDataForm("frm_cliente");
 
     inputs.each(function (index, input) {
@@ -212,9 +198,7 @@ function validarCliente() {
             .val();
 
         //Colocar el nombre del cliente en el input .nombre-cliente de la factura activa
-        $("#" + factura_activa)
-            .find(".nombre-cliente")
-            .val(businessName);
+        activeDocument.find(".nombre-cliente").val(businessName);
     } else {
         notificacion("Debe llenar todos los campos obligatorios del cliente", "", "error");
     }
@@ -222,11 +206,10 @@ function validarCliente() {
 
 /**Obtener todos los clientes de la base de datos */
 function buscar_clientes() {
+    const activeDocument = $("#" + factura_activa);
+
     //Obtener el tipo de documento de la factura activa mediante el data-code del option seleccionado
-    let documentTypeCode = $("#" + factura_activa)
-        .find(".documentTypeId")
-        .find("option:selected")
-        .data("code");
+    let documentTypeCode = activeDocument.find(".documentTypeId").find("option:selected").data("code");
 
     data = {
         documentTypeCode: documentTypeCode,
@@ -289,12 +272,9 @@ function buscar_clientes() {
 
 /**Funcion cuando el usuario presiona la opcion para agregar un cliente en el modulo buscar_cliente */
 function agregar_cliente() {
-    //ruta_accion = 'empresa/guardar/clientes';
+    cerrar_clientes();
 
-    //Agregar los clientes al modal
-    $(".modal-clientes").hide();
-
-    form_activo = "frm-receptor-" + id_factura;
+    form_activo = "frm-receptor-" + id_factura_activa;
 
     //Mostrar el boton de guardar del modal de cliente
     $(".btt-grd-clt").show();
@@ -323,6 +303,6 @@ function agregar_cliente() {
         .find(".card")
         .CardWidget("expand");
 
-    //Mostrar el card de clientes
-    $("#modal-receptor-" + id_factura).show();
+    //Mostrar el modal del receptor
+    $("#modal-receptor-" + id_factura_activa).modal("show");
 }

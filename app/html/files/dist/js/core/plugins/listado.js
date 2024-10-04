@@ -75,8 +75,10 @@ function cargar_listado(
         .fail(function (xhr, textStatus, errorThrown) {
           response = xhr.responseText;
 
-          if (response != "") {
+          if (response != null && response != "") {
             response = JSON.parse(response);
+          } else {
+            response = { error: "Error desconocido", "status": xhr.status };
           }
 
           //Mostrar la respuesta
@@ -107,13 +109,64 @@ function getLoadPage() {
  * @returns
  */
 function getErrorPage(error) {
-  let html =
+  /*let html =
     "<div class='card card-danger'><div class='card-header'><h3 class='card-title" +
     "'>Error</h3></div><div class='card-body'><p>" +
     error.error +
     "</p></div></div>";
 
-  return html;
+  return html;*/
+
+  /**
+   * <div class="row pt-2 justify-content-start h-100">
+    <div class="col-12 ">
+        <div class="card">
+            <div class="card-body">
+                <div class="error-page">
+                    <h2 class="headline text-warning">
+                        <?php if (isset($error->codigo)) {
+                            echo $error->codigo;
+                        } ?></h2>
+
+                    <div class="error-content">
+                        <br>
+
+                        <h3><i class="fas fa-exclamation-triangle text-warning"></i> Atencion</h3>
+
+                        <p>
+                            <?php if (!isset($error->error)) {
+                                echo $error->error;
+                            } ?>
+                        </p>
+                    </div>
+                    <!-- /.error-content -->
+                </div>
+                <!-- /.error-page -->
+            </div>
+        </div>
+    </div>
+</div>
+   */
+
+  const errorRow = $("<div>").addClass("row pt-2 justify-content-start h-100");
+  const errorCol = $("<div>").addClass("col-12");
+  const card = $("<div>").addClass("card");
+  const cardBody = $("<div>").addClass("card-body");
+  const errorPage = $("<div>").addClass("error-page");
+  const headline = $("<h2>").addClass("headline text-warning").text(error.status);
+  const errorContent = $("<div>").addClass("error-content");
+  const h3 = $("<h3>").text("Atencion");
+  const p = $("<p>").text(error.error);
+
+  errorContent.append(h3, p);
+  errorPage.append(headline, errorContent);
+  cardBody.append(errorPage);
+  card.append(cardBody);
+  errorCol.append(card);
+  errorRow.append(errorCol);
+
+  return errorRow;
+
 }
 
 /**Cargar contenido en un contenedor o modal
@@ -258,8 +311,10 @@ function recargar_listado(id_estado = "all") {
       .fail(function (xhr, textStatus, errorThrown) {
         response = xhr.responseText;
 
-        if (response != "") {
+        if (response != null && response != "") {
           response = JSON.parse(response);
+        } else {
+          response = { error: "Error desconocido", "status": xhr.status };
         }
 
         //Mostrar la respuesta

@@ -124,10 +124,10 @@ function cancelar_accion() {
 }
 
 function llenarObjeto(nombre_form, objeto, estado) {
+    const activeForm = $("#" + nombre_form);
+
     //Cerrar todos los card
-    $("#" + nombre_form)
-        .find(".card")
-        .CardWidget("collapse");
+    activeForm.find(".card").CardWidget("collapse");
 
     if (modulo_activo == "empresa" && submodulo_activo == "productos") {
         eliminarDescuentosProducto();
@@ -144,11 +144,9 @@ function llenarObjeto(nombre_form, objeto, estado) {
 
             identificacion = formatear_cedula(identificacion, tipoIdentificacion);
 
-            $("#" + nombre_form)
-                .find(".identification_number")
-                .val(identificacion);
+            activeForm.find(".identification_number").val(identificacion);
 
-            const identifications = $("#" + nombre_form).find(".identification_typeId option");
+            const identifications = activeForm.find(".identification_typeId option");
 
             //Recorrer los options con un each
             $.each(identifications, function (i, option) {
@@ -168,9 +166,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
         } else if (key == "codes" && modulo_activo == "empresa" && submodulo_activo == "productos") {
             agregarCodigosProducto(valor, nombre_form);
         } else if (key == "nationality") {
-            $("#" + nombre_form)
-                .find(".nationality")
-                .val(valor.isoCode);
+            activeForm.find(".nationality").val(valor.isoCode);
         } else if (key == "modulos") {
             llenar_permisos(valor, form_activo);
         } else if (key == "taxes") {
@@ -178,9 +174,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
         } else if (key == "discounts") {
             agregar_descuentos_producto(valor);
         } else if (key == "measurementUnit") {
-            $("#" + nombre_form)
-                .find(".measurementUnit_unitId")
-                .val(valor.unitId);
+            activeForm.find(".measurementUnit_unitId").val(valor.unitId);
 
             var commercialUnit = valor.commercialUnit;
 
@@ -188,9 +182,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
                 commercialUnit = valor.code;
             }
 
-            $("#" + nombre_form)
-                .find(".measurementUnit_commercialUnit")
-                .val(commercialUnit);
+            activeForm.find(".measurementUnit_commercialUnit").val(commercialUnit);
         } else {
             // Validar si el elemento es un objeto
             if (typeof valor == "object") {
@@ -200,7 +192,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
 
                         // Si la llave es category_productType, se debe cambiar a category_productType_id
                         if (inner_key == "category_productType") {
-                            productTypes = $("#" + nombre_form).find(".category_productType_id option");
+                            productTypes = activeForm.find(".category_productType_id option");
 
                             $.each(productTypes, function (i, option) {
                                 if ($(option).val() == valor.productType.id) {
@@ -210,25 +202,19 @@ function llenarObjeto(nombre_form, objeto, estado) {
                                 }
                             });
                         } else {
-                            $("#" + nombre_form)
-                                .find("." + inner_key)
-                                .val(inner_value);
+                            activeForm.find("." + inner_key).val(inner_value);
                         }
                     });
                 }
             } else {
-                $("#" + nombre_form)
-                    .find("." + key)
-                    .val(valor);
+                activeForm.find("." + key).val(valor);
             }
         }
     });
 
     if (modulo_activo == "empresa" && submodulo_activo == "clientes") {
         if (objeto.tradeName == null) {
-            $("#" + nombre_form)
-                .find(".tradeName")
-                .val(objeto.businessName);
+            activeForm.find(".tradeName").val(objeto.businessName);
         }
     } else if (modulo_activo == "empresa" && submodulo_activo == "productos") {
         calcular_con_precio_venta(nombre_form, objeto.salePrice);
@@ -237,9 +223,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
     activar_campos_formulario(nombre_form, estado);
 
     //Abrir el card
-    $("#" + nombre_form)
-        .find(".card")
-        .CardWidget("expand");
+    activeForm.find(".card").CardWidget("expand");
 }
 
 function activar_campos_formulario(nombre_form, estado = "ver") {
@@ -508,6 +492,8 @@ function obtener(id, objeto, estado) {
 function enviar_formulario() {
     var nombre_form = form_activo;
 
+    const activeForm = $("#" + nombre_form);
+
     if (nombre_form != "") {
         if (!validarDataForm(nombre_form)) {
             mensajeAutomatico("Atencion", "Por favor complete los campos requeridos", "error");
@@ -515,16 +501,14 @@ function enviar_formulario() {
         } else {
             campos_activos(false, nombre_form);
 
-            var formData = new FormData($("#" + nombre_form)[0]);
+            var formData = new FormData(activeForm[0]);
 
             campos_activos(true, nombre_form);
 
             activar_botones_accion(elemento_activo, "almacenar");
 
             //Collapsar los card
-            $("#" + nombre_form)
-                .find(".card")
-                .CardWidget("collapse");
+            activeForm.find(".card").CardWidget("collapse");
 
             Pace.track(function () {
                 $.ajax({
@@ -561,8 +545,10 @@ function enviar_formulario() {
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         response = jqXHR.responseText;
 
-                        if (response != "") {
+                        if (response != null && response != "") {
                             response = JSON.parse(response);
+                        } else {
+                            response = { message: errorThrown };
                         }
 
                         notificacion(response.message, "", "error");
@@ -591,7 +577,7 @@ function validarDataForm(formulario) {
         }
     });
 
-    if(modulo_activo == empresa && submodulo_activo == productos){
+    if (modulo_activo == empresa && submodulo_activo == productos) {
         dataValida = validateDiscountLines(formulario);
         dataValida = validateTaxLines(formulario);
     }

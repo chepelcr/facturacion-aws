@@ -1,0 +1,137 @@
+<?php
+
+namespace App\Enums;
+
+enum DocumentsGeneratorEnum: string {
+
+    case SUCCESS = "000";
+    case FAILED = "100";
+    case DOCUMENT_NOT_FOUND = "001";
+    case TAXPAYER_NOT_FOUND = "002";
+    case TOKEN_REQUEST_ERROR = "003";
+    case API_CONSUMER_NOT_AVAILABLE = "004";
+    case SEND_TOKEN_REQUEST_ERROR = "005";
+    case UPLOAD_FILE_ERROR = "006";
+    case CERTIFICATE_NOT_FOUND = "007";
+    case READ_ERROR_EXCEPTION = "008";
+    case EXCHANGE_RATE_NOT_AVAILABLE = "009";
+    case EXCHANGE_RATE_NOT_FOUND = "010";
+    case EXPIRED_CERTIFICATE = "011";
+    case DOCUMENT_NOT_SIGNED = "012";
+    case DOCUMENT_ALREADY_PROCESSED = "013";
+    case DOCUMENT_ALREADY_EXISTS = "014";
+    case HACIENDA_RECEIVER_ERROR = "015";
+    case PAYMENTS_ERROR = "016";
+    case DOCUMENT_NOT_VALID = "017";
+    case RELATED_EXCEPTION = "018";
+    case BAD_LOCATION = "019";
+    case ECONOMIC_ACTIVITY_ERROR = "020";
+    case BRANCH_NOT_AVAILABLE = "021";
+    case TERMINAL_NOT_FOUND = "022";
+    case BAD_SALE_CONDITION = "023";
+    case BAD_CREDIT_TERM = "024";
+    case DOCUMENT_TYPE_NOT_FOUND = "025";
+    case PRODUCT_NOT_FOUND = "026";
+    case TAX_RATE_NOT_FOUND = "027";
+    case EXEMPTION_CODE_NOT_FOUND = "028";
+    case TAX_EXEMPT = "029";
+    case API_DETAIL_NOT_AVAILABLE = "030";
+    case TAXPAYERS_API_NOT_AVAILABLE = "031";
+    case LOCATIONS_SERVICE_NOT_AVAILABLE = "032";
+    case HACIENDA_API_ERROR = "033";
+    case COUNTRY_NOT_FOUND = "034";
+    case DATA_SERVICE_NOT_AVAILABLE = "035";
+    case CONFIGURATIONS_REQUEST_ERROR = "036";
+    case BAD_PAYMENT_TYPE = "037";
+    case TAX_TYPE_NOT_FOUND = "038";
+    case TAX_IVA_FOUND = "039";
+    case REFERENCE_TYPE_NOT_FOUND = "040";
+    case REFERENCE_CODE_NOT_FOUND = "041";
+    case CACHE_NOT_FOUND = "042";
+    case TOTAL_DISCOUNT_EXCEEDED = "043";
+    case SERIALIZATION_ERROR = "044";
+    case AWS_APP_CONFIG_ERROR = "045";
+    case BAD_EXPIRATION_DATE = "046";
+    case DOCUMENT_VERSION_NOT_FOUND = "047";
+    case OTHER_CHARGE_NOT_FOUND = "048";
+    case ATV_STATUS_NOT_FOUND = "049";
+    case TAX_RATE_FOUND = "050";
+    case BASE_AMOUNT_NOT_FOUND = "051";
+    case EXEMPTION_CODE_FOUND = "052";
+    case EXPORT_INVOICE_BASE_AMOUNT = "053";
+    case DETAIL_AMOUNT_ERROR = "054";
+    case DOCUMENT_TYPE_NOT_ALLOW = "055";
+    case DOCUMENT_REQUEST_ERROR = "056";
+    case INCORRECT_DOCUMENT = "057";
+    case TAX_SITUATION_CONDITION_NOT_REGISTERED = "058";
+    case JSON_CONVERT_ERROR = "059";
+    case TAX_RATE_DIFFERS = "060";
+
+    public function getName(): string {
+        return match ($this) {
+            self::SUCCESS => "Operación completada con éxito.",
+            self::FAILED => "La operación fallo.",
+            self::DOCUMENT_NOT_FOUND => "No se ha encontrado el documento ingresado.",
+            self::TAXPAYER_NOT_FOUND => "No se ha encontrado el contribuyente solicitado",
+            self::TOKEN_REQUEST_ERROR => "Se ha generado un error al solicitar el token en el Ministerio de Hacienda.",
+            self::API_CONSUMER_NOT_AVAILABLE => "El servicio del Ministerio de Hacienda no esta disponible.",
+            self::SEND_TOKEN_REQUEST_ERROR => "El token enviado para la solicitud no es valido.",
+            self::UPLOAD_FILE_ERROR => "Se ha producido un error al subir el documento a Amazon S3.",
+            self::CERTIFICATE_NOT_FOUND => "El certificado no ha podido guardar.",
+            self::READ_ERROR_EXCEPTION => "Error al leer el archivo XML.",
+            self::EXCHANGE_RATE_NOT_AVAILABLE => "El servicio de consulta de tipo de cambio de moneda no se encuentra disponible",
+            self::EXCHANGE_RATE_NOT_FOUND => "No se ha encontrado el tipo de cambio solicitado",
+            self::EXPIRED_CERTIFICATE => "El certificado proporcionado ha expirado.",
+            self::DOCUMENT_NOT_SIGNED => "Se ha producido un error al firmar el documento electrónico.",
+            self::DOCUMENT_ALREADY_PROCESSED => "El documento electrónico ya ha sido procesado.",
+            self::DOCUMENT_ALREADY_EXISTS => "El documento electrónico ya ha sido almacenado.",
+            self::HACIENDA_RECEIVER_ERROR => "El servicio del Ministerio de Hacienda ha retornado un error.",
+            self::PAYMENTS_ERROR => "Los montos de los pagos no pueden ser mayores al total del documento.",
+            self::DOCUMENT_NOT_VALID => "El documento electrónico no es valido.",
+            self::RELATED_EXCEPTION => "El contribuyente no esta relacionado con el documento electrónico.",
+            self::BAD_LOCATION => "La ubicación que esta agregando el usuario no es valida.",
+            self::ECONOMIC_ACTIVITY_ERROR => "La actividad económica no es permitida para el contribuyente",
+            self::BRANCH_NOT_AVAILABLE => "No se encontró la sucursal especificada",
+            self::TERMINAL_NOT_FOUND => "No se encontró la terminal especificada",
+            self::BAD_SALE_CONDITION => "La condición de venta no es valida",
+            self::BAD_CREDIT_TERM => "Se debe indicar el plazo de crédito.",
+            self::DOCUMENT_TYPE_NOT_FOUND => "No se encontró el tipo de documento especificado",
+            self::PRODUCT_NOT_FOUND => "No se encontró el producto especificado: ",
+            self::TAX_RATE_NOT_FOUND => "No ha ingresado el porcentaje de impuesto requerido",
+            self::EXEMPTION_CODE_NOT_FOUND => "No se encontró el código de exoneración especificado",
+            self::TAX_EXEMPT => "El impuesto no puede ser exonerado y excento al mismo tiempo..",
+            self::API_DETAIL_NOT_AVAILABLE => "La API de detalles del documento no se encuentra disponible",
+            self::TAXPAYERS_API_NOT_AVAILABLE => "La API de Información de Contribuyentes no se encuentra disponible",
+            self::LOCATIONS_SERVICE_NOT_AVAILABLE => "El servicio de ubicaciones no se encuentra disponible.",
+            self::HACIENDA_API_ERROR => "El servicio del Ministerio de Hacienda no se encuentra disponible..",
+            self::COUNTRY_NOT_FOUND => "No se ha encontrado el país solicitado.",
+            self::DATA_SERVICE_NOT_AVAILABLE => "El servicio de datos no se encuentra disponible.",
+            self::CONFIGURATIONS_REQUEST_ERROR => "Se ha generado un error al solicitar la configuración en el Ministerio de Hacienda.",
+            self::BAD_PAYMENT_TYPE => "El tipo de pago no es valido.",
+            self::TAX_TYPE_NOT_FOUND => "No se encontró el tipo de impuesto especificado",
+            self::TAX_IVA_FOUND => "Solamente se puede agregar un impuesto IVA",
+            self::REFERENCE_TYPE_NOT_FOUND => "No se encontró el tipo de referencia especificado",
+            self::REFERENCE_CODE_NOT_FOUND => "No se encontró el código de referencia especificado",
+            self::CACHE_NOT_FOUND => "La cache no ne ha encontrado",
+            self::TOTAL_DISCOUNT_EXCEEDED => "El descuento total no puede ser mayor al total del documento",
+            self::SERIALIZATION_ERROR => "Se ha producido un error al serializar el documento",
+            self::AWS_APP_CONFIG_ERROR => "Error al obtener las configuraciones de la aplicación",
+            self::BAD_EXPIRATION_DATE => "La fecha de vencimiento no es valida",
+            self::DOCUMENT_VERSION_NOT_FOUND => "No se ha encontrado la versión del documento especificado",
+            self::OTHER_CHARGE_NOT_FOUND => "No se ha encontrado el cargo adicional especificado",
+            self::ATV_STATUS_NOT_FOUND => "No se ha encontrado el estado del documento especificado",
+            self::TAX_RATE_FOUND => "No se permite una tarifa con este tipo de impuesto",
+            self::BASE_AMOUNT_NOT_FOUND => "No se ha encontrado el monto base imponible",
+            self::EXEMPTION_CODE_FOUND => "No se permite una exoneración en una factura de exportación",
+            self::EXPORT_INVOICE_BASE_AMOUNT => "No se permite un monto base imponible en una factura de exportación",
+            self::DETAIL_AMOUNT_ERROR => "El detalle no puede incluir un precio de venta y una base imponible al mismo tiempo",
+            self::DOCUMENT_TYPE_NOT_ALLOW => "No se permite este tipo de documento para receptores con tipo de identificación 99",
+            self::DOCUMENT_REQUEST_ERROR => "Se ha producido un error al obtener el documento electrónico",
+            self::INCORRECT_DOCUMENT => "El documento electrónico no es correcto",
+            self::TAX_SITUATION_CONDITION_NOT_REGISTERED => "El contribuyente no se encuentra inscrito en el Ministerio de Hacienda",
+            self::JSON_CONVERT_ERROR => "Error al convertir el JSON",
+            self::TAX_RATE_DIFFERS => "El porcentaje de impuesto no coincide con el porcentaje de la tarifa",
+            default => "Ha ocurrido un error al realizar la solicitud",
+        };
+    }
+}

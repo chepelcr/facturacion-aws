@@ -7,13 +7,13 @@
     </tr>
 </thead>
 <tbody>
-    <?php foreach ($articulos as $key => $articulo): ?>
+    <?php foreach ($products as $product): ?>
         <tr>
-            <td class="col-6"><?= $articulo->description ?></td>
-            <td class="col-2"><?= $articulo->measurementUnit->description ?></td>
-            <td class="col-2"><?= formatMoney($articulo->salePrice) ?></td>
+            <td class="col-6"><?= $product->name ?></td>
+            <td class="col-2"><?= $product->measurementUnit->description ?></td>
+            <td class="col-2"><?= formatMoney($product->salePrice) ?></td>
             <td class="col-2">
-                <?= get_botones($articulo->productId, 'producto', 'empresa', 'productos', $articulo->status) ?>
+                <?= get_botones($product->productId, 'producto', 'empresa', 'productos', $product->status) ?>
             </td>
             <!--Fin de las opciones-->
         </tr>

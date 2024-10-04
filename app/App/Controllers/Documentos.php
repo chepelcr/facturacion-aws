@@ -330,8 +330,7 @@ class Documentos extends BaseController {
         } else {
             $error = array(
                 'error' => 'No ha iniciado sesión',
-                'estado' => 'warning',
-                'codigo' => '505',
+                'status' => '505',
             );
 
             return $this->error($error);
@@ -342,7 +341,9 @@ class Documentos extends BaseController {
     /**Obtener el modal de agregar los elementos de Walmart */
     public function get_walmart() {
         if (is_login()) {
-            return $this->documentosService->getWalmart();
+            $documentType = $_GET['documentType'];
+
+            return $this->documentosService->getWalmart($documentType);
         } else {
             $error = array(
                 'error' => 'No ha iniciado sesion',
