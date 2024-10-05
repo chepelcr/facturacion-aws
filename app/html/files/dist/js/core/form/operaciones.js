@@ -545,7 +545,9 @@ function enviar_formulario() {
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         response = jqXHR.responseText;
 
-                        if (response != null && response != "") {
+                        console.log(response);
+
+                        if (response != 'null' && response != "") {
                             response = JSON.parse(response);
                         } else {
                             response = { message: errorThrown };

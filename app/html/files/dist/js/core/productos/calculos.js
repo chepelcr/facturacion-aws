@@ -19,22 +19,6 @@ $(document).ready(function () {
         calcular_valor_producto(form_activo);
     }); //Fin de cambiar el netValue
 
-    //Cuando cambia calcular-producto
-    $(document).on("change keyup", ".calcular-producto", function () {
-        //Validar si el salePrice es un numero
-        let salePrice = $("#" + form_activo)
-            .find(".salePrice")
-            .val();
-
-        if (isNaN(salePrice) || salePrice == "") {
-            $("#" + form_activo)
-                .find(".salePrice")
-                .val(0);
-        }
-
-        calcular_con_precio_venta(form_activo);
-    }); //Fin de cambiar calcular-producto
-
     //Cuando cambia el precio de venta
     $(document).on("change keyup", ".salePrice", function () {
         //Validar si el salePrice es un numero
@@ -132,6 +116,8 @@ function calcular_con_precio_venta(elemento = "", salePrice = 0) {
 
     if (isNaN(salePrice) || salePrice == "") {
         salePrice = 0;
+
+        form.find(".salePrice").val(salePrice);
     }
 
     salePrice = parseFloat(salePrice);

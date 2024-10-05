@@ -2,10 +2,9 @@
 function contar_descuentos_producto() {
     var lineas = 0;
 
-    const form = "#" + form_activo;
+    const form = $("#" + form_activo);
 
-    $(form)
-        .find(".discounts")
+    form.find(".discounts")
         .find(".discountLine")
         .each(function () {
             var inputs = $(this).find("input");
@@ -34,8 +33,8 @@ function contar_descuentos_producto() {
 
 /**Agregar una linea de descuento en el formulario */
 function agregar_descuento_producto() {
-    const form = "#" + form_activo;
-    var cantidad_lineas = $(form).find(".discounts").find(".discountLine").length;
+    const form = $("#" + form_activo);
+    var cantidad_lineas = form.find(".discounts").find(".discountLine").length;
 
     //Si ya hay 5 lineas de descuento, mostrar un mensaje de error
     if (cantidad_lineas >= 5) {
@@ -44,7 +43,7 @@ function agregar_descuento_producto() {
     }
 
     //Obtener la tabla de descuentos de la linea activa
-    var discountsTable = $(form).find(".discounts");
+    var discountsTable = form.find(".discounts");
 
     //Obtener la ultima linea de descuento de la tabla
     var ultima_linea = discountsTable.find(".discountLine").last();
@@ -144,8 +143,8 @@ function descuento_producto(discountLine, descuento = null) {
 
 function agregar_descuentos_producto(descuentos = []) {
     eliminarDescuentosProducto();
-    const form = "#" + form_activo;
-    var discountsTable = $(form).find(".discounts");
+    const form = $("#" + form_activo);
+    var discountsTable = form.find(".discounts");
     var discountLine = discountsTable.find(".discountLine").first();
 
     for (var i = 0; i < descuentos.length; i++) {
@@ -166,9 +165,9 @@ function calcular_descuentos_producto() {
 
     var descuento = 0;
 
-    const form = "#" + form_activo;
+    const form = $("#" + form_activo);
 
-    var netValue = $(form).find(".netValue").val();
+    var netValue = form.find(".netValue").val();
 
     if (netValue == "" || isNaN(netValue)) {
         netValue = 0;
@@ -176,7 +175,7 @@ function calcular_descuentos_producto() {
 
     netValue = parseFloat(netValue);
 
-    var discounts = $(form).find(".discounts");
+    var discounts = form.find(".discounts");
 
     discounts.find(".discountLine").each(function (i, discountLine) {
         descuento = calcular_descuento_producto(discountLine);
@@ -189,11 +188,11 @@ function calcular_descuentos_producto() {
     var subtotal = netValue - descuento_total;
 
     //Colocar el valor total de los descuentos
-    $(form).find(".total_discount").val(descuento_total);
-    $(form).find(".total_discount_money").val(formato_moneda(descuento_total, 2, monedaDocumento));
+    form.find(".total_discount").val(descuento_total);
+    form.find(".total_discount_money").val(formato_moneda(descuento_total, 2, monedaDocumento));
 
-    $(form).find(".subtotal").val(subtotal);
-    $(form).find(".subtotal_money").val(formato_moneda(subtotal, 2, monedaDocumento));
+    form.find(".subtotal").val(subtotal);
+    form.find(".subtotal_money").val(formato_moneda(subtotal, 2, monedaDocumento));
 
     validateDiscountLines(form_activo);
 
@@ -202,14 +201,14 @@ function calcular_descuentos_producto() {
 
 /**Calcular el descuento de una linea */
 function calcular_descuento_producto(discountLine = null) {
-    const form = "#" + form_activo;
+    const form = $("#" + form_activo);
 
     var descuento = 0;
     var total_descuento = 0;
 
     if (discountLine != null) {
         //Obtener el valor netValue de la linea
-        var netValue = $(form).find(".netValue").val();
+        var netValue = form.find(".netValue").val();
 
         if (netValue == "" || isNaN(netValue)) {
             netValue = 0;
@@ -236,7 +235,7 @@ function calcular_descuento_producto(discountLine = null) {
         $(discountLine).find(".discount_amount_money").val(formato_moneda(descuento, 2, monedaDocumento));
 
         //Obtener el total de los descuentos
-        total_descuento = $(form).find(".total_discount").val();
+        total_descuento = form.find(".total_discount").val();
 
         //Si el total de los descuentos no esta vacio y es mayor a 0
         if (total_descuento != "" && total_descuento > 0) {
@@ -247,19 +246,19 @@ function calcular_descuento_producto(discountLine = null) {
         }
 
         //Colocar el total de los descuentos
-        $(form).find(".total_discount").val(total_descuento);
+        form.find(".total_discount").val(total_descuento);
 
         total_descuento = formato_moneda(total_descuento, 2, monedaDocumento);
 
-        $(form).find(".total_discount_money").val(total_descuento);
+        form.find(".total_discount_money").val(total_descuento);
     } //Fin de validacion de linea
 
     return descuento;
 } //Fin del metodo calcular_descuento
 
 function validateDiscountLines(form_activo = "") {
-    const form = "#" + form_activo;
-    const discountsTable = $(form).find(".discounts");
+    const form = $("#" + form_activo);
+    const discountsTable = form.find(".discounts");
 
     const discountLines = discountsTable.find(".discountLine");
 
@@ -308,9 +307,61 @@ function validateDiscountLines(form_activo = "") {
     return valid;
 }
 
+/**
+ * Contar el porcentaje de los descuentos de un producto
+ * @param {*} form_activo  Formulario activo
+ * @returns El porcentaje total de los descuentos
+ */
+function contarPorcentajeDescuentos(form_activo) {
+    const form = $("#" + form_activo);
+    var total_porcentaje = 0;
+
+    form.find(".discounts")
+        .find(".discountLine")
+        .each(function () {
+            var percentage = $(this).find(".discount_percentage").val();
+
+            if (percentage == "" || isNaN(percentage)) {
+                percentage = 0;
+            }
+
+            total_porcentaje += parseInt(percentage);
+        });
+
+    return total_porcentaje;
+}
+
 $(document).ready(function () {
     //Cuando cambia el netValue
     $(document).on("change keyup", ".discount-inp", function () {
+        //Validar si el elemento tiene la clase discount_percentage
+        if ($(this).hasClass("discount_percentage")) {
+            let percentage = $(this).val();
+
+            //Validar si el porcentaje es un numero
+            if (isNaN(percentage) || percentage == "") {
+                percentage = 0;
+            }
+
+            //Parsear el porcentaje a entero
+            percentage = parseInt(percentage);
+
+            $(this).val(percentage);
+
+            //Colocar el porcentaje en el input
+            //$(this).val(percentage);
+
+            percentage = contarPorcentajeDescuentos(form_activo);
+
+            //Si el porcentaje es mayor a 100, mostrar un mensaje de error
+            if (percentage > 100) {
+                notificacion("El total de los descuentos no puede ser mayor al 100%.", "", "warning");
+                $(this).val(0);
+            }
+
+            calcular_con_precio_venta(form_activo);
+        }
+
         validateDiscountLines(form_activo);
     });
 }); //Fin del document ready

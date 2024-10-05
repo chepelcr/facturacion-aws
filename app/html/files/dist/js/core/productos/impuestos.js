@@ -110,11 +110,6 @@ function activar_porcentajes_producto(select) {
 
     let selectValue = $(select).val();
 
-    validateTaxLines(form_activo);
-
-    taxLine.find(".taxPercentage").val("");
-    calcular_valor_producto(form_activo);
-
     //Si el valor del select es '01' o '07' activar el select de taxRates
     if (code == "01" || code == "07") {
         //Activar el campo del porcentaje
@@ -144,6 +139,11 @@ function activar_porcentajes_producto(select) {
             }
         });
     }
+
+    validateTaxLines(form_activo);
+
+    taxLine.find(".taxPercentage").val("");
+    calcular_valor_producto(form_activo);
 }
 
 /**Colocar el porcentaje de impuesto en el campo .taxPercentage de la linea de impuesto */
@@ -431,12 +431,18 @@ function contar_porcentaje_impuesto(form_activo) {
         //Calcular el impuesto de la linea
         var taxPercentage = $(taxLine).find(".taxPercentage").val();
 
+        console.log("Porcentaje de impuesto: " + taxPercentage);
+
+        taxPercentage = parseFloat(taxPercentage);
+
         if (taxPercentage == "" || isNaN(taxPercentage)) {
             taxPercentage = 0;
         }
 
         porcentaje += parseFloat(taxPercentage);
     });
+
+    console.log("Porcentaje de impuestos: " + porcentaje);
 
     return porcentaje;
 }
@@ -451,11 +457,14 @@ function validateTaxLines(form_activo) {
     //Obtener todas las lineas de impuestos
     const taxLines = taxesTable.find(".taxLine");
 
+    let hasIva = false;
+
     //Recorrer todas las lineas de impuestos
     taxLines.each(function (index, taxLine) {
         //Obtener el taxType de la linea
         var taxtype = $(taxLine).find(".taxTypes").val();
         var taxPercentage = $(taxLine).find(".taxPercentage").val();
+        const taxRate = $(taxLine).find(".taxRates");
 
         if (taxtype == "") {
             //Eliminar el borde rojo de los campos
@@ -482,29 +491,52 @@ function validateTaxLines(form_activo) {
             //Habilitar el boton de eliminar
             $(taxLine).find(".btn-elm").attr("disabled", false);
 
+            //Eliminar el borde rojo de los campos
+            $(taxLine).find(".taxTypes").removeClass("border-danger");
+
             const taxCode = $(taxLine).find(".taxTypes option:selected").data("code");
 
             //Si el taxCode es '01' o '07', validar que el taxRate no este vacio
-            if (taxCode == "01" || taxCode == "07") {
-                const taxRate = $(taxLine).find(".taxRates").val();
-
-                //Habilitar el campo de taxRate
-                $(taxLine).find(".taxRates").attr("disabled", false);
-                $(taxLine).find(".taxRates").attr("readonly", false);
-
+            if (taxCode == "01" || taxCode == "07" || taxCode == "08") {
                 //Desabilitar el campo de porcentaje
                 $(taxLine).find(".taxPercentage").attr("disabled", true);
                 $(taxLine).find(".taxPercentage").attr("readonly", true);
 
-                if (taxRate == "") {
-                    $(taxLine).find(".taxRates").addClass("border-danger");
+                if (hasIva) {
+                    //Colocar un borde rojo en el campo de taxType
+                    $(taxLine).find(".taxTypes").addClass("border-danger");
+
+                    notificacion("Solo se puede agregar un impuesto de tipo IVA.", "", "warning");
+
+                    //Habilitar el campo de taxRate
+                    taxRate.attr("disabled", true);
+                    taxRate.attr("readonly", true);
+
+                    //Eliminar el borde rojo del campo de taxPercentage
+                    $(taxLine).find(".taxPercentage").removeClass("border-danger");
 
                     validLines = false;
                 } else {
-                    $(taxLine).find(".taxRates").removeClass("border-danger");
-                }
+                    hasIva = true;
 
-                $(taxLine).find(".taxPercentage").removeClass("border-danger");
+                    //Habilitar el campo de taxRate
+                    taxRate.attr("disabled", false);
+                    taxRate.attr("readonly", false);
+
+                    //Desabilitar el campo de porcentaje
+                    $(taxLine).find(".taxPercentage").attr("disabled", true);
+                    $(taxLine).find(".taxPercentage").attr("readonly", true);
+
+                    if (taxRate.val() == "") {
+                        taxRate.addClass("border-danger");
+
+                        validLines = false;
+                    } else {
+                        taxRate.removeClass("border-danger");
+                    }
+
+                    $(taxLine).find(".taxPercentage").removeClass("border-danger");
+                }
             } else {
                 $(taxLine).find(".taxRates").removeClass("border-danger");
 
@@ -536,21 +568,38 @@ $(document).ready(function () {
     $(document).on("change keyup", ".tax-inp", function () {
         //Validar si el campo tiene la clase taxPercentage
         if ($(this).hasClass("taxPercentage")) {
-            //Validar si el taxPercentage es un numero
-            if (isNaN($(this).val()) || $(this).val() == "") {
-                $(this).val(0);
+            let taxPercentage = $(this).val();
+
+            //Validar si tiene letras con una expresion regular
+            if (/[a-zA-Z]/.test(taxPercentage)) {
+                taxPercentage = 0;
             }
 
-            //Si el taxPercentage tiene un 0 a la izquierda, quitarlo
-            if ($(this).val() != 0) {
-                let taxPercentage = $(this).val();
+            //Validar si tiene un punto o coma
+            if (taxPercentage.includes(".") || taxPercentage.includes(",")) {
+                taxPercentage = taxPercentage.replace(",", ".");
 
-                if (taxPercentage.charAt(0) == "0") {
-                    taxPercentage = taxPercentage.substring(1);
+                //Obtener los valores a la izquierda y derecha del punto
+                let left = taxPercentage.split(".")[0];
+                let right = taxPercentage.split(".")[1];
+
+                //Si el taxPercentage tiene un numero a la izquierda y nada a la derecha, no hacer nada
+                if (!isNaN(left) && right == "") {
+                    return;
+                } else {
+                    taxPercentage = left + "." + right;
+                    taxPercentage = parseFloat(taxPercentage);
                 }
 
-                //Convertir el taxPercentage a un numero
-                taxPercentage = parseInt(taxPercentage);
+                console.log(taxPercentage);
+            }
+
+            //Validar si el taxPercentage es un numero
+            if (isNaN(taxPercentage) || taxPercentage == "") {
+                $(this).val(0);
+            } else {
+                //Convertir el taxPercentage a un numero doble
+                taxPercentage = parseFloat(taxPercentage);
 
                 //Si el taxPercentage es mayor a 100, colocar 100
                 if (taxPercentage > 100) {

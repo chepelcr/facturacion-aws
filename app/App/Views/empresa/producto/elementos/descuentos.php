@@ -76,7 +76,7 @@
                                             </span>
                                         </div>
 
-                                        <input class="form-control form-control-sm discount-inp discount_percentage calcular-producto inp" name="discounts[0][percentage]" min="0" type="number" max="100" value="0">
+                                        <input class="form-control form-control-sm discount-inp discount_percentage inp" name="discounts[0][percentage]" min="0" type="number" max="100" value="0">
                                     </div>
                                 </div>
                             </div>
