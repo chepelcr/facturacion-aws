@@ -73,16 +73,16 @@ function cargar_listado(
           }
         })
         .fail(function (xhr, textStatus, errorThrown) {
-          response = xhr.responseText;
+          let response = xhr.responseText;
 
-          if (response != null && response != "") {
-            response = JSON.parse(response);
-          } else {
-            response = { error: "Error desconocido", "status": xhr.status };
+          if(response == null || response == "" || response == undefined || response == "null") {
+            response = "{ \"message\": \"Error desconocido\", \"status\": " + xhr.status + " }";
           }
 
+          response = JSON.parse(response);
+
           //Mostrar la respuesta
-          notificacion(response.error, "", "error");
+          notificacion(response.message, "", "error");
 
           //Cargar el listado
           cargar_contenido(getErrorPage(response), "cargando");
@@ -156,7 +156,7 @@ function getErrorPage(error) {
   const headline = $("<h2>").addClass("headline text-warning").text(error.status);
   const errorContent = $("<div>").addClass("error-content");
   const h3 = $("<h3>").text("Atencion");
-  const p = $("<p>").text(error.error);
+  const p = $("<p>").text(error.message);
 
   errorContent.append(h3, p);
   errorPage.append(headline, errorContent);

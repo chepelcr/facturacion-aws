@@ -17,7 +17,7 @@ class ProductsApi extends IvoisApi {
      * @param $taxpayerId Identificador del contribuyente
      */
     public function __construct($taxpayerId) {
-        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.details.products.url"));
+        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.details.products.url")); //, "http://172.19.0.3:8088");
     }
 
     /**
