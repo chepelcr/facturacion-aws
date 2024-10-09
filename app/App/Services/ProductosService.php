@@ -158,6 +158,10 @@ class ProductosService extends BaseService {
 
         $data = ProductValidations::validateProductStructure($data);
 
+        if(isset($data['error'])){
+            return (object) $data;
+        }
+
         return $productosApi->updateProduct($id, $data);
     }
 
@@ -169,6 +173,10 @@ class ProductosService extends BaseService {
         $productosApi = new ProductsApi(getTaxpayerId());
 
         $data = ProductValidations::validateProductStructure($data);
+
+        if(isset($data['error'])){
+            return $data;
+        }
 
         return $productosApi->saveProduct($data);
     }

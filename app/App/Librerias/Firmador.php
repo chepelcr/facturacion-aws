@@ -12,8 +12,7 @@ use JRTEC\XMLSecLibs_Hacienda\XMLSecurityKey;
  * @version 1.0.0
  * @author jcampos
  */
-class Firmador
-{
+class Firmador {
 
     const FROM_XML_STRING = 1;
     const FROM_XML_FILE = 2;
@@ -21,8 +20,7 @@ class Firmador
     const TO_XML_STRING = 4;
     const TO_XML_FILE = 5;
 
-    public function firmarXml($pfx, $pin, $input, $output, $path = null)
-    {
+    public function firmarXml($pfx, $pin, $input, $output, $path = null) {
 
         // Cargar un nuevo XML para ser firmado
         $xml = new \DOMDocument();

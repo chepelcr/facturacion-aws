@@ -4,11 +4,9 @@ namespace App\Librerias;
 
 use PHPQRCode\QRcode;
 
-class Myqr extends QRcode
-{
+class Myqr extends QRcode {
 
-    public function generarQR()
-    {
+    public function generarQR() {
 
         $qr = new QRcode();
         $contenido = 'www.jrtec.cl/verificar/documento/6';
@@ -43,8 +41,7 @@ class Myqr extends QRcode
         unlink($path);
         return base64_encode($png);
     }
-    public function codigoQR($data)
-    {
+    public function codigoQR($data) {
         $contenido = $data['url'];
         // $contenido = base_url()."/informes/verInforme/".$data['id_informe']."/".$data['codigo'];
         $qr = new QRcode();

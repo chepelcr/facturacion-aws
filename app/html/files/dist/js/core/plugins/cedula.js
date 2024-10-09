@@ -10,6 +10,8 @@ function obtener_contribuyente(cedula = null) {
             return false;
         }
 
+        const activeForm = $("#" + form_activo);
+
         Pace.track(function () {
             $.ajax({
                 url: "https:/apis.gometa.org/cedulas/" + cedula,
@@ -46,9 +48,7 @@ function obtener_contribuyente(cedula = null) {
                                         nombre_usuario = nombre_usuario + apellido;
 
                                         //Asignar el nombre de usuario
-                                        $("#" + form_activo)
-                                            .find(".nombre_usuario")
-                                            .val(nombre_usuario);
+                                        activeForm.find(".nombre_usuario").val(nombre_usuario);
                                     }
 
                                     //Si el tipo de identificacion es 02
@@ -58,19 +58,12 @@ function obtener_contribuyente(cedula = null) {
                                 }
 
                                 //Desactivar el nombre de usuario
-                                $("#" + form_activo)
-                                    .find(".nombre_usuario")
-                                    .attr("disabled", true);
-                                $("#" + form_activo)
-                                    .find(".nombre_usuario")
-                                    .attr("readonly", true);
+                                activeForm.find(".nombre_usuario").attr("disabled", true);
+                                activeForm.find(".nombre_usuario").attr("readonly", true);
                             } //Fin de validacion de submodulo activo
 
                             llenar_identificacion(nombre, cedula, tipoIdentificacion, form_activo);
-                        } //Fin de validacion de resultados
-
-                        //Si no hay elementos en el campo results, buscar en la base de datos del ministerio de hacienda
-                        else {
+                        } else {
                             obtener_hacienda(cedula);
                         }
                     }
@@ -83,6 +76,8 @@ function obtener_contribuyente(cedula = null) {
 } //Fin de obtener un contribuyente del ministerio de hacienda
 
 function llenar_identificacion(nombre, cedula, tipoIdentificacion, form_activo) {
+    const activeForm = $("#" + form_activo);
+
     if (tipoIdentificacion != "" && nombre != "") {
         activar_campos_cedula("agregar-todos", form_activo);
 
@@ -91,7 +86,7 @@ function llenar_identificacion(nombre, cedula, tipoIdentificacion, form_activo) 
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         });
 
-        cedula_formateada = formatear_cedula(cedula, tipoIdentificacion);
+        let cedula_formateada = formatear_cedula(cedula, tipoIdentificacion);
 
         //Si el tipo de identificacion es 02
         if (tipoIdentificacion == "02") {
@@ -104,21 +99,17 @@ function llenar_identificacion(nombre, cedula, tipoIdentificacion, form_activo) 
             }
         }
 
-        $("#" + form_activo)
-            .find(".identification_number")
-            .val(cedula_formateada);
+        activeForm.find(".identification_number").val(cedula_formateada);
 
-        $("#" + form_activo)
-            .find(".businessName")
-            .val(nombre);
+        activeForm.find(".businessName").val(nombre);
 
-        //                        $("#" + form_activo).find(".identification_typeId").val(response.tipoIdentificacion);
+        //                        activeForm.find(".identification_typeId").val(response.tipoIdentificacion);
 
         //Se debe asignar el tipo de identificacion de acuerdo al campo data-code de cada elemento del select
         //Ejemplo:
         //response.tipoIdentificacion = '01';
         //<option value="1" data-code="01">Fisica</option>
-        const identifications = $("#" + form_activo).find(".identification_typeId option");
+        const identifications = activeForm.find(".identification_typeId option");
 
         //Recorrer los options con un each
         $.each(identifications, function (i, option) {
@@ -130,21 +121,13 @@ function llenar_identificacion(nombre, cedula, tipoIdentificacion, form_activo) 
             }
         });
 
-        $("#" + form_activo)
-            .find(".nationality")
-            .val(188);
+        activeForm.find(".nationality").val(188);
 
         activar_campos_cedula("almacenando", form_activo);
     } else {
-        $("#" + form_activo)
-            .find(".businessName")
-            .val("");
-        $("#" + form_activo)
-            .find(".identification_typeId")
-            .val("");
-        $("#" + form_activo)
-            .find(".nationality")
-            .val("");
+        activeForm.find(".businessName").val("");
+        activeForm.find(".identification_typeId").val("");
+        activeForm.find(".nationality").val("");
 
         activar_campos_cedula("agregar-todos", form_activo);
 

@@ -22,9 +22,7 @@
                         <select name="receiver[nationality]" class="form-control inp nationality" onchange="validar_extranjero(this)">
                             <option value="">Seleccionar</option>
                             <?php foreach ($countries as $country) : ?>
-                                <option value="<?= $country->isoCode ?>" <?php if (isset($nationality) && $nationality->isoCode == $country->isoCode) {
-                                                                                echo "selected";
-                                                                            } ?> data-serviceStatus="<?= $country->serviceStatus ?>">
+                                <option value="<?= $country->isoCode ?>" data-serviceStatus="<?= $country->serviceStatus ?>">
                                     <?= $country->name ?>
                                 </option>
                             <?php endforeach ?>
@@ -46,9 +44,7 @@
                                 <select name="identification[typeId]" class="form-control inp identification_typeId">
                                     <option value="">Seleccionar</option>
                                     <?php foreach ($identificaciones as $identificationType) : ?>
-                                        <option value="<?= $identificationType->typeId ?>" <?php if (isset($identification) && $identificationType->typeId == $identification->typeId) {
-                                                                                                echo "selected";
-                                                                                            } ?> data-code="<?= $identificationType->code ?>">
+                                        <option value="<?= $identificationType->typeId ?>" data-code="<?= $identificationType->code ?>">
                                             <?= $identificationType->description ?></option>
                                     <?php endforeach ?>
                                 </select>
@@ -63,9 +59,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                                 </div>
-                                <input class="form-control inp identification_number" onchange="obtener_contribuyente(this.value)" name="receiver[identification][number]" type="text" placeholder="Ingrese el número de cédula" value="<?php if (isset($identification)) {
-                                                                                                                                                                                                                                    echo formatear_cedula($identification->number, $identification->code);
-                                                                                                                                                                                                                                } ?>" required max="100">
+                                <input class="form-control inp identification_number" onchange="obtener_contribuyente(this.value)" name="receiver[identification][number]" type="text" placeholder="Ingrese el número de cédula" required max="100">
 
                                 <div class="input-group-append">
                                     <!-- Boton para eliminar el contenido del campo -->
@@ -87,9 +81,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                         </div>
-                        <input class="form-control inp businessName" placeholder="Nombre del contribuyente" name="receiver[businessName]" required value="<?php if (isset($businessName)) {
-                                                                                                                                                    echo $businessName;
-                                                                                                                                                } ?>" type="text" max="100">
+                        <input class="form-control inp businessName" placeholder="Nombre del contribuyente" name="receiver[businessName]" type="text" max="100">
                     </div>
                 </div>
             </div>
@@ -102,7 +94,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <input type="text" class="form-control inp tradeName" name="receiver[tradeName]" placeholder="Nombre de la empresa" value="<?= $tradeName ?? $businessName ?>">
+                        <input type="text" class="form-control inp tradeName" name="receiver[tradeName]" placeholder="Nombre comercial de la empresa">
                     </div>
                 </div>
             </div>

@@ -489,6 +489,7 @@ class DocumentosService {
         $filters = array(
             'search' => "code_number:$code"
         );
+        
 
         $productosService = new ProductosService();
         return $productosService->getData('all', $filters);
@@ -602,7 +603,7 @@ class DocumentosService {
         $document = DocumentValidations::validateDocumentStructure($data);
 
         if (isset($document['error'])) {
-            return $document;
+            return (object) $document;
         }
 
         $documentsApi = new DocumentsApi(getTaxpayerId());

@@ -114,14 +114,14 @@ function validar_identificacion(identificacion = "") {
 
 /**Editar el cliente del documento activo */
 function editar_cliente() {
-    //Ocultar el boton de guardar del modal de cliente
-    $(".btt-grd-clt").hide();
+    //Mostrar el boton de guardar del modal de cliente
+    $(".btt-grd-clt").show();
 
     //Ocultar el boton de editar del modal de cliente
     $(".btt-edt-clt").hide();
 
     //Ocultar el boton de guardar cambios del modal de cliente
-    $(".btt-grd-clt-cambios").show();
+    $(".btt-grd-clt-cambios").hide();
 
     //Mostrar el boton de aceptar cliente
     $(".btt-aceptar-clt").hide();
@@ -157,7 +157,7 @@ function abrir_receptor() {
     //Abrir el modal del receptor
     $("#" + elemento_activo).modal("show");
 
-    form_activo = "frm-receptor-" + id_factura_activa;
+    form_activo = elemento_activo;
 
     //Collapse todos los card del elemento activo
     $("#" + form_activo)
@@ -177,17 +177,7 @@ function cerrar_clientes() {
 function validarCliente() {
     const activeDocument = $("#" + factura_activa);
 
-    var clienteValido = validarDataForm("frm_cliente");
-
-    inputs.each(function (index, input) {
-        if ($(input).attr("required") && $(input).val() == "") {
-            //Colocar un borde rojo al input
-            $(input).addClass("border-danger");
-            clienteValido = false;
-        } else {
-            $(input).removeClass("border-danger");
-        }
-    });
+    var clienteValido = validarDataForm(form_activo);
 
     //Si el cliente es valido, cerrar el modal .modal-clientes
     if (clienteValido) {
@@ -262,7 +252,9 @@ function buscar_clientes() {
         .fail(function (jqXHR, status, error) {
             response = jqXHR.responseText;
 
-            if (response != "") {
+            if (response == null || response == "" || response == undefined || response == "undefined" || response == "null") {
+                response = { message: "Error al obtener los clientes", status: jqXHR.status };
+            } else {
                 response = JSON.parse(response);
             }
 
@@ -273,8 +265,8 @@ function buscar_clientes() {
 /**Funcion cuando el usuario presiona la opcion para agregar un cliente en el modulo buscar_cliente */
 function agregar_cliente() {
     cerrar_clientes();
-
-    form_activo = "frm-receptor-" + id_factura_activa;
+    elemento_activo = "modal-receptor-" + id_factura_activa;
+    form_activo = elemento_activo;
 
     //Mostrar el boton de guardar del modal de cliente
     $(".btt-grd-clt").show();

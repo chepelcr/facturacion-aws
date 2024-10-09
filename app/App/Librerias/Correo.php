@@ -16,16 +16,14 @@ use PHPMailer\PHPMailer\Exception;
  * @version 1.0
  * @author jcampos
  */
-class Correo
-{
-    
+class Correo {
+
     /**
      * Funcion para enviar un correo
      * @param array $data Datos del correo
      * @return bool Estado del envio del correo
      */
-    public function enviarCorreo($data)
-    {
+    public function enviarCorreo($data) {
         $data = json_encode($data);
 
         $data = json_decode($data);

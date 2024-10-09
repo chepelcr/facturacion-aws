@@ -12,29 +12,31 @@ function agregar_documento(tipoDocumento = "") {
         data: data,
         type: "GET",
         dataType: "html",
-    }).done(function (data) {
-        cantidad_documentos++;
+    })
+        .done(function (data) {
+            cantidad_documentos++;
 
-        //Agregar el card de facturacion al la pagina
-        $("#contenedor_facturas").append(data);
+            //Agregar el card de facturacion al la pagina
+            $("#contenedor_facturas").append(data);
 
-        boton = crearBotonFactura(cantidad_documentos);
+            boton = crearBotonFactura(cantidad_documentos);
 
-        //Agregar el boton de la factura al la pagina
-        $("#nav-facturacion").append(boton);
+            //Agregar el boton de la factura al la pagina
+            $("#nav-facturacion").append(boton);
 
-        ver_factura(cantidad_documentos);
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        response = jqXHR.responseText;
+            ver_factura(cantidad_documentos);
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            response = jqXHR.responseText;
 
-        if (response != null && response != "") {
-            response = JSON.parse(response);
-        } else {
-            response = { error: "Error desconocido", status: jqXHR.status };
-        }
-        
-        mensajeAutomatico("Error", response.error, "error");
-    });
+            if (response != null && response != "") {
+                response = JSON.parse(response);
+            } else {
+                response = { error: "Error desconocido", status: jqXHR.status };
+            }
+
+            mensajeAutomatico("Error", response.error, "error");
+        });
 } //Fin de agregar una nueva factura al modulo
 
 function crearBotonFactura(numero_documento) {
@@ -138,10 +140,16 @@ function cargar_documentos(reportType = "") {
                 error: function (jqXHR, textStatus, errorThrown) {
                     response = jqXHR.responseText;
 
-                    if (response != null && response != "") {
-                        response = JSON.parse(response);
+                    if (
+                        response == null ||
+                        response == "" ||
+                        response == undefined ||
+                        response == "undefined" ||
+                        response == "null"
+                    ) {
+                        response = { message: "Error desconocido", status: jqXHR.status };
                     } else {
-                        response = { error: "Error desconocido", status: jqXHR.status };
+                        response = JSON.parse(response);
                     }
 
                     errorPage = getErrorPage(response);

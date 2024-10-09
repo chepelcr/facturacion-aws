@@ -6,8 +6,7 @@ use DOMDocument;
 use Exception;
 
 /**Libreria para el manejo de documentos electronicos con base en los requerimientos del MH */
-class Hacienda
-{
+class Hacienda {
     /**Almacenar el token obtenido del ministerio de Hacienda */
     private $token = null;
 
@@ -18,21 +17,18 @@ class Hacienda
 
     private $xml64 = null;
 
-    public function __construct($clave = null)
-    {
+    public function __construct($clave = null) {
         $this->clave = $clave;
     }
 
-    public function setClave($clave)
-    {
+    public function setClave($clave) {
         $this->clave = $clave;
 
         return $this;
     }
 
     /** Obtener un token del ministerio de hacienda */
-    private function token()
-    {
+    private function token() {
         /**Si han pasado mas de 5 minutos desde que se obtuvo el token */
         if (($this->token_time) && (time() - $this->token_time) > (5 * 60)) {
             /**Se elimina el token */
@@ -74,8 +70,7 @@ class Hacienda
 
 
     /**Fimar un documento XML */
-    public function firmar($stringXML)
-    {
+    public function firmar($stringXML) {
         try {
             $clave = $this->clave;
 
@@ -98,8 +93,7 @@ class Hacienda
     } //Fin del firmador del documento
 
     /**Enviar un XML al ministerio de hacienda */
-    public function enviar($callback = false)
-    {
+    public function enviar($callback = false) {
         $xml64 = $this->xml64;
         $clave = $this->clave;
 
@@ -175,8 +169,7 @@ class Hacienda
     } //Fin de enviarXml
 
     /**Validar un documento por clave */
-    public function validar()
-    {
+    public function validar() {
         $clave = $this->clave;
 
         //token
@@ -215,8 +208,7 @@ class Hacienda
     } //Fin de validar
 
     /**Enviar un documento por correo electronico */
-    public function enviar_documento($id_documento)
-    {
+    public function enviar_documento($id_documento) {
         $documentoModel = model('documento');
 
         $documento = $documentoModel->obtener($id_documento);
@@ -361,8 +353,7 @@ class Hacienda
         return false;
     } //Fin de la funcion para enviar un documento por correo electronico
 
-    public function validar_respuesta($respuesta)
-    {
+    public function validar_respuesta($respuesta) {
         $clave = $this->clave;
         $xml = json_decode($respuesta, true);
 

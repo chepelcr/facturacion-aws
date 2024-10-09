@@ -18,7 +18,7 @@ class ProductValidations {
      * @param array $taxLines Lineas de impuesto del producto o servicio
      * @return array Lineas de impuesto validadas
      */
-    public static function validateTaxes($taxLines) {
+    private static function validateTaxes($taxLines) {
 
         $newTaxes = array();
 
@@ -41,8 +41,19 @@ class ProductValidations {
         $newDiscounts = array();
 
         foreach ($discounts as $discount) {
-            if ($discount['reason'] != '' && ($discount['percentage'] != '' && $discount['percentage'] > 0)) {
+            $reason = $discount['reason'];
+            $percentage = (int) $discount['percentage'];
+
+            if ($reason != '' && $percentage != '' && $percentage > 0) {
                 $newDiscounts[] = $discount;
+            } else {
+                if(($reason == '' && $percentage > 0) || ($reason != '' && $percentage == 0)){
+                    return array(
+                        'message' => 'No se han ingresado los campos del descuento',
+                        'status' => '400',
+                        'error' => 'Bad Request'
+                    );
+                }
             }
         }
 
@@ -53,12 +64,26 @@ class ProductValidations {
         //Si el producto tiene impuestos
         if (isset($product['taxes'])) {
             $product['taxes'] = self::validateTaxes($product['taxes']);
+
+            if(isset($product['taxes']['error'])){
+                return $product['taxes'];
+            } elseif(empty($product['taxes'])){
+                unset($product['taxes']);
+            }
         }
 
         //Si el producto tiene descuentos
         if (isset($product['discounts'])) {
             $product['discounts'] = self::validateDiscounts($product['discounts']);
+
+            if(isset($product['discounts']['error'])){
+                return $product['discounts'];
+            } elseif(empty($product['discounts'])){
+                unset($product['discounts']);
+            }
         }
+
+
 
         return $product;
     }

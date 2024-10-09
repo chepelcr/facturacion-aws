@@ -70,7 +70,7 @@
                             <td>
                                 <div class="dropdown dropleft">
                                     <!-- Descargar -->
-                                    <button onclick="descargarPdf('<?= $documentUrl ?>', '<?= $documento->documentName ?>')" type="button" data-toggle="tooltip" data-placement="top" title="Descargar documento" class="btn btn-danger btn-descargar">
+                                    <button onclick="descargarArchivo('<?= $documentUrl ?>', '<?= $documento->documentName ?>', 'pdf')" type="button" data-toggle="tooltip" data-placement="top" title="Descargar documento" class="btn btn-danger btn-descargar">
                                         <i class="fas fa-download"></i>
                                     </button>
 

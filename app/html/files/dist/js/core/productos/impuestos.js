@@ -108,8 +108,6 @@ function activar_porcentajes_producto(select) {
     //Obtener el valor data-code del select
     var code = $(select).find("option:selected").data("code");
 
-    let selectValue = $(select).val();
-
     //Si el valor del select es '01' o '07' activar el select de taxRates
     if (code == "01" || code == "07") {
         //Activar el campo del porcentaje
@@ -315,13 +313,13 @@ function agregar_impuesto_cabys() {
 
     $.each(taxRates, function (i, option) {
         //Obtener el data-percentage del option
-        var percentage = $(option).data("percentage");
+        const percentage = $(option).data("percentage");
 
-        //Obtener el data-rateTypeId del option
-        var rateTypeId = $(option).data("rateTypeId");
+        //Obtener el tipo de tarifa seleccionado
+        const rateTypeId = $(option).data("ratetypeid");
 
         //Si el valor del porcentaje es igual al porcentaje de impuesto sugerido y el rateTypeId es diferente de 3
-        if (percentage == impuestoSugerido && rateTypeId != 3) {
+        if (percentage == impuestoSugerido && rateTypeId != "3") {
             //Marcar el select como seleccionado
             option.selected = true;
 
@@ -332,6 +330,8 @@ function agregar_impuesto_cabys() {
     });
 
     calcular_valor_producto(form_activo);
+
+    validateTaxLines(form_activo);
 }
 
 /**Eliminar una linea de impuesto */
@@ -367,61 +367,7 @@ function calcular_impuestos_producto() {
     }
 
     //Obtener la tabla de impuestos
-    var taxesTable = form.find(".taxesTable");
-
-    //Obtener todas las lineas de impuestos
-    var taxLines = taxesTable.find(".taxLine");
-
-    //Recorrer todas las lineas de impuestos
-    taxLines.each(function (index, taxLine) {
-        //Calcular el impuesto de la linea
-        var impuesto = calcular_impuesto_producto(taxLine, netValue);
-
-        //Sumar el impuesto a la variable impuestoTotal
-        impuestoTotal += impuesto;
-    });
-
-    //Colocar el impuesto total en el campo .ivNetoVL
-    form.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 2, monedaDocumento));
-
-    return impuestoTotal;
-}
-
-/**Calcular una linea de impuesto */
-function calcular_impuesto_producto(taxLine = null, netValue = 0) {
-    if (taxLine != null) {
-        taxLine = $(taxLine);
-
-        var taxPercentage = taxLine.find(".taxPercentage").val();
-
-        if (taxPercentage == undefined || taxPercentage == "") {
-            taxPercentage = 0;
-        }
-
-        var impuesto = (netValue * taxPercentage) / 100;
-
-        var impuesto_neto = impuesto;
-
-        taxLine.find(".tax_amount").val(impuesto);
-        taxLine.find(".tax_amount_money").val(formato_moneda(impuesto, 2, monedaDocumento));
-
-        return impuesto_neto;
-    } //Fin de validacion de taxLine
-} //Fin del calculo de la linea de impuesto
-
-/**
- * Contar el porcentaje de impuesto de todas las lineas
- *
- * @returns  porcentaje del impuesto
- *
- */
-function contar_porcentaje_impuesto(form_activo) {
-    const form = $("#" + form_activo);
-
-    var porcentaje = 0;
-
-    //Obtener la tabla de impuestos
-    var taxesTable = form.find(".taxesTable");
+    const taxesTable = form.find(".taxesTable");
 
     //Obtener todas las lineas de impuestos
     const taxLines = taxesTable.find(".taxLine");
@@ -429,22 +375,80 @@ function contar_porcentaje_impuesto(form_activo) {
     //Recorrer todas las lineas de impuestos
     taxLines.each(function (index, taxLine) {
         //Calcular el impuesto de la linea
-        var taxPercentage = $(taxLine).find(".taxPercentage").val();
+        impuestoTotal += calcular_impuesto_producto(taxLine, netValue);
+    });
 
-        console.log("Porcentaje de impuesto: " + taxPercentage);
+    //Colocar el impuesto total en el campo .ivNetoVL
+    form.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 3));
 
-        taxPercentage = parseFloat(taxPercentage);
+    return impuestoTotal;
+}
+
+/**Calcular una linea de impuesto */
+function calcular_impuesto_producto(taxLine = null, netValue = 0) {
+    taxLine = $(taxLine);
+
+    let taxAmount = 0;
+
+    var taxPercentage = taxLine.find(".taxPercentage").val();
+
+    if (taxPercentage == undefined || taxPercentage == "") {
+        taxPercentage = 0;
+    }
+
+    if (taxPercentage > 0) {
+        taxPercentage = new Decimal(taxPercentage).dividedBy(100).toDecimalPlaces(3).toNumber();
+
+        console.log("Porcentaje de impuesto total: " + taxPercentage);
+
+        taxAmount = new Decimal(netValue).times(taxPercentage).toDecimalPlaces(3).toNumber();
+
+        console.log("Valor impuesto: " + taxAmount);
+        
+
+        /*taxAmount = new Decimal(netValue).times(taxPercentage).dividedBy(100).toNumber();
+        taxAmount = taxAmount.toFixed(2);*/
+    }
+
+    console.log("Porcentaje de impuesto: " + taxPercentage);
+    console.log("Valor neto: " + netValue);
+    console.log("Valor impuesto: " + taxAmount);
+
+    taxLine.find(".tax_amount").val(taxAmount);
+    taxLine.find(".tax_amount_money").val(formato_moneda(taxAmount, 3));
+
+    return taxAmount;
+} //Fin del calculo de la linea de impuesto
+
+/**
+ * Contar el porcentaje de impuesto de todas las lineas
+ *
+ * @param {string} form_activo
+ * @returns  porcentaje del impuesto
+ */
+function contar_porcentaje_impuesto(form_activo) {
+    const form = $("#" + form_activo);
+
+    let totalTaxPercentage = 0;
+    //Obtener la tabla de impuestos
+    const taxesTable = form.find(".taxesTable");
+
+    //Obtener todas las lineas de impuestos
+    const taxLines = taxesTable.find(".taxLine");
+
+    //Recorrer todas las lineas de impuestos
+    taxLines.each(function (index, taxLine) {
+        //Calcular el impuesto de la linea
+        let taxPercentage = $(taxLine).find(".taxPercentage").val();
 
         if (taxPercentage == "" || isNaN(taxPercentage)) {
             taxPercentage = 0;
         }
 
-        porcentaje += parseFloat(taxPercentage);
+        totalTaxPercentage += parseFloat(taxPercentage);
     });
 
-    console.log("Porcentaje de impuestos: " + porcentaje);
-
-    return porcentaje;
+    return totalTaxPercentage;
 }
 
 function validateTaxLines(form_activo) {

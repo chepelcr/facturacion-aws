@@ -32,7 +32,8 @@
 <!-- Plugins | Modernizr -->
 <?= getScript('plugins/modernizr-custom/modernizr-custom') ?>
 
-
+<!-- Plugins | Decimal-JS -->
+<?= getScript('https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js', true) ?>
 
 <!-- Scripts -->
 
@@ -45,6 +46,9 @@
 <?php
 if (is_login()) {
 ?>
+
+    <!-- Imports -->
+    <?= getScript('core/imports') ?>
 
     <!-- Core | Navegacion | Cargar -->
     <?= getScript('core/navegacion/cargar') ?>
@@ -135,8 +139,6 @@ if (is_login()) {
 
     <!-- Facturacion | Lineas | Impuestos -->
     <?= getScript('core/facturacion/lineas/impuestos') ?>
-
-
 
     <!-- Core | Seguridad | Contrasenia -->
     <?= getScript('core/seguridad/contrasenia') ?>

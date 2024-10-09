@@ -4,11 +4,9 @@ namespace App\Librerias;
 
 use ZipArchive;
 
-class Reportes
-{
+class Reportes {
     /**Generar un documento en pdf */
-    public function generar_pdf($clave)
-    {
+    public function generar_pdf($clave) {
         $pdf = new Pdf_Manager();
         $qr = new Myqr();
 
@@ -46,8 +44,7 @@ class Reportes
         }
     }
 
-    public function generar_reporte_documentos($claves = array(), $tipo = 'descarga')
-    {
+    public function generar_reporte_documentos($claves = array(), $tipo = 'descarga') {
         //Crear un nuevo archivo zip vacio
         $zip = new ZipArchive();
 

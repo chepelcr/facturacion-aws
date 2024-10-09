@@ -6,12 +6,10 @@ use Dompdf\Dompdf;
 
 use Core\Config\Header;
 
-class Pdf_Manager
-{
+class Pdf_Manager {
 
     /**Ver un archivo en pdf */
-    public function load_view($view, $data = array())
-    {
+    public function load_view($view, $data = array()) {
         $dompdf = new Dompdf(array('isPhpEnabled' => true, 'isRemoteEnabled' => true));
         $dompdf->setPaper("letter");
         $html = view($view, $data);
@@ -26,8 +24,7 @@ class Pdf_Manager
     }
 
     /**Descargar un archivo en pdf */
-    public function download_view($view, $data = array())
-    {
+    public function download_view($view, $data = array()) {
         $dompdf = new Dompdf(array('isPhpEnabled' => true, 'isRemoteEnabled' => true));
         $dompdf->setPaper("letter");
         $html = view($view, $data);
@@ -43,8 +40,7 @@ class Pdf_Manager
         $dompdf->stream($data["nombre_archivo"], array("Attachment" => 1)); // para descargar
     }
 
-    public function temp_view($view, $data = array())
-    {
+    public function temp_view($view, $data = array()) {
         $dompdf = new Dompdf(array('isPhpEnabled' => true, 'isRemoteEnabled' => true));
         $html = view($view, $data);
         $dompdf->loadHtml($html);
@@ -53,8 +49,7 @@ class Pdf_Manager
         return $output;
     }
 
-    public function preview($view, $data = array())
-    {
+    public function preview($view, $data = array()) {
         $dompdf = new DOMPDF(array('isPhpEnabled' => true));
         $html = view($view, $data);
         $dompdf->loadHtml($html);
@@ -63,8 +58,7 @@ class Pdf_Manager
     }
 
     /**Guardar un archivo pdf en el sistema */
-    public function save_view($view, $data = array())
-    {
+    public function save_view($view, $data = array()) {
         $dompdf = new Dompdf(array('isPhpEnabled' => true));
         $html = view($view, $data);
         $dompdf->loadHtml($html);

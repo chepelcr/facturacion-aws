@@ -161,38 +161,38 @@ function agregar_descuentos_producto(descuentos = []) {
 
 /** Calcular el valor de los descuentos de una linea de detalle */
 function calcular_descuentos_producto() {
-    var descuento_total = 0;
-
-    var descuento = 0;
-
     const form = $("#" + form_activo);
 
-    var netValue = form.find(".netValue").val();
+    let descuento_total = 0;
+
+    let netValue = form.find(".netValue").val();
 
     if (netValue == "" || isNaN(netValue)) {
         netValue = 0;
     }
 
-    netValue = parseFloat(netValue);
-
-    var discounts = form.find(".discounts");
+    const discounts = form.find(".discounts");
 
     discounts.find(".discountLine").each(function (i, discountLine) {
-        descuento = calcular_descuento_producto(discountLine);
-        descuento_total += descuento;
+        descuento_total += calcular_descuento_producto(discountLine, netValue);
     });
 
-    descuento_total = parseFloat(descuento_total);
+    /*descuento_total = parseFloat(descuento_total);
 
     //Colocar el valor del subtotal
-    var subtotal = netValue - descuento_total;
+    var subtotal = netValue - descuento_total;*/
+
+    //descuento_total = descuento_total.toFixed(2);
+
+    //netValue = new Decimal(netValue);
+    const subtotal = new Decimal(netValue).minus(descuento_total).toDecimalPlaces(3).toNumber();
 
     //Colocar el valor total de los descuentos
     form.find(".total_discount").val(descuento_total);
-    form.find(".total_discount_money").val(formato_moneda(descuento_total, 2, monedaDocumento));
+    form.find(".total_discount_money").val(formato_moneda(descuento_total, 3));
 
     form.find(".subtotal").val(subtotal);
-    form.find(".subtotal_money").val(formato_moneda(subtotal, 2, monedaDocumento));
+    form.find(".subtotal_money").val(formato_moneda(subtotal, 3));
 
     validateDiscountLines(form_activo);
 
@@ -200,58 +200,41 @@ function calcular_descuentos_producto() {
 } //Fin del metodo calcular_descuento
 
 /**Calcular el descuento de una linea */
-function calcular_descuento_producto(discountLine = null) {
+function calcular_descuento_producto(discountLine, netValue = null) {
     const form = $("#" + form_activo);
 
-    var descuento = 0;
-    var total_descuento = 0;
+    let descuento = 0;
 
-    if (discountLine != null) {
-        //Obtener el valor netValue de la linea
-        var netValue = form.find(".netValue").val();
-
-        if (netValue == "" || isNaN(netValue)) {
+    if (netValue == null) {
+        netValue = form.find(".netValue").val();
+    } else {
+        if (isNaN(netValue) || netValue == "") {
             netValue = 0;
         }
+    }
 
-        var discount_percentage = parseInt($(discountLine).find(".discount_percentage").val());
+    let discount_percentage = $(discountLine).find(".discount_percentage").val();
 
-        if (discount_percentage == "" || isNaN(discount_percentage)) {
-            discount_percentage = 0;
-        }
+    console.log("Descuento: ", discount_percentage);
 
-        netValue = parseFloat(netValue);
-        discount_percentage = parseFloat(discount_percentage);
+    if (discount_percentage == "" || isNaN(discount_percentage)) {
+        discount_percentage = 0;
+    } else {
+        discount_percentage = parseInt(discount_percentage);
+    }
 
-        //Calcular el descuento
-        descuento = (discount_percentage * netValue) / 100;
+    if (discount_percentage > 0) {
+        console.log("NetValue: ", netValue);
 
-        //Redondear el descuento
-        descuento = parseFloat(descuento);
+        descuento = new Decimal(netValue).times(discount_percentage).dividedBy(100).toDecimalPlaces(3).toNumber();
+    }
 
-        $(discountLine).find(".discount_amount").val(descuento);
+    console.log("Descuento: ", descuento);
 
-        //Colocar el descuento en la linea de descuento
-        $(discountLine).find(".discount_amount_money").val(formato_moneda(descuento, 2, monedaDocumento));
+    $(discountLine).find(".discount_amount").val(descuento);
 
-        //Obtener el total de los descuentos
-        total_descuento = form.find(".total_discount").val();
-
-        //Si el total de los descuentos no esta vacio y es mayor a 0
-        if (total_descuento != "" && total_descuento > 0) {
-            //Sumar el total de los descuentos
-            total_descuento = parseFloat(total_descuento + descuento);
-        } else {
-            total_descuento = descuento;
-        }
-
-        //Colocar el total de los descuentos
-        form.find(".total_discount").val(total_descuento);
-
-        total_descuento = formato_moneda(total_descuento, 2, monedaDocumento);
-
-        form.find(".total_discount_money").val(total_descuento);
-    } //Fin de validacion de linea
+    //Colocar el descuento en la linea de descuento
+    $(discountLine).find(".discount_amount_money").val(formato_moneda(descuento, 3));
 
     return descuento;
 } //Fin del metodo calcular_descuento
