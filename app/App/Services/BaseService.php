@@ -11,7 +11,7 @@ abstract class BaseService
 
     abstract public function create($data);
 
-    abstract public function update($id, $data);
+    abstract public function update($id, $data, $reinsert = false);
 
     abstract public function changeStatus($id, $data);
 

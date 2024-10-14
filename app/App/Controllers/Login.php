@@ -136,32 +136,23 @@ class Login extends BaseController {
     } //Fin de la funcion
 
     /**Recuperar la contrasenia de un usuario */
-    public function recuperar() {
+    public function update($id, $data, $reinsert = false) {
         if (!is_login()) {
-            if (post('correo')) {
-                $correo = post('correo');
-
+            //Validar si el correo cumple con el formato
+            if ($id != '' && filter_var($id, FILTER_VALIDATE_EMAIL)) {
                 $usuarioService = new UsuariosService();
-                $data = $usuarioService->enviarContraseniaTemporalPorCorreo($correo);
+                $response = $usuarioService->enviarContraseniaTemporalPorCorreo($id);
             } else {
-                $data = (
-                    array(
-                        'error' => 'No se ha ingresado el correo.',
-                        'status' => '400'
-                    )
-                );
+                $response = $this->object_error('400', 'El correo del usuario no es valido');
             }
         } else {
-            $data = array(
-                'error' => 'Ya ha iniciado sesión.',
-                'status' => '400'
-            );
+            $response = $this->object_error('400', 'Ya ha iniciado sesion');
         }
 
-        if (isset($data['error'])) {
-            return $this->error($data);
+        if (isset($response->error)) {
+            return $this->error($response);
         } else {
-            return json_encode($data);
+            return json_encode($response);
         }
     } //Fin del metodo para recuperar la contrasenia
 } //Fin del controlador de login

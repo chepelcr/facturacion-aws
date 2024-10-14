@@ -31,8 +31,6 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-#RUN apt-get update && apt-get install -y nodejs npm
-
 # Habilita el módulo de Apache mod_rewrite
 RUN a2enmod rewrite
 
@@ -50,9 +48,6 @@ RUN chmod -R 755 /var/www
 
 # Actualizar Composer
 RUN composer update
-
-# Correr el comando npm install
-#RUN npm install
 
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html

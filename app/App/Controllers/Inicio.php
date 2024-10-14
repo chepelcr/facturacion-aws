@@ -24,4 +24,9 @@ class Inicio extends BaseController
             header('Location: ' . baseUrl('login'));
         }
     } //Fin de la funcion index
+
+    public function update($id, $data, $reinsert = false) {
+        $error = $this->object_error('400', 'La acción no está permitida');
+        return $this->error($error);
+    }
 } //Fin de la clase

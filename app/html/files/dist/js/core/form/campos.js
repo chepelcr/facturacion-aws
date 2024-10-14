@@ -131,7 +131,7 @@ function activar_campos_cedula(estado = "agregar", nombre_elemento = "") {
         activar_campo_clase("nationality", false, nombre_elemento);
 
         activar_campo_clase("btn-eliminar", true, nombre_elemento);
-    } else if (estado == "editar" || estado == "ver") {
+    } else if (estado == "editar" || estado == "ver" || estado == "reinsertar") {
         activar_campo_clase("identification_number", true, nombre_elemento);
 
         activar_campo_clase("businessName", true, nombre_elemento);
@@ -165,7 +165,7 @@ function campos_cabys(estado = "ver", elemento = "") {
         activar_campo_clase("cabys", true, elemento);
         //Inhabilitar el btn-cabys
         activar_campo_clase("btn-cabys", true, elemento);
-    } else if (estado == "agregar" || estado == "editar") {
+    } else if (estado == "agregar" || estado == "editar" || estado == "reinsertar") {
         activar_campo_clase("cabys", true, elemento);
         //Habilitar el btn-cabys
         activar_campo_clase("btn-cabys", false, elemento);

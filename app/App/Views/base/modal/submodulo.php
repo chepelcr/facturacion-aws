@@ -97,7 +97,6 @@
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </div>
-
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -130,6 +129,12 @@
                                             <div class="col-md-2 btt-edt">
                                                 <button type="button" class="btn btn-secondary btn-edt btn-block" onclick="editar()" data-toggle="tooltip" title="Editar">
                                                     <i class="fas fa-edit"></i>
+                                                </button>
+                                            </div>
+
+                                            <div class="col-md-2 btt-rst">
+                                                <button type="button" class="btn btn-warning btn-rst btn-block" onclick="reinsertar()" data-toggle="tooltip" title="Reinsertar">
+                                                    <i class="fas fa-undo"></i>
                                                 </button>
                                             </div>
                                         <?php endif; ?>

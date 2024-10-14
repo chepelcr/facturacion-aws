@@ -42,7 +42,7 @@ function activarUnidadComercial(estado = "ver", form_activo = "") {
     const selectOption = $(select).find("option:selected");
     const code = $(selectOption).data("code");
 
-    if (estado == "editar" || estado == "agregar") {
+    if (estado == "editar" || estado == "agregar" || estado == "reinsertar") {
         //Validar si el codigo esta definido y si contiene la palabra 'Otros'
         if (code != undefined && code.includes("Otros")) {
             //Habilitar el campo de unidad de medida comercial

@@ -153,7 +153,7 @@ class ProductosService extends BaseService {
      * @param string $id Identificador del producto
      * @param array $data Datos del producto
      */
-    public function update($id, $data) {
+    public function update($id, $data, $reinsert = false) {
         $productosApi = new ProductsApi(getTaxpayerId());
 
         $data = ProductValidations::validateProductStructure($data);
@@ -162,7 +162,7 @@ class ProductosService extends BaseService {
             return (object) $data;
         }
 
-        return $productosApi->updateProduct($id, $data);
+        return $productosApi->updateProduct($id, $data, $reinsert);
     }
 
     /**

@@ -65,10 +65,13 @@ class Routes {
                     } else {
                         echo $controller->guardar($_POST);
                     }
-                } //Fin de la validacion de la solicitud
+                } else {
+                    $this->estado = 400;
+                    $error = $this->data_error('No se ha enviado datos para guardar');
 
-                else
-                    header('Location: ' . baseUrl(getSegment(1)));
+                    echo $controller->error($error);
+                }
+
                 break;
 
                 //Obtener una fila especifica del objeto solicitado
@@ -77,61 +80,69 @@ class Routes {
                 if (post()) {
                     if (getSegment(3) && getSegment(4)) {
                         $controller->setObjectName(getSegment(3));
-                        echo $controller->update(getSegment(4), $_POST);
+
+                        //Si el segmento 5 es diferente de vacio, y se llama 'reinsertar'
+                        if (getSegment(5) == 'reinsertar') {
+                            echo $controller->update(getSegment(4), $_POST, true);
+                        } else {
+                            echo $controller->update(getSegment(4), $_POST);
+                        }
                     } elseif (getSegment(3)) {
                         echo $controller->update(getSegment(3), $_POST);
                     } else {
-                        echo $this->data_error('No se ha enviado el id del objeto a actualizar');
+                        $this->estado = 400;
+
+                        $error = $this->data_error('No se ha enviado el id del objeto a actualizar');
+                        echo $controller->error($error);
                     }
                 } else {
-                    echo $this->data_error('No se ha enviado datos para actualizar');
+                    $this->estado = 400;
+
+                    $error = $this->data_error('No se ha enviado datos para actualizar');
+                    echo $controller->error($error);
                 }
                 break;
 
                 //Activar un objeto especifico
-                //http://localhost/controlador/activar/objeto/id
-            case 'activar':
-                if (getSegment(3) && getSegment(4)) {
-                    $controller->setObjectName(getSegment(3));
-                    echo $controller->activar(getSegment(4));
-                } elseif (getSegment(3)) {
-                    echo $controller->activar(getSegment(3));
-                } else {
-                    echo $controller->activar();
-                }
-                break;
+                //http://localhost/controlador/change_status/objeto/id
+            case 'change_status':
+                $status = post('status');
 
-                //Desactivar un objeto especifico
-                //http://localhost/controlador/desactivar/objeto/id
-            case 'desactivar':
+                if (!$status) {
+                    $this->estado = 400;
+                    $error = $this->data_error('No se ha enviado el estado del objeto a actualizar');
+
+                    echo $controller->error($error);
+                    break;
+                }
+
                 if (getSegment(3) && getSegment(4)) {
                     $controller->setObjectName(getSegment(3));
-                    echo $controller->desactivar(getSegment(4));
+
+                    echo $controller->change_status(getSegment(4), $status);
                 } elseif (getSegment(3)) {
-                    echo $controller->desactivar(getSegment(3));
+                    echo $controller->change_status(getSegment(3), $status);
                 } else {
-                    echo $controller->desactivar();
+
+                    $this->estado = 400;
+
+                    $error = $this->data_error('No se ha enviado el id del objeto a actualizar');
+                    echo $controller->error($error);
                 }
                 break;
 
             case 'obtener':
-                /**Obtener una fila especifica del objeto solicitado 
-                 * 
-                 * http://localhost/controlador/obtener/objeto/id
-                 */
-                if (getSegment(3) && getSegment(4))
+                if (getSegment(3) && getSegment(4)) {
+                    //http://localhost/controlador/obtener/objeto/id
                     echo $controller->obtener(getSegment(4), getSegment(3));
+                } elseif (getSegment(3)) {
+                    // http://localhost/controlador/obtener/all
 
-                /**Obtener todos los registros del modulo solicitado 
-                 * 
-                 * http://localhost/controlador/obtener/all
-                 */
-                elseif (getSegment(3))
                     echo $controller->obtener(getSegment(3));
-
-                /**Realizar la accion por defecto del metodo */
-                else
+                } else {
+                    //http://localhost/controlador/obtener
                     echo $controller->obtener();
+                }
                 break;
 
             case 'validar':
@@ -219,7 +230,9 @@ class Routes {
     private function data_error($mensaje) {
         $error = array(
             'status' => $this->estado,
-            'error' => $mensaje
+            'message' => $mensaje,
+            'error' => 'Not Found',
+            'timestamp' => date('Y-m-d H:i:s')
         );
 
         $data = json_encode($error);

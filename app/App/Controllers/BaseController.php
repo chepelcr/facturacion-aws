@@ -13,7 +13,7 @@ use App\Services\DocumentosService;
  * @author jcampos
  * @subpackage BaseController
  */
-class BaseController extends Controller
+abstract class BaseController extends Controller
 {
     protected $helpers = ['login', 'modulos', 'facturacion', 'data'];
 
@@ -64,4 +64,6 @@ class BaseController extends Controller
     {
         return view('base/listado', $data);
     }
+
+    //abstract function update($id, $data, $reinsert = false);
 }//Fin de la clase

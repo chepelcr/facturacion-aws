@@ -220,13 +220,18 @@ function llenarObjeto(nombre_form, objeto, estado) {
         calcular_con_precio_venta(nombre_form, objeto.salePrice);
     }
 
-    activar_campos_formulario(nombre_form, estado);
+    //Si existe el campo objeto.status
+    if (objeto.status) {
+        activar_campos_formulario(nombre_form, estado, objeto.status);
+    } else {
+        activar_campos_formulario(nombre_form, estado);
+    }
 
     //Abrir el card
     activeForm.find(".card").CardWidget("expand");
 }
 
-function activar_campos_formulario(nombre_form, estado = "ver") {
+function activar_campos_formulario(nombre_form, estado = "ver", status = 1) {
     let modulo = modulo_activo;
     let submodulo = submodulo_activo;
 
@@ -248,7 +253,7 @@ function activar_campos_formulario(nombre_form, estado = "ver") {
         activar_campo_clase("email", true, nombre_form);
     }
 
-    activar_botones_accion(elemento_activo, estado);
+    activar_botones_accion(elemento_activo, estado, status);
 
     estado_form = estado;
 }
@@ -269,7 +274,7 @@ function llenarFrm(objeto, titulo, nombre_form = "", estado = "") {
     } //Fin de la validacion
 } //Fin de la funcion
 
-function activar_botones_accion(elemento, estado = "agregar") {
+function activar_botones_accion(elemento, estado = "agregar", status = 0) {
     if (estado == "agregar") {
         $("#" + elemento)
             .find(".btt-mod")
@@ -289,16 +294,36 @@ function activar_botones_accion(elemento, estado = "agregar") {
             .find(".btt-mod")
             .hide();
         $("#" + elemento)
-            .find(".btt-edt")
-            .show();
-        $("#" + elemento)
             .find(".btt-grd")
             .hide();
 
         activar_campo_clase("btn-grd", true, elemento_activo);
-        activar_campo_clase("btn-edt", false, elemento_activo);
         activar_campo_clase("btn-mdf", true, elemento_activo);
-    } else if (estado == "editar") {
+
+        if (status == 3) {
+            $("#" + elemento)
+                .find(".btt-edt")
+                .hide();
+
+            $("#" + elemento)
+                .find(".btt-rst")
+                .show();
+
+            activar_campo_clase("btn-edt", true, elemento_activo);
+            activar_campo_clase("btn-rst", false, elemento_activo);
+        } else {
+            $("#" + elemento)
+                .find(".btt-edt")
+                .show();
+
+            $("#" + elemento)
+                .find(".btt-rst")
+                .hide();
+
+            activar_campo_clase("btn-edt", false, elemento_activo);
+            activar_campo_clase("btn-rst", true, elemento_activo);
+        }
+    } else if (estado == "editar" || estado == "reinsertar") {
         $("#" + elemento)
             .find(".btt-mod")
             .show();
@@ -308,10 +333,14 @@ function activar_botones_accion(elemento, estado = "agregar") {
         $("#" + elemento)
             .find(".btt-grd")
             .hide();
+        $("#" + elemento)
+            .find(".btt-rst")
+            .hide();
 
         activar_campo_clase("btn-grd", true, elemento_activo);
         activar_campo_clase("btn-edt", true, elemento_activo);
         activar_campo_clase("btn-mdf", false, elemento_activo);
+        activar_campo_clase("btn-rst", true, elemento_activo);
     } else if (estado == "listado") {
         $("#" + elemento)
             .find(".btt-mod")
@@ -322,10 +351,14 @@ function activar_botones_accion(elemento, estado = "agregar") {
         $("#" + elemento)
             .find(".btt-grd")
             .hide();
+        $("#" + elemento)
+            .find(".btt-rst")
+            .hide();
 
         activar_campo_clase("btn-grd", true, elemento_activo);
         activar_campo_clase("btn-edt", true, elemento_activo);
         activar_campo_clase("btn-mdf", true, elemento_activo);
+        activar_campo_clase("btn-rst", true, elemento_activo);
 
         activar_campo_clase("btn-add", false, elemento_activo);
     } else if (estado == "almacenar") {
@@ -341,10 +374,14 @@ function activar_botones_accion(elemento, estado = "agregar") {
         $("#" + elemento)
             .find(".btt-grd")
             .hide();
+        $("#" + elemento)
+            .find(".btt-rst")
+            .hide();
 
         activar_campo_clase("btn-add", true, elemento_activo);
         activar_campo_clase("btn-edt", true, elemento_activo);
         activar_campo_clase("btn-mdf", true, elemento_activo);
+        activar_campo_clase("btn-rst", true, elemento_activo);
     } else if (estado == "error") {
         activar_campo_clase("btn-grd", false, elemento_activo);
         activar_campo_clase("btn-mdf", false, elemento_activo);
@@ -357,6 +394,15 @@ function editar() {
 
     activar_campos_formulario(form_activo, estado);
 } //Fin de la funcion editar
+
+/**
+ * Reinsertar un objeto en la base de datos
+ */
+function reinsertar() {
+    estado = "reinsertar";
+
+    activar_campos_formulario(form_activo, estado);
+} //Fin de la funcion reinsertar
 
 /**Verificar si existe un elemento en la base de datos */
 function validar(elemento = "", objeto = "") {
@@ -401,58 +447,81 @@ function validar(elemento = "", objeto = "") {
     } //Fin de validacion de elemento
 } //Fin de verificar un elemento en la base de datos
 
-/**Activar un objeto en la base de datos */
-function habilitar(id, objeto) {
-    $.ajax({
-        url: base + modulo_activo + "/activar/" + submodulo_activo + "/" + id,
-        method: "get",
-        dataType: "json",
-    }).done(function (response) {
-        if (!response.error) {
-            //Poner la primeta letra en mayuscula
-            objeto = objeto.charAt(0).toUpperCase() + objeto.slice(1);
-            Swal.fire({
-                title: "Alerta",
-                text: objeto + " habilitado correctamente",
-                icon: "success",
-                timer: 2000,
-                showConfirmButton: false,
-            }).then((result) => {
-                //Recargar la tabla
-                recargar_listado(1);
-            }); //Fin del mensaje
-        } //Fin del if
-        else {
-            mensajeAutomatico("Atencion", "Ha ocurrido un error: " + response.error, "error");
-        } //Fin del else
-    });
-} //Fin de habilitar un objeto en la base de datos
+/**
+ * Eliminar un objeto de la base de datos
+ *
+ * @param {int} id
+ * @param {string} objeto
+ */
+function change_status(id, objeto, status) {
+    let mensaje = "";
+    if (status == 1) {
+        mensaje = "¿Desea habilitar este " + objeto + "?";
+    } else if (status == 2) {
+        mensaje = "¿Desea deshabilitar este " + objeto + "?";
+    } else {
+        mensaje = "¿Desea eliminar este " + objeto + "?";
+    }
 
-/**Desactivar un objeto de la base de datos */
-function deshabilitar(id, objeto) {
-    $.ajax({
-        url: base + modulo_activo + "/desactivar/" + submodulo_activo + "/" + id,
-        method: "get",
-        dataType: "json",
-    }).done(function (response) {
-        if (!response.error) {
-            //Poner el objeto en mayusculas
-            objeto = objeto.charAt(0).toUpperCase() + objeto.slice(1);
-            Swal.fire({
-                title: "Alerta",
-                text: objeto + " deshabilitado correctamente",
-                icon: "success",
-                timer: 2000,
-                showConfirmButton: false,
-            }).then((result) => {
-                recargar_listado(2);
-            }); //Fin del mensaje
-        } //Fin del if
-        else {
-            mensajeAutomatico("Atencion", "Ha ocurrido un error: " + response.error, "error");
-        } //Fin del else
+    Swal.fire({
+        title: "Atencion",
+        text: mensaje,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: base + modulo_activo + "/change_status/" + submodulo_activo + "/" + id,
+                method: "POST",
+                dataType: "json",
+                data: { status: status },
+            })
+                .done(function (response) {
+                    if (!response.error) {
+                        //Poner la primera letra en mayuscula
+                        objeto = objeto.charAt(0).toUpperCase() + objeto.slice(1);
+
+                        if (status == 1) {
+                            mensaje = objeto + " habilitado correctamente";
+                        } else if (status == 2) {
+                            mensaje = objeto + " deshabilitado correctamente";
+                        } else {
+                            mensaje = objeto + " eliminado correctamente";
+                        }
+                        Swal.fire({
+                            title: "Atencion",
+                            text: mensaje,
+                            icon: "success",
+                            timer: 2000,
+                            showConfirmButton: false,
+                        }).then((result) => {
+                            recargar_listado(status);
+                        }); //Fin del mensaje
+                    } //Fin del if
+                    else {
+                        mensajeAutomatico("Atencion", "Ha ocurrido un error: " + response.error, "error");
+                    } //Fin del else
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    response = jqXHR.responseText;
+
+                    console.log(response);
+
+                    if (response != "null" && response != "") {
+                        response = JSON.parse(response);
+                    } else {
+                        response = { message: errorThrown };
+                    }
+
+                    mensajeAutomatico("Atencion", "Ha ocurrido un error: " + response.message, "error");
+                });
+        }
     });
-} //Fin de deshabilitar un objeto en la base de datos
+} //Fin de eliminar un objeto de la base de datos
 
 /**Obtener un objeto de la base de datos */
 function obtener(id, objeto, estado) {
@@ -470,7 +539,15 @@ function obtener(id, objeto, estado) {
                 modulo = modulo_activo;
                 submodulo = submodulo_activo;
 
-                ruta_accion = modulo + "/update/" + submodulo_activo + "/" + id;
+                if (estado == "reinsertar" || estado == "eliminado") {
+                    ruta_accion = modulo + "/update/" + submodulo_activo + "/" + id + "/reinsertar";
+                } else {
+                    ruta_accion = modulo + "/update/" + submodulo_activo + "/" + id;
+                }
+
+                if(estado == "eliminado"){
+                    estado = "ver";
+                }
 
                 //Collapsar el listado
                 activeElement.find(".card-table").CardWidget("collapse");
@@ -547,7 +624,7 @@ function enviar_formulario() {
 
                         console.log(response);
 
-                        if (response != 'null' && response != "") {
+                        if (response != "null" && response != "") {
                             response = JSON.parse(response);
                         } else {
                             response = { message: errorThrown };

@@ -1,22 +1,23 @@
 /**Agregar una linea de impuesto a la linea activa */
-function agregar_impuesto_producto() {
+function agregar_impuesto_producto(force = false) {
     const form = $("#" + form_activo);
-    var taxesTable = form.find(".taxesTable");
+    const taxesTable = form.find(".taxesTable");
 
     //Obtener la ultima linea de impuesto
-    var taxLine = taxesTable.find(".taxLine").last();
+    const taxLine = taxesTable.find(".taxLine").last();
 
-    //Si el taxPercentage de la ultima .taxLine no esta vacio ni es 0
-    if (
-        (taxLine.find(".taxTypes").val() != "" &&
-            taxLine.find(".taxPercentage").val() != "" &&
-            taxLine.find(".taxPercentage").val() != 0) ||
-        taxesTable.find(".taxRates").val() != ""
-    ) {
+    const taxTypes = taxLine.find(".taxTypes").val();
+    const taxPercentage = taxLine.find(".taxPercentage").val();
+    const taxRates = taxLine.find(".taxRates").val();
+
+    console.log("Tipo de impuesto: " + taxTypes);
+    console.log("Porcentaje de impuesto: " + taxPercentage + ": Tipo de dato: " + typeof taxPercentage);
+    console.log("Tarifa de impuesto: " + taxRates);
+
+    // (Si el producto tiene un taxType y un taxPercentage diferente de 0) o (Si el producto tiene un taxType y un taxRate)
+    if ((taxTypes != "" && (taxPercentage != "" && taxPercentage != "0")) || (taxTypes != "" && taxRates != "")) {
         //Clonar la ultima linea de impuesto
-        var nueva_linea = taxLine.clone();
-
-        nueva_linea = limpiar_impuesto_producto(nueva_linea);
+        const nueva_linea = limpiar_impuesto_producto(taxLine.clone());
 
         taxesTable.find(".btn-elm").attr("disabled", false);
 
@@ -27,7 +28,22 @@ function agregar_impuesto_producto() {
 
         return nueva_linea;
     } else {
-        notificacion("No se puede agregar un impuesto si el anterior no se ha definido.", "", "warning");
+        if (force == true) {
+            console.log("Forzar la creacion de una nueva linea de impuesto");
+
+            //Limpiar los campos de la linea
+            limpiar_impuesto_producto(taxLine);
+
+            taxesTable.find(".btn-elm").attr("disabled", false);
+
+            taxesTable.append(taxLine);
+
+            contar_impuestos_producto();
+
+            return taxLine;
+        } else {
+            notificacion("No se puede agregar un impuesto si el anterior no se ha definido.", "", "warning");
+        }
         return;
     }
 }
@@ -285,7 +301,7 @@ function agregar_impuesto_cabys() {
         });
 
         if (taxLine == null) {
-            taxLine = agregar_impuesto_producto();
+            taxLine = agregar_impuesto_producto(true);
         }
     }
 
@@ -404,7 +420,6 @@ function calcular_impuesto_producto(taxLine = null, netValue = 0) {
         taxAmount = new Decimal(netValue).times(taxPercentage).toDecimalPlaces(3).toNumber();
 
         console.log("Valor impuesto: " + taxAmount);
-        
 
         /*taxAmount = new Decimal(netValue).times(taxPercentage).dividedBy(100).toNumber();
         taxAmount = taxAmount.toFixed(2);*/
@@ -553,7 +568,7 @@ function validateTaxLines(form_activo) {
                 $(taxLine).find(".taxRates").attr("readonly", true);
 
                 //Agregar el borde rojo al campo de porcentaje si esta vacio
-                if (taxPercentage == "") {
+                if (taxPercentage == "" || taxPercentage == 0) {
                     $(taxLine).find(".taxPercentage").addClass("border-danger");
 
                     validLines = false;

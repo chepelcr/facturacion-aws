@@ -75,8 +75,14 @@ class ProductsApi extends IvoisApi {
      * @param $data Información del producto
      * @return object Producto
      */
-    public function updateProduct($id, $data) {
-        return $this->makePutRequest($data, $id);
+    public function updateProduct($id, $data, $reinsert = false) {
+        if ($reinsert) {
+            $url = $id . "?reinsert=true";
+        } else {
+            $url = $id;
+        }
+
+        return $this->makePutRequest($data, $url);
     }
 
     /**

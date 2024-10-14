@@ -16,8 +16,7 @@ use App\Services\ProductosService;
  * @version 2.0
  * @author jcampos
  */
-class Empresa extends BaseController
-{
+class Empresa extends BaseController {
 	protected $isModulo = true;
 
 	protected $nombreModulo = 'empresa';
@@ -43,8 +42,7 @@ class Empresa extends BaseController
 		'clientes' => true
 	);
 
-	public function index()
-	{
+	public function index() {
 		if (is_login()) {
 			$script = cargar('cargar_inicio_modulo("empresa", "Administracion");');
 
@@ -58,8 +56,7 @@ class Empresa extends BaseController
 		}
 	} //Fin de la función index
 
-	public function clientes()
-	{
+	public function clientes() {
 		if (is_login()) {
 			if (validar_permiso('empresa', 'clientes', 'consultar')) {
 				if (getSegment(3) == 'listado') {
@@ -94,8 +91,7 @@ class Empresa extends BaseController
 		}
 	} //Fin de la función para mostrar el listado de clientes
 
-	public function productos()
-	{
+	public function productos() {
 		if (is_login()) {
 			if (validar_permiso('empresa', 'productos', 'consultar')) {
 				if (getSegment(3) == 'listado') {
@@ -127,8 +123,7 @@ class Empresa extends BaseController
 		}
 	} //Fin de la función para mostrar el listado de productos
 
-	public function ordenes()
-	{
+	public function ordenes() {
 		if (is_login()) {
 			if (getSegment(3) == 'listado') {
 				$nombreVista = 'empresa/ordenes/listado';
@@ -150,8 +145,13 @@ class Empresa extends BaseController
 		}
 	} //Fin de la función para mostrar el listado de productos
 
-	public function update($id, $data)
-	{
+	/**
+	 * Actualizar un objeto del modulo
+	 * @param $id Identificador del objeto
+	 * @param $data Datos del objeto
+	 * @param $reinsert Reinsertar el objeto
+	 */
+	public function update($id, $data, $reinsert = false) {
 		if (is_login()) {
 			$objeto = $this->modelName;
 
@@ -160,18 +160,25 @@ class Empresa extends BaseController
 					if ($objeto == 'productos') {
 						$productosService = new ProductosService();
 
-						$result = $productosService->update($id, $data);
+						$result = $productosService->update($id, $data, $reinsert);
 						$objeto = 'producto';
 					} elseif ($objeto == 'clientes') {
 						$clientesService = new ClientesService();
 
-						$result = $clientesService->update($id, $data);
+						$result = $clientesService->update($id, $data, $reinsert);
 						$objeto = 'cliente';
 					}
 
 					if (!isset($result->error)) {
+
+						if($reinsert) {
+							$message = "Se ha reinsertado el $objeto correctamente";
+						} else {
+							$message = "Se ha actualizado el $objeto correctamente";
+						}
+
 						$result = array(
-							'success' => "Se ha actualizado el $objeto correctamente",
+							'success' => $message,
 							'data' => $result,
 						);
 
@@ -201,8 +208,7 @@ class Empresa extends BaseController
 	} //Fin de la función para actualizar un producto
 
 	/**Guardar un cliente en la base de datos */
-	public function guardar($data = null)
-	{
+	public function guardar($data = null) {
 		if (is_login()) {
 			$objeto = $this->modelName;
 

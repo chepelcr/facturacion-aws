@@ -21,11 +21,21 @@ class ProductValidations {
     private static function validateTaxes($taxLines) {
 
         $newTaxes = array();
+        $taxesQuantity = count($taxLines);
 
         foreach ($taxLines as $tax) {
             if ($tax['taxTypeId'] != '' && ($tax['rate'] != '' && $tax['rate'] > 0)) {
                 $newTaxes[] = $tax;
             }
+        }
+
+        //Si la cantidad de impuestos a agregar es mayor que 1, y las cantidades de impuestos difieren
+        if ($taxesQuantity > 1 && count($newTaxes) != $taxesQuantity) {
+            return array(
+                'message' => 'No se han ingresado los campos del impuesto',
+                'status' => '400',
+                'error' => 'Bad Request'
+            );
         }
 
         return $newTaxes;
@@ -47,7 +57,7 @@ class ProductValidations {
             if ($reason != '' && $percentage != '' && $percentage > 0) {
                 $newDiscounts[] = $discount;
             } else {
-                if(($reason == '' && $percentage > 0) || ($reason != '' && $percentage == 0)){
+                if (($reason == '' && $percentage > 0) || ($reason != '' && $percentage == 0)) {
                     return array(
                         'message' => 'No se han ingresado los campos del descuento',
                         'status' => '400',
@@ -60,14 +70,14 @@ class ProductValidations {
         return $newDiscounts;
     }
 
-    public static function validateProductStructure($product){
+    public static function validateProductStructure($product) {
         //Si el producto tiene impuestos
         if (isset($product['taxes'])) {
             $product['taxes'] = self::validateTaxes($product['taxes']);
 
-            if(isset($product['taxes']['error'])){
+            if (isset($product['taxes']['error'])) {
                 return $product['taxes'];
-            } elseif(empty($product['taxes'])){
+            } elseif (empty($product['taxes'])) {
                 unset($product['taxes']);
             }
         }
@@ -76,9 +86,9 @@ class ProductValidations {
         if (isset($product['discounts'])) {
             $product['discounts'] = self::validateDiscounts($product['discounts']);
 
-            if(isset($product['discounts']['error'])){
+            if (isset($product['discounts']['error'])) {
                 return $product['discounts'];
-            } elseif(empty($product['discounts'])){
+            } elseif (empty($product['discounts'])) {
                 unset($product['discounts']);
             }
         }
