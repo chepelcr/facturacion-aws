@@ -30,16 +30,16 @@
 
             <!-- Mininizar -->
             <div class="col-md-1">
-                <button type="button" class="btn btn-outline-danger btn-sm btn-block" data-card-widget="collapse" data-toggle="tooltip" title="Ver Codigos">
+                <button type="button" class="btn btn-outline-danger btn-sm btn-block" data-card-widget="collapse" data-toggle="tooltip" title="Ver Codigos" disabled>
                     <i class="fas fa-eye"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="card-body">
+    <div class="card-body codes-container" hidden>
         <div class="row codes">
-            
+
         </div>
     </div>
 </div>

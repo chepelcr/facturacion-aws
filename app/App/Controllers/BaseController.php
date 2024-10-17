@@ -65,5 +65,8 @@ abstract class BaseController extends Controller
         return view('base/listado', $data);
     }
 
-    //abstract function update($id, $data, $reinsert = false);
+    public function update($id, $data, $reinsert = false){
+        $error = $this->object_error('400', 'La acción no está permitida');
+        return $this->error($error);
+    }
 }//Fin de la clase

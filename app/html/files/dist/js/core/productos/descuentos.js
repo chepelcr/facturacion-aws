@@ -177,22 +177,13 @@ function calcular_descuentos_producto() {
         descuento_total += calcular_descuento_producto(discountLine, netValue);
     });
 
-    /*descuento_total = parseFloat(descuento_total);
-
-    //Colocar el valor del subtotal
-    var subtotal = netValue - descuento_total;*/
-
-    //descuento_total = descuento_total.toFixed(2);
-
-    //netValue = new Decimal(netValue);
-    const subtotal = new Decimal(netValue).minus(descuento_total).toDecimalPlaces(3).toNumber();
+    const subtotal = new Decimal(netValue).minus(descuento_total).toDecimalPlaces(5).toNumber();
 
     //Colocar el valor total de los descuentos
     form.find(".total_discount").val(descuento_total);
-    form.find(".total_discount_money").val(formato_moneda(descuento_total, 3));
+    form.find(".total_discount_money").val(formato_moneda(descuento_total, 5));
 
     form.find(".subtotal").val(subtotal);
-    form.find(".subtotal_money").val(formato_moneda(subtotal, 3));
 
     validateDiscountLines(form_activo);
 
@@ -200,7 +191,7 @@ function calcular_descuentos_producto() {
 } //Fin del metodo calcular_descuento
 
 /**Calcular el descuento de una linea */
-function calcular_descuento_producto(discountLine, netValue = null) {
+function calcular_descuento_producto(discountLine, netValue = 0) {
     const form = $("#" + form_activo);
 
     let descuento = 0;
@@ -226,7 +217,7 @@ function calcular_descuento_producto(discountLine, netValue = null) {
     if (discount_percentage > 0) {
         console.log("NetValue: ", netValue);
 
-        descuento = new Decimal(netValue).times(discount_percentage).dividedBy(100).toDecimalPlaces(3).toNumber();
+        descuento = new Decimal(netValue).times(discount_percentage).dividedBy(100).toDecimalPlaces(5).toNumber();
     }
 
     console.log("Descuento: ", descuento);
@@ -234,7 +225,7 @@ function calcular_descuento_producto(discountLine, netValue = null) {
     $(discountLine).find(".discount_amount").val(descuento);
 
     //Colocar el descuento en la linea de descuento
-    $(discountLine).find(".discount_amount_money").val(formato_moneda(descuento, 3));
+    $(discountLine).find(".discount_amount_money").val(formato_moneda(descuento, 5));
 
     return descuento;
 } //Fin del metodo calcular_descuento
@@ -342,7 +333,7 @@ $(document).ready(function () {
                 $(this).val(0);
             }
 
-            calcular_con_precio_venta(form_activo);
+            calcular_valor_producto(form_activo);
         }
 
         validateDiscountLines(form_activo);

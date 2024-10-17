@@ -41,10 +41,10 @@
         <table class="discounts table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th class="col-6">Motivo de descuento</th>
-                    <th class="col-2">%</th>
-                    <th class="col-3">Monto</th>
-                    <th class="col-1">Acciones</th>
+                    <th class="col-6 ivois-label">Motivo de descuento</th>
+                    <th class="col-2 ivois-label">%</th>
+                    <th class="col-3 ivois-label">Monto</th>
+                    <th class="col-1 ivois-label">Acciones</th>
                 </tr>
             </thead>
 

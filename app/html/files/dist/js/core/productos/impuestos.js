@@ -376,10 +376,10 @@ function calcular_impuestos_producto() {
 
     const form = $("#" + form_activo);
 
-    var netValue = form.find(".netValue").val();
+    let subtotal = form.find(".subtotal").val();
 
-    if (netValue == "" || isNaN(netValue)) {
-        netValue = 0;
+    if (subtotal == "" || isNaN(subtotal)) {
+        subtotal = 0;
     }
 
     //Obtener la tabla de impuestos
@@ -391,46 +391,43 @@ function calcular_impuestos_producto() {
     //Recorrer todas las lineas de impuestos
     taxLines.each(function (index, taxLine) {
         //Calcular el impuesto de la linea
-        impuestoTotal += calcular_impuesto_producto(taxLine, netValue);
+        impuestoTotal += calcular_impuesto_producto(taxLine, subtotal);
     });
 
     //Colocar el impuesto total en el campo .ivNetoVL
-    form.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 3));
+    form.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 5));
+
+    form.find(".taxValue").val(formato_moneda(impuestoTotal, 5));
 
     return impuestoTotal;
 }
 
 /**Calcular una linea de impuesto */
-function calcular_impuesto_producto(taxLine = null, netValue = 0) {
+function calcular_impuesto_producto(taxLine = null, subtotal = 0) {
     taxLine = $(taxLine);
 
     let taxAmount = 0;
 
-    var taxPercentage = taxLine.find(".taxPercentage").val();
+    let taxPercentage = taxLine.find(".taxPercentage").val();
 
     if (taxPercentage == undefined || taxPercentage == "") {
         taxPercentage = 0;
     }
 
     if (taxPercentage > 0) {
-        taxPercentage = new Decimal(taxPercentage).dividedBy(100).toDecimalPlaces(3).toNumber();
+        taxPercentage = new Decimal(taxPercentage).dividedBy(100).toDecimalPlaces(5).toNumber();
 
         console.log("Porcentaje de impuesto total: " + taxPercentage);
 
-        taxAmount = new Decimal(netValue).times(taxPercentage).toDecimalPlaces(3).toNumber();
-
-        console.log("Valor impuesto: " + taxAmount);
-
-        /*taxAmount = new Decimal(netValue).times(taxPercentage).dividedBy(100).toNumber();
-        taxAmount = taxAmount.toFixed(2);*/
+        taxAmount = new Decimal(subtotal).times(taxPercentage).toDecimalPlaces(5).toNumber();
     }
 
     console.log("Porcentaje de impuesto: " + taxPercentage);
-    console.log("Valor neto: " + netValue);
+    console.log("Valor neto: " + subtotal);
     console.log("Valor impuesto: " + taxAmount);
 
     taxLine.find(".tax_amount").val(taxAmount);
-    taxLine.find(".tax_amount_money").val(formato_moneda(taxAmount, 3));
+    taxLine.find(".tax_amount_money").val(formato_moneda(taxAmount, 5));
 
     return taxAmount;
 } //Fin del calculo de la linea de impuesto

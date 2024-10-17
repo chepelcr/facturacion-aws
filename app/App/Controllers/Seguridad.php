@@ -204,7 +204,7 @@ class Seguridad extends BaseController {
     } //Fin de la funcion para mostrar todos los errores
 
     /**Actualizar un objeto de la base de datos */
-    public function update($id, $data) {
+    public function update($id, $data, $reinsert = false) {
         if (is_login()) {
             if ($id == 'perfil' || $id == 'contrasenia') {
                 $objeto = 'usuarios';

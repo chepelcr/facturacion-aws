@@ -1,156 +1,253 @@
 .bg-modas {
-  background-color: #065664;
+    background-color: #065664;
 }
 
 .w-40 {
-  width: 40%;
+    width: 40%;
 }
 
 .w-30 {
-  width: 30%;
+    width: 30%;
+}
+
+.file {
+    visibility: hidden;
+    position: absolute;
+}
+
+.ivois-img-thumbnail {
+    /* Tipo=Imagen */
+
+    /* Íconos */
+
+    width: 24px;
+    height: 24px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.ivois-image-card {
+    /* Cards agregar imagen perfil */
+
+    box-sizing: border-box;
+
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 16px;
+    gap: 8px;
+
+    width: 100%;
+    height: 100%;
+
+    background: #fafcff;
+    border: 1px dashed #28b3a7;
+    border-radius: 8px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+}
+
+.inter-regular {
+    font-family: "Inter", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    line-height: 1.5 !important;
+}
+
+.inter-bold {
+    font-family: "Inter", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: 700 !important;
+    font-style: normal !important;
+}
+
+.ivois-label {
+    font-family: "Inter", sans-serif !important;
+    font-optical-sizing: auto !important;
+    font-weight: 400 !important;
+    font-style: normal !important;
+    line-height: 1.5 !important;
+    font-size: 14px !important;
+
+    color: #05102f !important;
+
+    /**Text left */
+    text-align: left !important;
+}
+
+.underline {
+    text-decoration-line: underline;
+}
+
+.btn-cargar-imagen {
+    color: #28b3a7;
+
+    border: none;
+    background: none;
+}
+
+.ivois-image-text {
+    text-align: center;
+
+    color: #4a5269;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
 }
 
 .btn-purple {
-  background-color: #4e28c2;
-  color: #fff;
-  border: #4e28c2;
+    background-color: #4e28c2;
+    color: #fff;
+    border: #4e28c2;
 }
 
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-  /* Set the fixed height of the footer here */
-  line-height: 60px;
-  /* Vertically center the text there */
-  background-color: #fefefe;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    /* Set the fixed height of the footer here */
+    line-height: 60px;
+    /* Vertically center the text there */
+    background-color: #fefefe;
 }
 
 /** Estilos para caja se subir archivos */
 .box.has-advanced-upload {
-  background-color: white;
-  outline: 2px dashed black;
-  outline-offset: -10px;
+    background-color: white;
+    outline: 2px dashed black;
+    outline-offset: -10px;
 }
 .box.has-advanced-upload .box__dragndrop {
-  display: inline;
+    display: inline;
 }
 
 .box.is-dragover {
-  background-color: grey;
+    background-color: grey;
 }
 /**Fin de estilos para subir archivos*/
 
 .scroll_vertical {
-  width: 100%;
-  /*Colocar el max-height para que sea del 75% del ancho de la pantalla */
-  max-height: 75vh;
-  overflow-y: auto;
+    width: 100%;
+    /*Colocar el max-height para que sea del 75% del ancho de la pantalla */
+    max-height: 75vh;
+    overflow-y: auto;
 }
 
 .icn-wamlart {
-  width: 100%;
-  height: 100%;
-  background-image: url("/files/dist/img/walmart.png");
+    width: 100%;
+    height: 100%;
+    background-image: url("/files/dist/img/walmart.png");
 }
 
 /**Modificar scroll para .scroll_vertical*/
 .scroll_vertical::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+    width: 10px;
+    height: 10px;
 }
 
 .scroll_vertical::-webkit-scrollbar-track {
-  background-color: darkgrey;
+    background-color: darkgrey;
 }
 
 .scroll_vertical::-webkit-scrollbar-thumb {
-  background-color: #094992;
+    background-color: #094992;
 }
 
 .card-facturacion {
-  max-height: 60vh;
-  overflow-y: auto;
+    max-height: 60vh;
+    overflow-y: auto;
 }
 
 .col-opciones {
-  padding-left: 1%;
-  padding-right: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
 }
 
 .icn {
-  width: 20px;
+    width: 20px;
 }
 
 object::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+    width: 10px;
+    height: 10px;
 }
 
 object::-webkit-scrollbar-track {
-  background-color: darkgrey;
+    background-color: darkgrey;
 }
 
 object::-webkit-scrollbar-thumb {
-  background-color: #094992;
+    background-color: #094992;
 }
 
 .modal .modal-body {
-  overflow-y: auto;
-  max-height: 450px;
+    overflow-y: auto;
+    max-height: 450px;
 }
 
 /**Modificar scroll para .modal .modaL-body*/
 .modal .modal-body::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+    width: 10px;
+    height: 10px;
 }
 
 .modal .modal-body::-webkit-scrollbar-track {
-  background-color: darkgrey;
+    background-color: darkgrey;
 }
 
 .modal .modal-body::-webkit-scrollbar-thumb {
-  background-color: #094992;
+    background-color: #094992;
 }
 
 .circle-small {
-  width: 200px;
-  height: 200px;
-  border: 6px outset rgb(133, 224, 242);
-  display: block;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  right: 50%;
-  bottom: 50%;
-  margin-left: -81px;
-  margin-top: -81px;
-  border-radius: 156px;
-  -moz-animation: rotate-rev 3s infinite linear;
-  -webkit-animation: rotate-rev 3s infinite linear;
-  animation: rotate-rev 3s infinite linear;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    width: 200px;
+    height: 200px;
+    border: 6px outset rgb(133, 224, 242);
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: 50%;
+    bottom: 50%;
+    margin-left: -81px;
+    margin-top: -81px;
+    border-radius: 156px;
+    -moz-animation: rotate-rev 3s infinite linear;
+    -webkit-animation: rotate-rev 3s infinite linear;
+    animation: rotate-rev 3s infinite linear;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .circle-inner-inner {
-  width: 140px;
-  height: 140px;
-  background-color: rgb(74, 124, 134);
-  display: block;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  right: 50%;
-  bottom: 50%;
-  margin-left: -50px;
-  margin-top: -50px;
-  border-radius: 100px;
-  -moz-animation: pulse 1.5s infinite ease-in;
-  -webkit-animation: pulse 1.5s infinite ease-in;
-  animation: pulse 1.5s infinite ease-in;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    width: 140px;
+    height: 140px;
+    background-color: rgb(74, 124, 134);
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    right: 50%;
+    bottom: 50%;
+    margin-left: -50px;
+    margin-top: -50px;
+    border-radius: 100px;
+    -moz-animation: pulse 1.5s infinite ease-in;
+    -webkit-animation: pulse 1.5s infinite ease-in;
+    animation: pulse 1.5s infinite ease-in;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 /*==============ANIMATIONS=================*/
@@ -158,104 +255,104 @@ object::-webkit-scrollbar-thumb {
 /*==============ROTATE=====================*/
 
 @-moz-keyframes rotate {
-  0% {
-    -moz-transform: rotate(0deg);
-  }
-  100% {
-    -moz-transform: rotate(360deg);
-  }
+    0% {
+        -moz-transform: rotate(0deg);
+    }
+    100% {
+        -moz-transform: rotate(360deg);
+    }
 }
 
 @-webkit-keyframes rotate {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
 }
 
 @keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /*==============ROTATE-REV=================*/
 
 @-moz-keyframes rotate-rev {
-  0% {
-    -moz-transform: rotate(0deg);
-  }
-  100% {
-    -moz-transform: rotate(-360deg);
-  }
+    0% {
+        -moz-transform: rotate(0deg);
+    }
+    100% {
+        -moz-transform: rotate(-360deg);
+    }
 }
 
 @-webkit-keyframes rotate-rev {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(-360deg);
-  }
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(-360deg);
+    }
 }
 
 @keyframes rotate-rev {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(-360deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
 }
 
 /*==============PULSE======================*/
 
 @-moz-keyframes pulse {
-  0% {
-    -moz-transform: scale(0.1);
-    opacity: 0.2;
-  }
-  50% {
-    -moz-transform: scale(1);
-    opacity: 0.8;
-  }
-  100% {
-    -moz-transform: scale(0.1);
-    opacity: 0.2;
-  }
+    0% {
+        -moz-transform: scale(0.1);
+        opacity: 0.2;
+    }
+    50% {
+        -moz-transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        -moz-transform: scale(0.1);
+        opacity: 0.2;
+    }
 }
 
 @-webkit-keyframes pulse {
-  0% {
-    -webkit-transform: scale(0.1);
-    opacity: 0.2;
-  }
-  50% {
-    -webkit-transform: scale(1);
-    opacity: 0.8;
-  }
-  100% {
-    -webkit-transform: scale(0.1);
-    opacity: 0.2;
-  }
+    0% {
+        -webkit-transform: scale(0.1);
+        opacity: 0.2;
+    }
+    50% {
+        -webkit-transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        -webkit-transform: scale(0.1);
+        opacity: 0.2;
+    }
 }
 
 @keyframes pulse {
-  0% {
-    transform: scale(0.1);
-    opacity: 0.2;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(0.1);
-    opacity: 0.2;
-  }
+    0% {
+        transform: scale(0.1);
+        opacity: 0.2;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0.1);
+        opacity: 0.2;
+    }
 }

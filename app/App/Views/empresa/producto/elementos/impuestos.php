@@ -41,11 +41,11 @@
         <table class="taxesTable table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th class="col-4">Tipo de impuesto</th>
-                    <th class="col-2">Tarifa</th>
-                    <th class="col-2">%</th>
-                    <th class="col-3">Monto</th>
-                    <th class="col-1">Acciones</th>
+                    <th class="col-4 ivois-label">Tipo de impuesto</th>
+                    <th class="col-2 ivois-label">Tarifa</th>
+                    <th class="col-2 ivois-label">%</th>
+                    <th class="col-3 ivois-label">Monto</th>
+                    <th class="col-1 ivois-label">Acciones</th>
                 </tr>
             </thead>
 

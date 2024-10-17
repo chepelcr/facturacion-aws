@@ -32,10 +32,10 @@
                 <table class="table table-bordered table-hover text-center">
                     <thead>
                         <tr>
-                            <th>Código</th>
-                            <th>Descripcion</th>
-                            <th>Impuesto</th>
-                            <th>Acciones</th>
+                            <th class="ivois-label">Código</th>
+                            <th class="ivois-label">Descripcion</th>
+                            <th class="ivois-label">Impuesto</th>
+                            <th class="ivois-label">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="cabys"></tbody>

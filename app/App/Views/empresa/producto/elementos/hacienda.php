@@ -15,7 +15,7 @@
             <!-- Codigo CABYS -->
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="codigo_cabys" class="text-left">
+                    <label for="codigo_cabys" class="ivois-label">
                         Código cabys
                     </label>
 
@@ -41,7 +41,7 @@
             <!-- Select de tipo de producto -->
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="tipo_producto" class="text-left">Tipo de producto</label>
+                    <label for="tipo_producto" class="ivois-label">Tipo de producto</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
@@ -63,7 +63,7 @@
             <!-- Impuesto sugerido -->
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="impuesto" class="text-left">Impuesto sugerido</label>
+                    <label for="impuesto" class="ivois-label">Impuesto sugerido</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-percent"></i></i></span>
@@ -76,7 +76,7 @@
             <!-- Descripción del producto -->
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="descripcion_cabys" class="text-left">
+                    <label for="descripcion_cabys" class="ivois-label">
                         Descripción del producto
                     </label>
                     <div class="input-group">

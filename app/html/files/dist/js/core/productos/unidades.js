@@ -1,8 +1,8 @@
 function getUnitCode(select) {
     const form = "#" + form_activo;
     const value = $(select).val();
-    
-    if(value == ""){
+
+    if (value == "") {
         //Vaciar el campo de unidad de medida comercial
         $(form).find(".measurementUnit_commercialUnit").val("");
         //Deshabilitar el campo de unidad de medida comercial
@@ -15,7 +15,7 @@ function getUnitCode(select) {
     let code = $(option).data("code");
 
     //Validar si el codigo es un numero y pasarlo a string
-    if(typeof code == "number"){
+    if (typeof code == "number") {
         code = code.toString();
     }
 
@@ -59,5 +59,26 @@ function activarUnidadComercial(estado = "ver", form_activo = "") {
     } else {
         //Deshabilitar el campo de unidad de medida comercial
         activar_campo_clase("measurementUnit_commercialUnit", true, form_activo);
+    }
+}
+
+function showPackagingInfo(checkbox) {
+
+    const form = "#" + form_activo;
+
+    const packaging = $(form).find(".card-empaque");
+
+    const show = $(checkbox).is(":checked") ? 1 : 0;
+
+    console.log(show);
+
+    if (show == 1) {
+        //Eliminar el atributo hidden del card-empaque
+        packaging.attr("hidden", false);
+
+
+    } else {
+        //Agregar el atributo hidden al card-empaque
+        packaging.attr("hidden", true);
     }
 }
