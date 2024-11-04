@@ -1,5 +1,5 @@
 <!-- Datos de contacto -->
-<div class="card card-form">
+<div class="card card-form card-contacto">
     <div class="card-header">
         <h4 class="card-title">
             <i class="fas fa-address-book"></i> Información de contacto

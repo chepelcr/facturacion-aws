@@ -11,72 +11,65 @@ var estado_form = "";
 
 /**Abrir el formulario para agregar un objeto */
 function agregar(titulo = "") {
-    modulo = modulo_activo;
-    submodulo = submodulo_activo;
+    const modulo = modulo_activo;
+    const submodulo = submodulo_activo;
+
+    const activeElement = $("#" + elemento_activo);
+
+    const estado = "agregar";
 
     if (modulo != "" && submodulo != "") {
         ruta_accion = modulo + "/guardar/" + submodulo;
 
-        elemento = elemento_activo;
+        form_activo = "frm_" + modulo + "_" + submodulo;
 
-        form_activo = "frm_" + modulo_activo + "_" + submodulo_activo;
+        const activeForm = $("#" + form_activo);
 
         //Mostrar el card-frm del elemento activo
-        $("#" + elemento)
-            .find(".card-frm")
-            .show();
+        activeElement.find(".card-frm").show();
 
         //Cerrar todos los card
-        $("#" + elemento)
-            .find(".card-table")
-            .CardWidget("collapse");
+        activeElement.find(".card-table").CardWidget("collapse");
 
         vaciar_campos(form_activo);
 
-        $("#" + elemento)
-            .find(".titulo-submodulo")
-            .html(titulo);
+        activeElement.find(".titulo-submodulo").html(titulo);
 
-        estado = "agregar";
-
-        activar_botones_accion(elemento, estado);
+        activar_botones_accion(elemento_activo, estado);
 
         campos_activos(false, form_activo);
 
         //Cerrar el card
-        $("#" + elemento)
-            .find(".card-table")
-            .hide();
+        activeElement.find(".card-table").hide();
 
-        const form = $("#" + form_activo);
-
-        //Abrir el card-frm
-        form.find(".card-form").CardWidget("collapse");
+        activeForm.find(".card").CardWidget("collapse");
 
         switch (modulo) {
             case "empresa":
                 switch (submodulo) {
                     case "productos":
                         campos_cabys(estado, form_activo);
-                        getUnitCode(form.find(".measurementUnit_unitId"));
+                        getUnitCode(activeForm.find(".measurementUnit_unitId"));
 
-                        //activar_campo_clase('slc_code', true, form_activo);
-
-                        form.find(".salePrice").val(0);
-                        form.find(".taxValue").val(0);
-                        form.find(".unitPrice").val(0);
-                        form.find(".netValue").val(0);
+                        activeForm.find(".salePrice").val(0);
+                        activeForm.find(".taxValue").val(0);
+                        activeForm.find(".unitPrice").val(0);
+                        activeForm.find(".netValue").val(0);
 
                         //Enfocar el campo de descripcion
-                        form.find(".name").focus();
+                        activeForm.find(".name").focus();
+
+                        //Quitar el checked del campo isPackaged
+                        activeForm.find(".isPackaged").prop("checked", false);
+
+                        showPackagingInfo(activeForm.find(".isPackaged"));
+                        selectProductType(1);
 
                         break;
                     case "clientes":
                         activar_campos_cedula(estado, form_activo);
-                        vaciar_ubicacion(estado);
-
-                        //Poner el foco en el campo de cedula
-                        form.find(".identification_number").focus();
+                        changeCustomerType(1);
+                        vaciar_ubicacion();
                         break;
                 }
                 break;
@@ -90,14 +83,20 @@ function agregar(titulo = "") {
                     case "usuarios":
                         activar_campos_cedula(estado, form_activo);
 
-                        //Poner el foco en el campo de cedula
-                        form.find(".identification_number").focus();
+                    //Poner el foco en el campo de cedula
+                    //form.find(".identification_number").focus();
                 }
+                break;
+
+            default:
+                //Abrir el card-frm
+                //
                 break;
         }
 
-        //Abrir el card-frm
-        form.find(".card-form").CardWidget("expand");
+        activeForm.find(".card-form").CardWidget("expand");
+
+        estado_form = estado;
     }
 } //Fin de la funcion
 
@@ -158,11 +157,13 @@ function llenarObjeto(nombre_form, objeto, estado) {
                 }
             });
         } else if (key == "residence") {
+            let see = false;
+            
             if (estado == "ver") {
-                llenarUbicacion(valor, true);
-            } else {
-                llenarUbicacion(valor, false);
+                see = true;
             }
+
+            llenarUbicacion(valor, objeto.nationality.isoCode, see);
         } else if (key == "codes" && modulo_activo == "empresa" && submodulo_activo == "productos") {
             agregarCodigosProducto(valor, nombre_form);
         } else if (key == "nationality") {
@@ -183,6 +184,14 @@ function llenarObjeto(nombre_form, objeto, estado) {
             }
 
             activeForm.find(".measurementUnit_commercialUnit").val(commercialUnit);
+        } else if (key == "category") {
+            selectProductType(valor.productType.id, true);
+
+            let description = valor.description + " - IVA: " + valor.suggestedTax + "%";
+
+            activeForm.find(".category_code").val(valor.code);
+            activeForm.find(".category_suggestedTax").val(valor.suggestedTax);
+            activeForm.find(".category_description").val(description);
         } else {
             // Validar si el elemento es un objeto
             if (typeof valor == "object") {
@@ -190,20 +199,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
                     $.each(valor, function (inner_key, inner_value) {
                         inner_key = key + "_" + inner_key;
 
-                        // Si la llave es category_productType, se debe cambiar a category_productType_id
-                        if (inner_key == "category_productType") {
-                            productTypes = activeForm.find(".category_productType_id option");
-
-                            $.each(productTypes, function (i, option) {
-                                if ($(option).val() == valor.productType.id) {
-                                    option.selected = true;
-                                } else {
-                                    option.selected = false;
-                                }
-                            });
-                        } else {
-                            activeForm.find("." + inner_key).val(inner_value);
-                        }
+                        activeForm.find("." + inner_key).val(inner_value);
                     });
                 }
             } else {
@@ -429,12 +425,11 @@ function validar(elemento = "", objeto = "") {
                     form.find("#codigo_venta").attr("disabled", false);
                     form.find("#codigo_venta").attr("readonly", false);
                 }
-            } //Fin del usuario existente
-            else {
+            } else {
                 campos_activos(false, form_activo);
 
                 if (objeto == "usuario" || objeto == "cliente") {
-                    obtener_contribuyente(elemento);
+                    //obtener_contribuyente(elemento);
                 }
 
                 if (objeto == "producto") {
@@ -545,7 +540,7 @@ function obtener(id, objeto, estado) {
                     ruta_accion = modulo + "/update/" + submodulo_activo + "/" + id;
                 }
 
-                if(estado == "eliminado"){
+                if (estado == "eliminado") {
                     estado = "ver";
                 }
 
@@ -612,8 +607,7 @@ function enviar_formulario() {
                                     recargar_listado("all");
                                 }
                             }); //Fin del mensaje
-                        } //Fin del if
-                        else {
+                        } else {
                             notificacion(response.error, "", "error");
 
                             activar_botones_accion(elemento_activo, "error");
@@ -622,12 +616,10 @@ function enviar_formulario() {
                     .fail(function (jqXHR, textStatus, errorThrown) {
                         response = jqXHR.responseText;
 
-                        console.log(response);
-
-                        if (response != "null" && response != "") {
+                        if ((response != "null" && response != "") || (response.message != "" && response.message != null)) {
                             response = JSON.parse(response);
                         } else {
-                            response = { message: errorThrown };
+                            response = { message: errorThrown, status: jqXHR.status };
                         }
 
                         notificacion(response.message, "", "error");

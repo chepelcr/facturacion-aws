@@ -1,4 +1,4 @@
-<div class="card card-form">
+<div class="card card-form card-personal">
     <div class="card-header">
         <h3 class="card-title">
             <i class="fas fa-user-circle"></i> Datos personales
@@ -12,14 +12,37 @@
 
     <div class="card-body">
         <div class="row">
+            <!-- Tipo de cliente -->
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="tipo_producto" class="ivois-label">Tipo de cliente</label>
+                    <div class="row input-group">
+                        <div class="col-md-6 form-group">
+                            <!-- Radio buttons -->
+                            <div class="form-check form-check-inline">
+                                <input class="form-check form-check-input ivois-radio customerType-radio customerType-1" type="radio" value="1">
+                                <label class="form-check form-check-label ivois-label" for="customerType-1">Persona</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <!-- Radio buttons -->
+                            <div class="form-check form-check-inline">
+                                <input class="form-check form-check-input ivois-radio customerType-radio customerType-2" type="radio" value="2">
+                                <label class="form-check form-check-label ivois-label" for="customerType-2">Empresa</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="text-left" for="nationality">Nacionalidad</label>
+                    <label class="text-left ivois-label" for="nationality">Pais</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <select name="nationality" class="form-control inp nationality" onchange="validar_extranjero(this)">
+                        <select name="nationality" class="form-control inp nationality">
                             <option value="">Seleccionar</option>
                             <?php foreach ($countries as $country) : ?>
                                 <option value="<?= $country->isoCode ?>" <?php if (isset($nationality) && $nationality->isoCode == $country->isoCode) {
@@ -36,9 +59,9 @@
             <div class="col-md-8">
                 <div class="row">
                     <!-- Tipo de cedula-->
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label class="text-left" for="identification[typeId]">Tipo de identificación</label>
+                            <label class="text-left ivois-label" for="identification[typeId]">Tipo de identificación</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
@@ -56,20 +79,20 @@
                         </div>
                     </div>
                     <!-- Cédula del cliente -->
-                    <div class="col-md-7">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label class="text-left">Número de cédula</label>
+                            <label class="text-left ivois-label">Identificación</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                                 </div>
-                                <input class="form-control inp identification_number" onchange="obtener_contribuyente(this.value)" name="identification[number]" type="text" placeholder="Ingrese el número de cédula" value="<?php if (isset($identification)) {
-                                                                                                                                                                                                                                    echo formatear_cedula($identification->number, $identification->code);
-                                                                                                                                                                                                                                } ?>" required max="100">
+                                <input class="form-control inp identification_number" name="identification[number]" type="text" placeholder="Ingrese el número de cédula" value="<?php if (isset($identification)) {
+                                                                                                                                                                                        echo formatear_cedula($identification->number, $identification->code);
+                                                                                                                                                                                    } ?>" required max="100">
 
                                 <div class="input-group-append">
                                     <!-- Boton para eliminar el contenido del campo -->
-                                    <button class="btn btn-danger inp identificacion btn-eliminar" disabled type="button" onclick="vaciar_cedula()" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                    <button class="btn btn-danger inp btn-dlt-id" disabled type="button" onclick="vaciar_cedula()" data-toggle="tooltip" data-placement="top" title="Eliminar">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
@@ -79,10 +102,10 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-8 name">
                 <div class="form-group">
                     <!-- Nombre del cliente -->
-                    <label class="text-left businessName" for="businessName">Nombre completo</label>
+                    <label class="text-left ivois-label" for="businessName">Nombre completo</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -95,9 +118,9 @@
             </div>
 
             <!-- Nombre comercial -->
-            <div class="col-md-6">
+            <div class="col-md-4 name">
                 <div class="form-group">
-                    <label for="tradeName">Nombre Comercial</label>
+                    <label class="ivois-label text-left" for="tradeName">Nombre Comercial</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>

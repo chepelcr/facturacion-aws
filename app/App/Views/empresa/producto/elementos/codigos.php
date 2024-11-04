@@ -2,9 +2,9 @@
     <div class="card-header">
         <div class="row d-flex justify-content-between">
             <div class="col-md-6">
-                <h3 class="card-title align-content-center">
+                <h5 class="card-title align-content-center">
                     <i class="fas fa-qrcode"></i> Códigos
-                </h3>
+                </h5>
             </div>
 
             <!-- Agregar codigo -->
@@ -30,7 +30,7 @@
 
             <!-- Mininizar -->
             <div class="col-md-1">
-                <button type="button" class="btn btn-outline-danger btn-sm btn-block" data-card-widget="collapse" data-toggle="tooltip" title="Ver Codigos" disabled>
+                <button type="button" class="btn btn-outline-danger btn-see-cod btn-sm btn-block" data-card-widget="collapse" data-toggle="tooltip" title="Ver Codigos" disabled>
                     <i class="fas fa-eye"></i>
                 </button>
             </div>

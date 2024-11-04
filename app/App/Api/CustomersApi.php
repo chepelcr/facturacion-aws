@@ -18,7 +18,7 @@ class CustomersApi extends IvoisApi {
      * @param $taxpayerId Identificador del contribuyente
      */
     public function __construct($taxpayerId) {
-        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.customers.url"));
+        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.customers.url"));//, "http://172.0.0.0:8085");
     }
 
     /**
@@ -88,15 +88,7 @@ class CustomersApi extends IvoisApi {
         return $this->makePatchRequest($data, $id);
     }
 
-    /**
-     * Actualizar un cliente
-     * @param $id Identificador del cliente
-     * @param $data Datos a actualizar
-     * @return object Cliente actualizado
-     */
-    public function updateCustomer($id, $data) {
-        return $this->makePutRequest($data, $id);
-    }
+    
 
     /**
      * Almacenar un cliente en la aplicación

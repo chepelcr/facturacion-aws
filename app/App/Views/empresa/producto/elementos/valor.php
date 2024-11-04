@@ -68,7 +68,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                         </div>
-                        <input type="text" class="form-control totalValue inp" placeholder="Valor total con impuestos" disabled readonly data-toggle="tooltip" title="Precio base con descuentos + Impuestos">
+                        <input type="text" class="form-control totalValue inp" placeholder="Valor total con impuestos" disabled readonly data-toggle="tooltip" title="Precio base con descuentos + Impuestos" name="salePrice">
                     </div>
                 </div>
             </div>

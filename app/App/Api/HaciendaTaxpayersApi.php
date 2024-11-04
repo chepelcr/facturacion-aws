@@ -4,12 +4,12 @@ namespace App\Api;
 
 use App\Enums\CategoriesEnum;
 
-class CategoriesApi extends IvoisApi {
+class HaciendaTaxpayersApi extends IvoisApi {
     /**
      * Constructor de la clase
      */
     public function __construct() {
-        parent::__construct(getEnt("ivois.api.countries.url"));//, "http://172.18.0.3:8082");
+        parent::__construct(getEnt("ivois.api.countries.url")); //, "http://172.18.0.3:8082");
     }
 
     /**
@@ -26,16 +26,16 @@ class CategoriesApi extends IvoisApi {
     }
 
     /**
-     * Obtener las categorias de un país por nombre
+     * Obtener un contribuyente por su id
      * 
      * @param string $country_code Código del país
-     * @param string $name Nombre de la categoría
+     * @param string $taxpayerId Identificador del contribuyente
      * 
-     * @return array Lista de categorias
+     * @return object Contribuyente
      */
-    public function searchCategoriesByCountryCode($country_code, $search, $productType) {
-        $categories_url = getEnt("ivois.api.categories.url");
-        $url = $country_code . $categories_url . "all?search=" . $search . "&productType=" . $productType;
+    public function getTaxpayerByCountryCode($country_code, $taxpayerId) {
+        $taxpayers_url = getEnt("ivois.api.haciendaTaxpayers.url");
+        $url = $country_code . $taxpayers_url . $taxpayerId;
 
         return $this->makeGetRequestUrl($url);
     }

@@ -65,12 +65,7 @@ class Empresa extends BaseController {
 					$clientesView = $clientesService->getCustomersListView($_GET);
 
 					if (isset($clientesView->error)) {
-						$data = array(
-							'error' => $clientesView->error,
-							'codigo' => $clientesView->status
-						);
-
-						return $this->error($data);
+						return $this->error($clientesView);
 					} else {
 						return $clientesView;
 					}

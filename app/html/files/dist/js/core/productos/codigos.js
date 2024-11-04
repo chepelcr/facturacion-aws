@@ -19,9 +19,22 @@ function contarCodigos() {
 
     //Validar si hay codigos
     if (codes.length == 0) {
+
+        //Ocultar el codes-container
+        $("#" + form_activo + " .codes-container").prop("hidden", true);
+
+        //Deshabilitar el btn-see-cod
+        $("#" + form_activo + " .btn-see-cod").prop("disabled", true);
+
         return 0;
     } else {
         cantidadCodigos = codes.length;
+
+        //Mostrar el codes-container
+        $("#" + form_activo + " .codes-container").prop("hidden", false);
+
+        //Habilitar el btn-see-cod
+        $("#" + form_activo + " .btn-see-cod").prop("disabled", false);
     }
 
     //Recorrer los codigos para colocarles el numero correspondiente

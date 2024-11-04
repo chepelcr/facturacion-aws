@@ -1,7 +1,7 @@
 <div class="card card-form">
     <div class="card-header">
         <h3 class="card-title">
-            <i class="fas fa-landmark"></i> Información de hacienda
+            <i class="fas fa-landmark"></i> Información Fiscal
         </h3>
 
         <div class="card-tools">
@@ -12,8 +12,57 @@
 
     <div class="card-body">
         <div class="row">
-            <!-- Codigo CABYS -->
-            <div class="col-md-4">
+            <!-- Select de tipo de producto -->
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="tipo_producto" class="ivois-label">Tipo de producto</label>
+                    <div class="row input-group">
+                        <?php foreach ($productTypes as $productType) : ?>
+                            <div class="col-md-4 form-group">
+                                <!-- Radio buttons -->
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check form-check-input cabys ivois-radio productType-radio productType-<?php echo $productType->id; ?>" type="radio" value="<?php echo $productType->id; ?>" <?php if ($productType->id == 1) {
+                                                                                                                                                                                                                    echo 'checked';
+                                                                                                                                                                                                                } ?>>
+
+                                    <label class="form-check form-check-label ivois-label" for="productType-<?php echo $productType->id; ?>"><?php echo $productType->description; ?></label>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impuesto sugerido -->
+            <div hidden>
+                <input readonly class="form-control inp cabys category_suggestedTax" type="number" max="100">
+            </div>
+
+            <!-- Descripción del producto -->
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="descripcion_cabys" class="ivois-label">
+                        Descripción del código cabys
+                    </label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-id-card"></i>
+                            </span>
+                        </div>
+                        <input class="form-control inp category_description">
+                        <!-- Buscar codigo -->
+                        <div class="input-group-append">
+                            <button class="btn btn-cabys" type="button" onclick="buscar_cabys()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Codigo CABYS -->
+             <div class="col-md-4">
                 <div class="form-group">
                     <label for="codigo_cabys" class="ivois-label">
                         Código cabys
@@ -26,66 +75,7 @@
                                 <i class="fas fa-keyboard"></i>
                             </span>
                         </div>
-                        <input class="form-control inp category_code" name="cabys" required max="13">
-
-                        <!-- Buscar codigo -->
-                        <div class="input-group-append">
-                            <button class="btn btn-cabys" type="button" onclick="buscar_cabys()">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Select de tipo de producto -->
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="tipo_producto" class="ivois-label">Tipo de producto</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fas fa-cart-plus"></i>
-                            </span>
-                        </div>
-                        <select class="form-control inp category_productType_id cabys">
-                            <option value="">Seleccionar</option>
-                            <?php foreach ($productos as $tipo_producto) : ?>
-                                <option value="<?= $tipo_producto->id ?>">
-                                    <?= $tipo_producto->description ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Impuesto sugerido -->
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="impuesto" class="ivois-label">Impuesto sugerido</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-percent"></i></i></span>
-                        </div>
-                        <input readonly class="form-control inp cabys category_suggestedTax" type="number" max="100">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Descripción del producto -->
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="descripcion_cabys" class="ivois-label">
-                        Descripción del producto
-                    </label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="fas fa-id-card"></i>
-                            </span>
-                        </div>
-                        <input class="form-control inp cabys category_description">
+                        <input class="form-control inp category_code cabys" name="cabys" required max="13">
                     </div>
                 </div>
             </div>

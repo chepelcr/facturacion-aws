@@ -50,7 +50,7 @@ function formatear_cedula(cedula, tipo_cedula = "01") {
             //Unir los 3 digitos con -
             cedula_formateada = primer_digito + "-" + segundo_digito + "-" + tercer_digito;
 
-            formato = true;
+            //formato = true;
             break;
 
         case "02":
@@ -80,7 +80,7 @@ function formatear_cedula(cedula, tipo_cedula = "01") {
             //Unir los 3 digitos con -
             cedula_formateada = primer_digito + "-" + segundo_digito + "-" + tercer_digito;
 
-            formato = true;
+            //formato = true;
             break;
     }
 
@@ -94,15 +94,3 @@ function quitar_formato(cedula) {
 
     return cedula;
 }
-
-/**Vaciar los campos relacionados con la cedula de un contribuyente */
-function vaciar_cedula() {
-    $("#" + form_activo).find(".identification_number").val('');
-    $("#" + form_activo).find(".businessName").val('');
-    $("#" + form_activo).find(".identification_typeId").val('');
-    $("#" + form_activo).find(".nationality").val('');
-
-    activar_campos_cedula('agregar', form_activo);
-
-    formato = false;
-}//Fin de vaciar los campos relacionados con la cedula de un contribuyente

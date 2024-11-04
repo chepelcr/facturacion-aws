@@ -123,39 +123,58 @@ function vaciar_campo_clase(clase = "", nombre_elemento = "") {
  * @param {string} nombre_elemento
  */
 function activar_campos_cedula(estado = "agregar", nombre_elemento = "") {
-    if (estado == "agregar") {
+    if (estado == "agregar-nacional" || estado == "agregar") {
         activar_campo_clase("identification_number", false, nombre_elemento);
 
         activar_campo_clase("businessName", true, nombre_elemento);
-        activar_campo_clase("identification_typeId", true, nombre_elemento);
-        activar_campo_clase("nationality", false, nombre_elemento);
+        activar_campo_clase("identification_typeId", false, nombre_elemento);
 
-        activar_campo_clase("btn-eliminar", true, nombre_elemento);
+        //Ocultar los campos de nombre
+        $("#" + nombre_elemento)
+            .find(".name")
+            .hide();
+
+        //Ocultar los card-ubicacion y card-contacto
+        $("#" + nombre_elemento)
+            .find(".card-ubicacion")
+            .CardWidget("collapse");
+            
+        $("#" + nombre_elemento)
+            .find(".card-contacto")
+            .CardWidget("collapse");
+
+        //Mostrar el card-contacto
+        $("#" + nombre_elemento)
+            .find(".card-contacto")
+            .CardWidget("expand");
+    } else if (estado == "agregar-extranjero") {
+        activar_campo_clase("identification_number", false, nombre_elemento);
+
+        activar_campo_clase("businessName", false, nombre_elemento);
+        activar_campo_clase("identification_typeId", true, nombre_elemento);
+
+        //Mostrar los campos de nombre
+        $("#" + nombre_elemento)
+            .find(".name")
+            .show();
+
+        //Mostrar los card-form
+        $("#" + nombre_elemento)
+            .find(".card-form")
+            .CardWidget("expand");
     } else if (estado == "editar" || estado == "ver" || estado == "reinsertar") {
         activar_campo_clase("identification_number", true, nombre_elemento);
 
         activar_campo_clase("businessName", true, nombre_elemento);
         activar_campo_clase("identification_typeId", true, nombre_elemento);
-        activar_campo_clase("nationality", true, nombre_elemento);
+        //activar_campo_clase("nationality", true, nombre_elemento);
 
         activar_campo_clase("btn-eliminar", true, nombre_elemento);
-    } else if (estado == "agregar-todos") {
-        activar_campo_clase("identification_number", false, nombre_elemento);
-
-        activar_campo_clase("businessName", false, nombre_elemento);
-        activar_campo_clase("identification_typeId", false, nombre_elemento);
-        activar_campo_clase("nationality", false, nombre_elemento);
-
-        activar_campo_clase("btn-eliminar", false, nombre_elemento);
-    }
-    if (estado == "almacenando") {
+    } else if (estado == "almacenando") {
         activar_campo_clase("identification_number", true, nombre_elemento);
 
         activar_campo_clase("businessName", true, nombre_elemento);
-        activar_campo_clase("identification_typeId", true, nombre_elemento);
-        activar_campo_clase("nationality", true, nombre_elemento);
-
-        activar_campo_clase("btn-eliminar", false, nombre_elemento);
+        activar_campo_clase("identification_typeId", false, nombre_elemento);
     }
 } //Fin de la funcion
 
@@ -167,6 +186,10 @@ function campos_cabys(estado = "ver", elemento = "") {
         activar_campo_clase("btn-cabys", true, elemento);
     } else if (estado == "agregar" || estado == "editar" || estado == "reinsertar") {
         activar_campo_clase("cabys", true, elemento);
+
+        //Habilitar los productType-radio
+        activar_campo_clase("productType-radio", false, elemento);
+
         //Habilitar el btn-cabys
         activar_campo_clase("btn-cabys", false, elemento);
     } else if (estado == "almacenando") {

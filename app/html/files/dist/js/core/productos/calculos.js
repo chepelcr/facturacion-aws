@@ -131,6 +131,7 @@ function calcular_con_precio_venta(elemento = "", salePrice = 0) {
     const form = $("#" + elemento);
 
     let taxValue = 0;
+    let netValue;
 
     console.log("Precio de venta: " + salePrice);
 
@@ -162,26 +163,26 @@ function calcular_con_precio_venta(elemento = "", salePrice = 0) {
         taxValue = salePrice.minus(salePrice.dividedBy(taxPercentage)).toDecimalPlaces(5).toNumber();
     }
 
-    console.log("Valor del impuesto total: " + taxValue);
 
     const subtotal = new Decimal(salePrice).minus(taxValue).toDecimalPlaces(5).toNumber();
 
-    form.find(".subtotal").val(subtotal);
-
     let discountPercentage = contarPorcentajeDescuentos(elemento);
 
-    console.log("Porcentaje de descuento: " + discountPercentage);
-
-    let netValue = subtotal;
-
     if (discountPercentage > 0) {
+        //discountAmount = (subtotal / (1 - discountPercentage / 100)) - subtotal
+
         discountPercentage = new Decimal(discountPercentage).dividedBy(100).toDecimalPlaces(5).toNumber();
 
-        console.log("Porcentaje de descuento total: " + discountPercentage);
+        let discountAmount = new Decimal(subtotal).dividedBy(1 - discountPercentage).minus(subtotal).toDecimalPlaces(5).toNumber();
 
-        const totalDiscount = new Decimal(subtotal).times(discountPercentage).toDecimalPlaces(5).toNumber();
+        console.log("Descuento: " + discountAmount);
 
-        netValue = new Decimal(subtotal).minus(totalDiscount).toDecimalPlaces(5).toNumber();
+        //Sumar el descuento al subtotal para obtener el netValue
+        netValue = new Decimal(subtotal).plus(discountAmount).toDecimalPlaces(5).toNumber();
+
+        console.log("Valor neto: " + netValue);
+    } else {
+        netValue = subtotal;
     }
 
     form.find(".netValue").val(netValue);
@@ -208,7 +209,7 @@ function calcular_con_unitario(elemento = "") {
     calcular_valor_producto(elemento, netValue, true);
 }
 
-function calcular_valor_unitario(elemento = "") {
+function calcular_valor_unitario(elemento = "", show = true) {
     const form = $("#" + elemento);
 
     let quantity = form.find(".quantity").val();
@@ -219,10 +220,17 @@ function calcular_valor_unitario(elemento = "") {
         form.find(".quantity").val(quantity);
     }
 
-    if (quantity > 1) {
-        form.find(".isPackaged").prop("checked", true);
+    const isPackaged = form.find(".isPackaged");
 
-        showPackagingInfo(form.find(".isPackaged"));
+    if (quantity > 1) {
+        isPackaged.prop("checked", true);
+    } else {
+        isPackaged.prop("checked", false);
+    }
+
+    if(show == true) {
+
+    showPackagingInfo(isPackaged);
     }
 
     let salePrice = form.find(".netValue").val();

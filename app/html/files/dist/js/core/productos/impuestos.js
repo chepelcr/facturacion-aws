@@ -380,6 +380,8 @@ function calcular_impuestos_producto() {
 
     if (subtotal == "" || isNaN(subtotal)) {
         subtotal = 0;
+
+        form.find(".subtotal").val(subtotal);
     }
 
     //Obtener la tabla de impuestos

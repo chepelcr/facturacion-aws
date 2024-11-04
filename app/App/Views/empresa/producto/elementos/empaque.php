@@ -30,13 +30,13 @@
             <!-- Valor unitario (precio de venta / cantidad) -->
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="precio" class="ivois-label">Precio unitario</label>
+                    <label for="unitPrice" class="ivois-label">Precio unitario</label>
 
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                         </div>
-                        <input type="text" class="form-control unitPrice inp" placeholder="Precio unitario" disabled readonly data-toggle="tooltip" title="Precio de venta / Cantidad">
+                        <input type="text" class="form-control unitPrice inp" placeholder="Precio unitario" disabled readonly data-toggle="tooltip" title="Precio de venta / Cantidad" name="unitPrice">
                     </div>
                 </div>
             </div>

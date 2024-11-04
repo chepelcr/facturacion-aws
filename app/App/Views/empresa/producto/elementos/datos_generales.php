@@ -80,7 +80,7 @@
 
                     <!-- Validación de producto por empaque -->
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="form-group packageInfo">
                             <!-- Checkbox -->
                             <div class="form-check form-check-inline pt-2">
                                 <input class="form-check inp isPackaged" type="checkbox" name="isPackaged" value="1" onchange="showPackagingInfo(this)">
@@ -90,6 +90,7 @@
                     </div>
                 </div>
             </div>
+            
             <!-- Imagen -->
             <div class="col-md-5">
                 <div class="card ivois-image-card mb-2">
@@ -99,7 +100,8 @@
                                 <img class="ivois-img-thumbnail" alt="" src="<?= getFile('dist/img/icons/image.png') ?>">
                             </div>
                             <div class="col-md-12 text-center">
-                                <button class="btn-cargar-imagen inter-bold underline" type="button">Cargar imagen</button>
+                                <input hidden type="file" class="inp image" name="productImage" accept="image/*">
+                                <button class="btn-cargar-imagen inp inter-bold underline" type="button">Cargar imagen</button>
                                 <p class="ivois-image-text inter-regular">
                                     Formato JPG o PNG.
                                     Dimensiones preferidas: 400x400 pixeles a 72ppp. Tamaño máximo del archivo: 1MB.

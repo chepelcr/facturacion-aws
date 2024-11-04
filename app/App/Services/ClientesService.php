@@ -56,7 +56,7 @@ class ClientesService extends BaseService
     /**
      * Actualizar un cliente
      */
-    public function update($id, $data)
+    public function update($id, $data, $reinsert = false)
     {
         $customersApi = new CustomersApi(getTaxpayerId());
 
@@ -65,7 +65,7 @@ class ClientesService extends BaseService
 
         $data['identification']['number'] = $identification;
 
-        return $customersApi->updateCustomer($id, $data);
+        return $customersApi->update($id, $data, $reinsert);
     }
 
     /**

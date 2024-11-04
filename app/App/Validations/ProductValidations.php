@@ -24,7 +24,7 @@ class ProductValidations {
         $taxesQuantity = count($taxLines);
 
         foreach ($taxLines as $tax) {
-            if ($tax['taxTypeId'] != '' && ($tax['rate'] != '' && $tax['rate'] > 0)) {
+            if (($tax['taxTypeId'] != '' && $tax['taxRateId'] != '') || ($tax['taxTypeId'] != '' && $tax['rate'] != '')) {
                 $newTaxes[] = $tax;
             }
         }

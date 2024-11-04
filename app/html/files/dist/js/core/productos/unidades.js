@@ -76,9 +76,13 @@ function showPackagingInfo(checkbox) {
         //Eliminar el atributo hidden del card-empaque
         packaging.attr("hidden", false);
 
-
     } else {
         //Agregar el atributo hidden al card-empaque
         packaging.attr("hidden", true);
+
+        //Poner la cantidad de empaques en 1
+        $(form).find(".quantity").val(1);
+
+        calcular_valor_unitario(form_activo, false);
     }
 }

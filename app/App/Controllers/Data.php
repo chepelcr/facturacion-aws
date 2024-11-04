@@ -17,14 +17,41 @@ class Data extends BaseController {
      * Obtener los códigos CABYS por nombre o código
      */
     public function codigos_cabys() {
-        $search = get('search');
+        if (is_login()) {
+            $search = get('search');
+            $productType = get('productType');
 
-        $data = $this->dataService->getCabysByCodeOrName($search);
+            $data = $this->dataService->getCabysByCodeOrName($search, $productType);
 
-        if (!isset($data->error)) {
-            return json_encode($data);
+            if (!isset($data->error)) {
+                return json_encode($data);
+            } else {
+                return $this->error($data);
+            }
         } else {
-            return $this->error($data);
+            return redirect(baseUrl());
+        }
+    }
+
+    /**
+     * Obtener informacion de un contribuyente del Ministerio de Hacienda
+     * 
+     * @return string Informacion del contribuyente
+     */
+    public function contribuyentes() {
+        if (!is_login()) {
+            return redirect(baseUrl());
+        } else {
+            $nationality = get('nationality');
+            $taxpayerId = get('taxpayerId');
+
+            $data = $this->dataService->getTaxpayerByCountryCode($nationality, $taxpayerId);
+
+            if (!isset($data->error)) {
+                return json_encode($data);
+            } else {
+                return $this->error($data);
+            }
         }
     }
 }

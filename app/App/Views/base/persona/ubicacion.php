@@ -1,4 +1,4 @@
-<div class="card card-form">
+<div class="card card-form card-ubicacion">
     <div class="card-header">
         <h3 class="card-title">
             <i class="fas fa-map-marker-alt"></i>
@@ -14,32 +14,9 @@
 
     <div class="card-body">
         <div class="row">
-            <!-- País de residencia -->
             <div class="col-md-6 ubicacion">
                 <div class="form-group">
-                    <label class="text-left" for="residence[countryCode]">País de residencia</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                        </div>
-                        <select onchange="obtener_provincias(this.value)" class="form-control inp residence_countryCode" name="residence[countryCode]" required>
-                            <option value="">Seleccionar</option>
-                            <?php foreach ($countries as $country): ?>
-                            <option value="<?=$country->isoCode?>" data-serviceStatus="<?=$country->serviceStatus?>"
-                                <?php
-                                    if((isset($residence->countryCode) && $residence->countryCode == $country->isoCode) || (!isset($residence->countryCode) && getCountryCode() == $country->isoCode)) {echo "selected";} ?>>
-                                <?= ucfirst($country->name)?>
-                            </option>
-                            <?php endforeach ?>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-6 ubicacion">
-                <div class="form-group">
-                    <label class="text-left">Provincia</label>
+                    <label class="text-left ivois-label">Provincia</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
@@ -57,9 +34,9 @@
                 </div>
             </div>
 
-            <div class="col-md-4 ubicacion">
+            <div class="col-md-6 ubicacion">
                 <div class="form-group">
-                    <label class="text-left">Cantón</label>
+                    <label class="text-left ivois-label">Cantón</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
@@ -81,9 +58,9 @@
                 </div>
             </div>
 
-            <div class="col-md-4 ubicacion">
+            <div class="col-md-6 ubicacion">
                 <div class="form-group">
-                    <label class="text-left">Distrito</label>
+                    <label class="text-left ivois-label">Distrito</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
@@ -104,9 +81,9 @@
                 </div>
             </div>
 
-            <div class="col-md-4 ubicacion">
+            <div class="col-md-6 ubicacion">
                 <div class="form-group">
-                    <label class="text-left">Barrio</label>
+                    <label class="text-left ivois-label">Barrio</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
@@ -129,7 +106,7 @@
 
             <div class="col-md-12">
                 <div class="form-group">
-                    <label class="text-left">Otras señas</label>
+                    <label class="text-left ivois-label">Otras señas</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>

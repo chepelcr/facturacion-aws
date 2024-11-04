@@ -111,8 +111,8 @@ class ProductosService extends BaseService {
             'codigos' => $codigos
         );
 
-        $data_hacienda = array(
-            'productos' => $productTypes
+        $productTypeData = array(
+            'productTypes' => $productTypes
         );
 
         $data_impuestos = array(
@@ -124,7 +124,7 @@ class ProductosService extends BaseService {
             'dataForm' => array(
                 'datos_generales' => $datos_generales,
                 'data_codigos' => $data_codigos,
-                'data_hacienda' => $data_hacienda,
+                'productTypeData' => $productTypeData,
                 'data_impuestos' => $data_impuestos
             ),
             'nombreForm' => $nombreForm,
@@ -162,7 +162,7 @@ class ProductosService extends BaseService {
             return (object) $data;
         }
 
-        return $productosApi->updateProduct($id, $data, $reinsert);
+        return $productosApi->update($id, $data, $reinsert);
     }
 
     /**
@@ -175,7 +175,7 @@ class ProductosService extends BaseService {
         $data = ProductValidations::validateProductStructure($data);
 
         if(isset($data['error'])){
-            return $data;
+            return (object) $data;
         }
 
         return $productosApi->saveProduct($data);

@@ -169,6 +169,8 @@ function calcular_descuentos_producto() {
 
     if (netValue == "" || isNaN(netValue)) {
         netValue = 0;
+
+        form.find(".netValue").val(0);
     }
 
     const discounts = form.find(".discounts");

@@ -6,14 +6,24 @@ var impuesto = [];
 
 $(document).ready(function () {
     //Cuando el usuario presione la tecla enter en el campo .category_code
-    $(document).on("keypress", ".category_code", function (e) {
+    $(document).on("keypress", ".category_description", function (e) {
         if (e.which == 13) {
             buscar_cabys();
         }
     });
+
+    $(document).on("change", ".productType-radio", function () {
+        const productType = this.value;
+
+        console.log("Tipo de producto: " + productType);
+
+        validateCabysCode(productType);
+    });
 });
 
-/**Abrir la pantalla para buscar un codigo cabys */
+/**
+ * Abrir la ventana de busqueda de códigos cabys
+ */
 function buscar_cabys() {
     const activeElement = $("#" + elemento_activo);
 
@@ -32,20 +42,28 @@ function buscar_cabys() {
     }
 
     //Obtener el valor del campo category_code del formulario activo
-    const category_code = $("#" + form_activo)
-        .find(".category_code")
+    const search = $("#" + form_activo)
+        .find(".category_description")
         .val();
 
-    if (category_code != "") {
+    if (search != "") {
         //Buscar el codigo cabys por nombre
-        obtener_cabys(category_code, true);
+        obtener_cabys(search, true);
     }
 } //Fin del metodo buscar_cabys
 
-/**Buscar codigo cabys en el ministerio de hacienda por nombre */
+/**
+ * Buscar un codigo cabys en el API de Catálogo de Bienes y Servicios del Ministerio de Hacienda
+ * @param {string} search Valor a buscar
+ */
 function buscar_categorias(search) {
     if (search != "") {
         const activeElement = $("#" + elemento_activo);
+
+        //Obtener el valor del productType-radio seleccionado
+        const productType = activeElement.find(".productType-radio:checked").val();
+
+        console.log("Tipo de producto: " + productType);
 
         Pace.track(function () {
             url = base + "data/codigos_cabys";
@@ -53,6 +71,7 @@ function buscar_categorias(search) {
                 url: url,
                 data: {
                     search: search,
+                    productType: productType,
                 },
                 dataType: "json",
                 method: "get",
@@ -114,13 +133,19 @@ function buscar_categorias(search) {
 
                     mensajeAutomatico("Atencion", response.message, "error");
 
-                    activeElement.find("#cabys").html(getErrorPage(response));
+                    html = "<tr><td colspan='4'>No se encontraron resultados</td></tr>";
+
+                    activeElement.find("#cabys").html(html);
                 });
         });
     } //Fin del if
 } //Fin de la funcion cabys
 
-/**Seleccionar un codigo cabys */
+/**
+ * Seleccionar un codigo cabys de la lista de resultados
+ *
+ * @param {int} valor Posicion del codigo cabys en la lista
+ */
 function seleccionar_cabys(valor) {
     const activeElement = $("#" + elemento_activo);
     const activeForm = $("#" + form_activo);
@@ -130,10 +155,13 @@ function seleccionar_cabys(valor) {
     activeElement.find("#cabys").html("");
     activeElement.find(".q_cabys").val("");
 
+    let description = cabys[valor].description + " - IVA: " + cabys[valor].suggestedTax + "%";
+
     activeForm.find(".category_code").val(cabys[valor].code);
     activeForm.find(".category_suggestedTax").val(cabys[valor].suggestedTax);
-    activeForm.find(".category_description").val(cabys[valor].description);
-    activeForm.find(".category_productType_id").val(cabys[valor].productType.id);
+    activeForm.find(".category_description").val(description);
+
+    selectProductType(cabys[valor].productType.id, true);
 
     agregar_impuesto_cabys();
 
@@ -145,6 +173,35 @@ function seleccionar_cabys(valor) {
 
     mensajeAutomatico("Atención", "Código CABYS seleccionado correctamente", "success");
 }
+
+/**
+ * Seleccionar el tipo de producto
+ * @param {int} productType Id del tipo de producto
+ */
+function selectProductType(productType, click = false) {
+    const activeForm = $("#" + form_activo);
+
+    //Quitar el radio seleccionado de todos los productType exepto el seleccionado
+    const activeRadio = activeForm.find(".productType-" + productType);
+    activeRadio.prop("checked", true);
+
+    //Obtener los otros radios menos el seleccionado
+    const radios = activeForm.find(".productType-radio").not(activeRadio);
+
+    //Si el tipo de producto es 1, mostrar el check packageInfo
+    if (productType == 1) {
+        activeForm.find(".packageInfo").show();
+    } else {
+        activeForm.find(".packageInfo").hide();
+    }
+
+    //Quitar el radio seleccionado de los otros productType
+    radios.prop("checked", false);
+}
+
+/**
+ * Cerrar el card-cabys y mostrar el card-form
+ */
 function cerrar_cabys() {
     const activeElement = $("#" + elemento_activo);
 
@@ -158,6 +215,11 @@ function cerrar_cabys() {
     activeElement.find(".card-frm").CardWidget("expand");
 }
 
+/**
+ * Buscar en la lista de códigos cabys
+ * @param {string} search Valor a buscar
+ * @param {boolean} clean Eliminar el valor del campo q_cabys
+ */
 function obtener_cabys(search = "", clean = false) {
     const activeElement = $("#" + elemento_activo);
 
@@ -174,4 +236,41 @@ function obtener_cabys(search = "", clean = false) {
 
     //Buscar el codigo cabys por nombre
     buscar_categorias(search);
+}
+
+/**
+ * Validar si el usuario desea reemplazar el código CABYS
+ *
+ * @param {int} productType Tipo de producto
+ */
+function validateCabysCode(productType) {
+    const activeForm = $("#" + form_activo);
+
+    const category_code = activeForm.find(".category_code").val();
+
+    console.log("Código CABYS: " + category_code);
+
+    if (category_code != "") {
+        Swal.fire({
+            title: "Si cambia el tipo de artículo, se eliminará el código CABYS",
+            text: "¿Desea continuar?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Sí",
+            cancelButtonText: "No",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                selectProductType(productType, true);
+
+                activeForm.find(".category_code").val("");
+                activeForm.find(".category_suggestedTax").val("");
+                activeForm.find(".category_description").val("");
+            } else {
+                //Quitar el check del radio seleccionado
+                activeForm.find(".productType-" + productType).prop("checked", false);
+            }
+        });
+    } else {
+        selectProductType(productType, true);
+    }
 }

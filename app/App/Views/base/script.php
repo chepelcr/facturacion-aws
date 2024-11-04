@@ -107,6 +107,9 @@ if (is_login()) {
     <!-- Core | Productos | Unidades -->
     <?= getScript('core/productos/unidades') ?>
 
+    <!-- Core | Productos | Imagen -->
+    <?= getScript('core/productos/imagen') ?>
+
     <!-- Facturacion | Inicio | Documentos -->
     <?= getScript('core/facturacion/inicio/acciones') ?>
 

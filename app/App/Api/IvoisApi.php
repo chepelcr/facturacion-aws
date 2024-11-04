@@ -31,4 +31,20 @@ abstract class IvoisApi extends RestApi {
 
         parent::__construct($url, "application/json");
     }
+
+    /**
+     * Actualizar un cliente
+     * @param $id Identificador del cliente
+     * @param $data Datos a actualizar
+     * @return object Cliente actualizado
+     */
+    public function update($id, $data, $reinsert = false) {
+        if ($reinsert) {
+            $url = $id . "?reinsert=true";
+        } else {
+            $url = $id;
+        }
+
+        return $this->makePutRequest($data, $url);
+    }
 }

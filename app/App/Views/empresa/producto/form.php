@@ -1,4 +1,9 @@
 <div class="row">
+    <!-- Hacienda -->
+    <div class="col-md-12">
+        <?= view('empresa/producto/elementos/hacienda', $productTypeData) ?>
+    </div>
+
     <!-- Datos generales -->
     <div class="col-md-12">
         <?= view('empresa/producto/elementos/datos_generales', $datos_generales) ?>
@@ -12,11 +17,6 @@
     <!-- Codigos -->
     <div class="col-md-12">
         <?= view('empresa/producto/elementos/codigos', $data_codigos) ?>
-    </div>
-
-    <!-- Hacienda -->
-    <div class="col-md-12">
-        <?= view('empresa/producto/elementos/hacienda', $data_hacienda) ?>
     </div>
 
     <!-- Descuentos -->
