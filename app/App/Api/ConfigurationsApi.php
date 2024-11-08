@@ -2,6 +2,8 @@
 
 namespace App\Api;
 
+use App\Enums\ConfigurationsEnum;
+
 /**
  * Clase para consumir el API de configuraciones de un contribuyente de IVOIS
  * @author jcampos
@@ -16,6 +18,19 @@ class ConfigurationsApi extends IvoisApi {
      */
     public function __construct() {
         parent::__construct(getEnt("ivois.api.taxpayers.url"));
+    }
+
+    /**
+     * Obtiene el nombre del error para el modulo de configuraciones de un contribuyente
+     */
+    public function getErrorName($error) {
+        $error = ConfigurationsEnum::tryFrom($error);
+
+        if ($error == null) {
+            return 'Ha ocurrido un error al realizar la solicitud';
+        } else {
+            return $error->getName();
+        }
     }
 
     /**

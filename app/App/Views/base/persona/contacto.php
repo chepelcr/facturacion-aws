@@ -16,9 +16,7 @@
             <!-- Telefono personal -->
             <div class="col-md-7 contacto">
                 <div class="form-group">
-                    <label for="personalPhone">
-                        Teléfono
-                    </label>
+                    <label for="personalPhone" class="text-left ivois-label">Teléfono</label>
                     <div class="row">
                         <div class="col-md-5">
                             <div class="input-group">
@@ -57,9 +55,7 @@
             <!-- Correo electronico -->
             <div class="col-md-5 contacto">
                 <div class="form-group">
-                    <label for="email">
-                        Correo electrónico
-                    </label>
+                    <label for="email" class="text-left ivois-label">Correo electrónico</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>

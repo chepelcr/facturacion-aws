@@ -138,7 +138,7 @@ function activar_campos_cedula(estado = "agregar", nombre_elemento = "") {
         $("#" + nombre_elemento)
             .find(".card-ubicacion")
             .CardWidget("collapse");
-            
+
         $("#" + nombre_elemento)
             .find(".card-contacto")
             .CardWidget("collapse");
@@ -167,7 +167,9 @@ function activar_campos_cedula(estado = "agregar", nombre_elemento = "") {
 
         activar_campo_clase("businessName", true, nombre_elemento);
         activar_campo_clase("identification_typeId", true, nombre_elemento);
-        //activar_campo_clase("nationality", true, nombre_elemento);
+        activar_campo_clase("nationality", true, nombre_elemento);
+        activar_campo_clase("personalPhone_countryCode", true, nombre_elemento);
+        activar_campo_clase("customerType-radio", true, nombre_elemento);
 
         activar_campo_clase("btn-eliminar", true, nombre_elemento);
     } else if (estado == "almacenando") {
@@ -232,3 +234,5 @@ function desactivar_permisos(elemento = "") {
         $(".inp-chk").val("");
     }
 } //Fin de la funcion
+
+

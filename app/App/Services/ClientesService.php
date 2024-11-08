@@ -6,15 +6,13 @@ use App\Api\CustomersApi;
 use App\Api\DataServiceApi;
 use App\Api\LocationsApi;
 
-class ClientesService extends BaseService
-{
+class ClientesService extends BaseService {
 
     /**
      * Crear un cliente
      * @param array $data Datos del cliente
      */
-    public function create($data)
-    {
+    public function create($data) {
         $identification = $data['identification']['number'];
         $identification = desformatear_cedula($identification);
 
@@ -28,8 +26,7 @@ class ClientesService extends BaseService
     /**
      * Obtiene los datos de los clientes
      */
-    public function getData($id = 'all', $filters = array())
-    {
+    public function getData($id = 'all', $filters = array()) {
         $customersApi = new CustomersApi(getTaxpayerId());
 
         if ($id == 'all') {
@@ -46,8 +43,7 @@ class ClientesService extends BaseService
     /**
      * Cambiar el estado de un cliente
      */
-    public function changeStatus($id, $data)
-    {
+    public function changeStatus($id, $data) {
         $customersApi = new CustomersApi(getTaxpayerId());
 
         return $customersApi->changeCustomerStatus($id, $data);
@@ -56,8 +52,7 @@ class ClientesService extends BaseService
     /**
      * Actualizar un cliente
      */
-    public function update($id, $data, $reinsert = false)
-    {
+    public function update($id, $data, $reinsert = false) {
         $customersApi = new CustomersApi(getTaxpayerId());
 
         $identification = $data['identification']['number'];
@@ -71,8 +66,7 @@ class ClientesService extends BaseService
     /**
      * Obtiene la vista de los clientes
      */
-    public function getCustomersListView($filters = array())
-    {
+    public function getCustomersListView($filters = array()) {
         $clientes = $this->getData('all', $filters);
 
         if (isset($clientes->error)) {
@@ -98,9 +92,10 @@ class ClientesService extends BaseService
         );
 
         $dataServiceApi = new DataServiceApi();
-        $identificaciones = $dataServiceApi->getIdentificationTypesByCountry(getCountryCode());
-
         $locationsApi = new LocationsApi();
+
+        $identificaciones = $dataServiceApi->getIdentificationTypesByCountry(getCountryCode());
+        $customerTypes = $dataServiceApi->getCustomerTypes();
 
         $provincias = $locationsApi->get_states_by_iso_code(getCountryCode());
         $countries = $locationsApi->get_countries();
@@ -112,7 +107,8 @@ class ClientesService extends BaseService
 
         $datos_personales = array(
             'identificaciones' => $identificaciones,
-            'countries' => $countries
+            'countries' => $countries,
+            'customerTypes' => $customerTypes
         );
 
         $nombreForm = 'empresa/cliente/form';
@@ -142,8 +138,7 @@ class ClientesService extends BaseService
     /**
      * Validar si ya existe un cliente en la plataforma
      */
-    public function validarExistencia($data)
-    {
+    public function validarExistencia($data) {
         $customersApi = new CustomersApi(getTaxpayerId());
 
         $idNumber = $data['idNumber'];
@@ -151,7 +146,7 @@ class ClientesService extends BaseService
 
         $data = $customersApi->getCustomerByNationalityAndIdNumber($countryCode, $idNumber);
 
-        if(isset($data->error)) {
+        if (isset($data->error)) {
             $data = array(
                 'status' => 0
             );

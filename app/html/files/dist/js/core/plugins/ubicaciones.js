@@ -354,5 +354,10 @@ function validarUbicacion() {
         desactivar_ubicaciones("agregar");
     }
 
+    //Colocar el mismo codigo en el campo .personalPhone_countryCode
+    activeElement.find(".personalPhone_countryCode").val(activeElement.find(".nationality").val());
+
+    activar_campo_clase("personalPhone_countryCode", true, elemento_activo);
+
     return isForeign;
 }

@@ -184,6 +184,8 @@ function llenarObjeto(nombre_form, objeto, estado) {
             }
 
             activeForm.find(".measurementUnit_commercialUnit").val(commercialUnit);
+        } else if (key == "customerType") {
+            selectCustomerType(valor);
         } else if (key == "category") {
             selectProductType(valor.productType.id, true);
 

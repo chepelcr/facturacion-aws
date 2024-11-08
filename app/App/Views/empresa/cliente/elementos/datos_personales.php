@@ -15,22 +15,17 @@
             <!-- Tipo de cliente -->
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="tipo_producto" class="ivois-label">Tipo de cliente</label>
+                    <label for="tipo_cliente" class="ivois-label">Tipo de cliente</label>
                     <div class="row input-group">
-                        <div class="col-md-6 form-group">
-                            <!-- Radio buttons -->
-                            <div class="form-check form-check-inline">
-                                <input class="form-check form-check-input ivois-radio customerType-radio customerType-1" type="radio" value="1">
-                                <label class="form-check form-check-label ivois-label" for="customerType-1">Persona</label>
+                        <?php foreach ($customerTypes as $customerType) : ?>
+                            <div class="col-md-6 form-group">
+                                <!-- Radio buttons -->
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check form-check-input ivois-radio customerType-radio customerType-<?= $customerType->id ?>" type="radio" value="<?= $customerType->id ?>" name="customerType">
+                                    <label class="form-check form-check-label ivois-label" for="customerType-<?= $customerType->id ?>"><?= $customerType->description ?></label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <!-- Radio buttons -->
-                            <div class="form-check form-check-inline">
-                                <input class="form-check form-check-input ivois-radio customerType-radio customerType-2" type="radio" value="2">
-                                <label class="form-check form-check-label ivois-label" for="customerType-2">Empresa</label>
-                            </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>

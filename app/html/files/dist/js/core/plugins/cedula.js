@@ -372,6 +372,15 @@ function validarFormatoIdentificacion(cedula) {
     activar_campo_clase("btn-dlt-id", false, form_activo);
 } //Fin de formatear cedula
 
+function selectCustomerType(customerType) {
+    const activeForm = $("#" + form_activo);
+
+    //Obtener el radio seleccionado
+    const radio = activeForm.find(".customerType-" + customerType);
+
+    radio.prop("checked", true);
+}
+
 $(document).ready(function () {
     //Cuando cambia el .customerType
     $(document).on("change", ".customerType-radio", function () {

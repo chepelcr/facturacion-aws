@@ -14,6 +14,22 @@ use App\Enums\DataServiceEnum;
 class DataServiceApi extends IvoisApi {
 
     /**
+     * Obtener el nombre del error para el modulo de servicios de datos
+     * 
+     * @param string $error Código del error
+     * @return string Nombre del error
+     */
+    public function getErrorName($error) {
+        $error = DataServiceEnum::tryFrom($error);
+
+        if ($error == null) {
+            return 'Ha ocurrido un error al realizar la solicitud';
+        } else {
+            return $error->getName();
+        }
+    }
+
+    /**
      * Obtener los tipos de identificación por país
      * @param string $countryCode Código del país
      * @return array Tipos de identificación
@@ -195,13 +211,14 @@ class DataServiceApi extends IvoisApi {
         return $this->makeGetRequestUrl($url);
     }
 
-    public function getErrorName($error) {
-        $error = DataServiceEnum::tryFrom($error);
+    /**
+     * Obtener los tipos de clientes del sistema
+     * 
+     * @return array Tipos de clientes
+     */
+    public function getCustomerTypes() {
+        $url = getEnt("ivois.api.customerTypes.url");
 
-        if ($error == null) {
-            return 'Ha ocurrido un error al realizar la solicitud';
-        } else {
-            return $error->getName();
-        }
+        return $this->makeGetRequestUrl($url);
     }
 }

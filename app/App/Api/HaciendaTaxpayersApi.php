@@ -2,7 +2,7 @@
 
 namespace App\Api;
 
-use App\Enums\CategoriesEnum;
+use App\Enums\HaciendaTaxpayersEnum;
 
 class HaciendaTaxpayersApi extends IvoisApi {
     /**
@@ -16,7 +16,7 @@ class HaciendaTaxpayersApi extends IvoisApi {
      * Obtiene el nombre del error para el modulo de productos
      */
     public function getErrorName($error) {
-        $error = CategoriesEnum::tryFrom($error);
+        $error = HaciendaTaxpayersEnum::tryFrom($error);
 
         if ($error == null) {
             return 'Ha ocurrido un error al realizar la solicitud';
