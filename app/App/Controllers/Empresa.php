@@ -184,7 +184,7 @@ class Empresa extends BaseController {
 				} else {
 					$result = array(
 						'error' => 'No tiene permisos para realizar esta acción',
-						'codigo' => 403
+						'status' => 403
 					);
 
 					return $this->error($result);
@@ -192,7 +192,7 @@ class Empresa extends BaseController {
 			} else {
 				$result = array(
 					'error' => 'A ocurrido un error al actualizar el objeto',
-					'codigo' => 500
+					'status' => 500
 				);
 
 				return $this->error($result);
@@ -235,7 +235,7 @@ class Empresa extends BaseController {
 				} else {
 					$result = array(
 						'error' => 'A ocurrido un error al guardar el objeto',
-						'codigo' => 500
+						'status' => 500
 					);
 
 					return $this->error($result);
@@ -243,7 +243,7 @@ class Empresa extends BaseController {
 			} else {
 				$result = array(
 					'error' => 'No tiene permisos para realizar esta acción',
-					'codigo' => 403
+					'status' => 403
 				);
 
 				return $this->error($result);

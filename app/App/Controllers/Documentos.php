@@ -72,7 +72,7 @@ class Documentos extends BaseController {
             $data = array(
                 'error' => 'login',
                 'estado' => 'warning',
-                'codigo' => '505',
+                'status' => '505',
             );
 
             return $this->error($data);
@@ -142,7 +142,7 @@ class Documentos extends BaseController {
             $error = array(
                 'error' => 'No ha iniciado sesión',
                 'estado' => 'warning',
-                'codigo' => '505',
+                'status' => '505',
             );
 
             return $this->error($error);
@@ -171,7 +171,7 @@ class Documentos extends BaseController {
                 $data = array(
                     'error' => 'El document solicitado no existe',
                     'estado' => 'warning',
-                    'codigo' => '404',
+                    'status' => '404',
                 );
 
                 return $this->error($data);
@@ -180,7 +180,7 @@ class Documentos extends BaseController {
             $data = array(
                 'error' => 'No ha iniciado sesión',
                 'estado' => 'warning',
-                'codigo' => '505',
+                'status' => '505',
             );
 
             return $this->error($data);
@@ -193,7 +193,7 @@ class Documentos extends BaseController {
             $error = array(
                 'estado' => 'error',
                 'error' => 'login',
-                'codigo' => '505',
+                'status' => '505',
             );
 
             return $this->error($error);
@@ -232,7 +232,7 @@ class Documentos extends BaseController {
             $error = array(
                 'error' => 'No ha iniciado sesión',
                 'estado' => 'warning',
-                'codigo' => '505',
+                'status' => '505',
             );
 
             return $this->error($error);
@@ -292,14 +292,14 @@ class Documentos extends BaseController {
                 $data = (object) array(
                     'error' => 'No se encontro el cliente',
                     'estado' => 'warning',
-                    'codigo' => '404',
+                    'status' => '404',
                 );
             }
         } else {
             $data = (object) array(
                 'error' => 'No ha iniciado sesión',
                 'estado' => 'warning',
-                'codigo' => '505',
+                'status' => '505',
             );
         }
 
@@ -348,7 +348,7 @@ class Documentos extends BaseController {
             $error = array(
                 'error' => 'No ha iniciado sesion',
                 'estado' => 'error',
-                'codigo' => 505
+                'status' => 505
             );
 
             return $this->error($error);
@@ -389,14 +389,14 @@ class Documentos extends BaseController {
                 $data = array(
                     'error' => 'No se ha enviado un codigo',
                     'estado' => 'error',
-                    'codigo' => 400
+                    'status' => 400
                 );
             }
         } else {
             $data = array(
                 'error' => 'No ha iniciado sesion',
                 'estado' => 'error',
-                'codigo' => 505
+                'status' => 505
             );
         }
 
@@ -417,7 +417,7 @@ class Documentos extends BaseController {
             $data = array(
                 'error' => 'Debe iniciar sesión para continuar',
                 'estado' => 'error',
-                'codigo' => 505
+                'status' => 505
             );
         }
 

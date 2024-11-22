@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Api\DataServiceApi;
 use App\Api\LocationsApi;
 use App\Api\TaxpayersApi;
 
@@ -27,11 +28,16 @@ class TaxpayersService
         } else {
             $empresa = $this->taxpayersApi->getTaxpayerById(getTaxpayerId());
         }
+
+        $dataService = new DataServiceApi();
+        $customerTypes = $dataService->getCustomerTypes();
     
         $datos_personales = array(
             'businessName' => $empresa->businessName,
             'identification' => $empresa->identification,
             'nationality' => $empresa->nationality,
+            'customerType' => 1,
+            'customerTypes' => $customerTypes,
             'identificaciones' => array(
                 (object) array(
                     'typeId' => $empresa->identification->typeId,

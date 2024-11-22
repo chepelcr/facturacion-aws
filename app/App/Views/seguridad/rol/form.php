@@ -1,10 +1,5 @@
 <div class="row">
-    <i
-    
-    
-    
-    
-    nput class="id_rol" name="id_rol" type="hidden">
+    <input class="id_rol" name="id_rol" type="hidden">
 
     <!-- Nombre del rol -->
     <div class="col-md-12">

@@ -53,7 +53,7 @@ class DocumentsApi extends IvoisApi {
      * @return array Notificaciones enviadas
      */
     public function resendDocumentNotification($documentId) {
-        $url = $documentId . '/notifications/resend';
+        $url = "/$documentId/notifications/resend";
 
         return $this->makeGetRequestUrl($url);
     }
@@ -65,7 +65,7 @@ class DocumentsApi extends IvoisApi {
      * @return array Notificaciones enviadas
      */
     public function sendDocumentNotification($documentId, $email) {
-        $url = $documentId . '/notifications/send?email=' . $email;
+        $url = "/$documentId/notifications/send?email=$email";
 
         return $this->makeGetRequestUrl($url);
     }
@@ -77,7 +77,8 @@ class DocumentsApi extends IvoisApi {
      * @return object Documento electrónico
      */
     public function getDocumentByKey($clave) {
-        return $this->makeGetRequestUrl($clave);
+        $url = "/$clave";
+        return $this->makeGetRequestUrl($url);
     }
 
     /**
@@ -88,9 +89,9 @@ class DocumentsApi extends IvoisApi {
      */
     public function getDocumentsByFilter($filter = '') {
         if (empty($filter)) {
-            return $this->makeGetRequestUrl('all');
+            return $this->makeGetRequestUrl('/all');
         } else {
-            return $this->makeGetRequestUrl('all?search=' . $filter);
+            return $this->makeGetRequestUrl('/all?search=' . $filter);
         }
     }
 }

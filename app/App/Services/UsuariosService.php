@@ -41,7 +41,7 @@ class UsuariosService extends BaseService {
      * @param array $data Datos del usuario
      * @return array Respuesta de la API
      */
-    public function update($id, $data) {
+    public function update($id, $data, $reinsert = false) {
 
         $model = new UsuariosModel();
         $user = $model->getById($id);
@@ -59,13 +59,27 @@ class UsuariosService extends BaseService {
                 'id_empresa' => $empresa->id_empresa
             );
 
+            //Si se va a reinsertar, se debe actualizar el estado del usuario
+            if ($reinsert) {
+                $data['estado'] = 1;
+            }
+
             $model = new UsuariosModel();
             $data = $model->update($data, $id);
 
             if (!is_bool($data)) {
+
+                if ($reinsert) {
+                    $this->enviar_contrasenia_temporal($data);
+
+                    $mensaje = 'Se ha actualizado el usuario correctamente y se ha enviado un correo con la nueva contraseña.';
+                } else {
+                    $mensaje = 'Se ha actualizado el usuario correctamente.';
+                }
+
                 return array(
                     'estado' => 1,
-                    'success' => 'Se actualizó el usuario correctamente.',
+                    'success' => $mensaje
                 );
             } else {
                 return array(
@@ -282,6 +296,14 @@ class UsuariosService extends BaseService {
         return listado($data);
     }
 
+    /**
+     * Cambiar el estado de un usuario
+     * 
+     * @param int $id Identificador del usuario
+     * @param array $data Datos del usuario
+     * 
+     * @return array Respuesta de la API
+     */
     public function changeStatus($id, $data) {
         $usersModel = new UsuariosModel();
         $usuario = $usersModel->getById($id);
@@ -295,9 +317,23 @@ class UsuariosService extends BaseService {
             $data = $usersModel->update($data, $id);
 
             if (!is_bool($data)) {
+                $mensaje = '';
+
+                switch ($data->estado) {
+                    case 2:
+                        $mensaje = 'Se ha desactivado el usuario correctamente';
+                        break;
+                    case 3:
+                        $mensaje = 'Se ha eliminado el usuario correctamente';
+                        break;
+                    default:
+                        $mensaje = 'Se ha activado el usuario correctamente';
+                        break;
+                }
+
                 return array(
                     'estado' => 1,
-                    'success' => 'Se ha cambiado el estado del usuario correctamente',
+                    'success' => $mensaje
                 );
             } else {
                 return array(
@@ -317,8 +353,8 @@ class UsuariosService extends BaseService {
         $model = new UsuariosModel();
 
         if ($id == 'all') {
-            if (isset($filters['id_estado'])) {
-                $estado = $filters['id_estado'];
+            if (isset($filters['status'])) {
+                $estado = $filters['status'];
                 $model->where('estado', $estado);
             }
 

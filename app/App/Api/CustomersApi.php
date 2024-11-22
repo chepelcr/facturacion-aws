@@ -40,7 +40,8 @@ class CustomersApi extends IvoisApi {
      * @return object Cliente
      */
     public function getCustomerById($id) {
-        return $this->makeGetRequestUrl($id);
+        $url = "/$id";
+        return $this->makeGetRequestUrl($url);
     }
 
     /**
@@ -73,7 +74,7 @@ class CustomersApi extends IvoisApi {
      * @return array Lista de clientes
      */
     public function getCustomersByStatus($status) {
-        $url = "all?status=$status";
+        $url = "/all?status=$status";
 
         return $this->makeGetRequestUrl($url);
     }

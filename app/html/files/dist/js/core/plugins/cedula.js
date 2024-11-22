@@ -191,6 +191,9 @@ function changeCustomerType(customerType) {
     //Obtener el radio seleccionado
     const radio = activeForm.find(".customerType-" + customerType);
 
+    //Seleccionar el que no es el seleccionado
+    const oldCustomerType = activeForm.find(".customerType-radio").not(radio).val();
+
     const identification = activeForm.find(".identification_number");
 
     if (identification.val() != "") {
@@ -215,6 +218,8 @@ function changeCustomerType(customerType) {
                 validar_extranjero();
             } else {
                 radio.prop("checked", false);
+
+                activeForm.find(".customerType-" + oldCustomerType).prop("checked", true);
             }
         });
     } else {

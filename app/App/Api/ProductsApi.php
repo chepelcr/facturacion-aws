@@ -39,7 +39,8 @@ class ProductsApi extends IvoisApi {
      * @return object Producto
      */
     public function getProductById($id) {
-        return $this->makeGetRequestUrl($id);
+        $url = "/$id";
+        return $this->makeGetRequestUrl($url);
     }
 
     /**
@@ -48,7 +49,7 @@ class ProductsApi extends IvoisApi {
      * @return array Lista de productos
      */
     public function getProductsByTaxpayerId($status = 0) {
-        return $this->makeGetRequestUrl("all?status=" . $status);
+        return $this->makeGetRequestUrl("/all?status=" . $status);
     }
 
     /**
@@ -57,7 +58,7 @@ class ProductsApi extends IvoisApi {
      * @return array Lista de productos
      */
     public function getProductsBySearchFilter($searchFilter = '') {
-        return $this->makeGetRequestUrl("all?search=" . $searchFilter);
+        return $this->makeGetRequestUrl("/all?search=" . $searchFilter);
     }
 
     /**
@@ -76,6 +77,7 @@ class ProductsApi extends IvoisApi {
      * @return object Producto actualizado
      */
     public function changeProductStatus($id, $data) {
-        return $this->makePatchRequest($data, $id);
+        $url = "/$id";
+        return $this->makePatchRequest($data, $url);
     }
 }

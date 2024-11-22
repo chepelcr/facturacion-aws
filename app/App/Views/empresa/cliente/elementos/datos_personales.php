@@ -17,12 +17,14 @@
                 <div class="form-group">
                     <label for="tipo_cliente" class="ivois-label">Tipo de cliente</label>
                     <div class="row input-group">
-                        <?php foreach ($customerTypes as $customerType) : ?>
+                        <?php foreach ($customerTypes as $customerTypeDTO) : ?>
                             <div class="col-md-6 form-group">
                                 <!-- Radio buttons -->
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check form-check-input ivois-radio customerType-radio customerType-<?= $customerType->id ?>" type="radio" value="<?= $customerType->id ?>" name="customerType">
-                                    <label class="form-check form-check-label ivois-label" for="customerType-<?= $customerType->id ?>"><?= $customerType->description ?></label>
+                                    <input class="form-check form-check-input ivois-radio customerType-radio customerType-<?= $customerTypeDTO->id ?>" type="radio" value="<?= $customerTypeDTO->id ?>" name="customerType" <?php if (isset($customerType) && $customerType == $customerTypeDTO->id) {
+                                                                                                                                                                                                                                    echo "checked";
+                                                                                                                                                                                                                                } ?>>
+                                    <label class="form-check form-check-label ivois-label" for="customerType-<?= $customerTypeDTO->id ?>"><?= $customerTypeDTO->description ?></label>
                                 </div>
                             </div>
                         <?php endforeach; ?>

@@ -128,6 +128,7 @@ function activar_campos_cedula(estado = "agregar", nombre_elemento = "") {
 
         activar_campo_clase("businessName", true, nombre_elemento);
         activar_campo_clase("identification_typeId", false, nombre_elemento);
+        activar_campo_clase("customerType-radio", false, nombre_elemento);
 
         //Ocultar los campos de nombre
         $("#" + nombre_elemento)
@@ -152,6 +153,7 @@ function activar_campos_cedula(estado = "agregar", nombre_elemento = "") {
 
         activar_campo_clase("businessName", false, nombre_elemento);
         activar_campo_clase("identification_typeId", true, nombre_elemento);
+        activar_campo_clase("customerType-radio", false, nombre_elemento);
 
         //Mostrar los campos de nombre
         $("#" + nombre_elemento)

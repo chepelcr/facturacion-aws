@@ -22,7 +22,7 @@ class Configuracion extends BaseController {
 
     protected $nombreModulo = 'configuracion';
 
-    protected $objetos = ['empresa', 'documentos'];
+    protected $objetos = ['empresa', 'documentos', 'modulos'];
 
     /** Devolver el dash de la aplicacion */
     public function index() {
@@ -37,7 +37,7 @@ class Configuracion extends BaseController {
         } //Fin de la validacion
 
         else {
-            header('Location: ' . baseUrl('login'));
+            redirect(baseUrl('login'));
         }
     } //Fin de la funcion index
 
@@ -67,15 +67,45 @@ class Configuracion extends BaseController {
             } else {
                 $data = array(
                     'error' => 'No tiene permisos para acceder a la página.',
-                    'status'=> 403
+                    'status' => 403
                 );
 
                 return $this->error($data);
             }
         } else {
-            return $this->inicio();
+            redirect(baseUrl('login'));
         }
     } //Fin de la función empresa
+
+    /**
+     * Obtener los modulos de la aplicacion
+     */
+    public function modulos(){
+        if (is_login()) {
+            if (validar_permiso("configuracion", "modulos", "consultar")) {
+                $autenticationService = new AutenticacionService();
+
+                //$modulos = $autenticationService->obtenerModulos();
+
+                if (isset($modulos->error)) {
+                    $data = array(
+                        'error' => $modulos->error,
+                        'status' => $modulos->status
+                    );
+
+                    return $this->error($data);
+                } else {
+                    return view('seguridad/configuracion/modulos', $modulos);
+                }
+            } else {
+                $error = $this->object_error(500, 'No tiene permisos para consultar modulos.');
+
+                return $this->error($error);
+            }
+        } else {
+            header(self::LOCATION . baseUrl('login'));
+        }
+    }
 
     /**
      * Entrar a la configuracion del modulo de facturacion
@@ -91,7 +121,7 @@ class Configuracion extends BaseController {
                     if (isset($configuraciones->error)) {
                         $data = array(
                             'error' => $configuraciones->error,
-                            'codigo' => $configuraciones->status
+                            'status' => $configuraciones->status
                         );
 
                         return $this->error($data);
@@ -111,7 +141,7 @@ class Configuracion extends BaseController {
                 if (getSegment(3) == "listado") {
                     $error = array(
                         'error' => 'No tiene permisos para acceder a la pagina.',
-                        'codigo' => 403
+                        'status' => 403
                     );
 
                     return $this->error($error);
@@ -129,7 +159,7 @@ class Configuracion extends BaseController {
     /**
      * Actualizar la configuracion de la empresa
      */
-    public function update($objeto, $data) {
+    public function update($objeto, $data, $reinsert = false) {
         if (is_login()) {
             if ($objeto == 'hacienda' && validar_permiso('configuracion', 'documentos', 'modificar')) {
                 $autenticationService = new AutenticacionService();
@@ -139,7 +169,7 @@ class Configuracion extends BaseController {
                 if (isset($response->error)) {
                     $error = array(
                         'error' => $response->error,
-                        'codigo' => $response->status
+                        'status' => $response->status
                     );
 
                     return $this->error($error);
@@ -159,7 +189,7 @@ class Configuracion extends BaseController {
                 if (isset($response->error)) {
                     $error = array(
                         'error' => $response->error,
-                        'codigo' => $response->status
+                        'status' => $response->status
                     );
 
                     return $this->error($error);
