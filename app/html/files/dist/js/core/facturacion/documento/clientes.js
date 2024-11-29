@@ -1,6 +1,7 @@
 /**Obtener un cliente de la base de datos */
 function obtener_cliente(identificacion = "") {
     elemento_activo = "modal-receptor-" + id_factura_activa;
+    form_activo = elemento_activo;
 
     const activeDocument = $("#" + factura_activa);
 
@@ -189,6 +190,9 @@ function validarCliente() {
 
         //Colocar el nombre del cliente en el input .nombre-cliente de la factura activa
         activeDocument.find(".nombre-cliente").val(businessName);
+
+        elemento_activo = "";
+        form_activo = "";
     } else {
         notificacion("Debe llenar todos los campos obligatorios del cliente", "", "error");
     }
@@ -265,6 +269,7 @@ function buscar_clientes() {
 /**Funcion cuando el usuario presiona la opcion para agregar un cliente en el modulo buscar_cliente */
 function agregar_cliente() {
     cerrar_clientes();
+
     elemento_activo = "modal-receptor-" + id_factura_activa;
     form_activo = elemento_activo;
 

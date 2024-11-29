@@ -120,6 +120,8 @@ function validar_documento(id = "") {
 function guardar_documento() {
     activar_campo_clase("inp-fct", false, factura_activa);
 
+    activar_campo_clase("receiver", false, factura_activa);
+
     //Capturar los datos de la factura activa en FormData
     var document = new FormData($("#" + factura_activa)[0]);
 

@@ -5,11 +5,9 @@
  * @param {boolean} ver Indica si se debe habilitar el campo
  */
 function obtener_provincias(countryCode = null, stateId = null, ver = false) {
-    if (countryCode == null) {
-        countryCode = $("#" + elemento_activo)
+    countryCode = $("#" + elemento_activo)
             .find(".nationality")
             .val();
-    }
 
     var html = crear_option("", "Seleccionar");
 
@@ -40,6 +38,10 @@ function obtener_provincias(countryCode = null, stateId = null, ver = false) {
             if (response) {
                 //0: {stateId:1 , nom_provincia: residence_stateId}
                 $.each(response, function (i, provincia) {
+                    
+                    console.log(provincia.stateId);
+                    console.log(stateId);
+
                     if (stateId != null && stateId == provincia.stateId) {
                         html += crear_option(provincia.stateId, provincia.stateName, true);
                     } else {

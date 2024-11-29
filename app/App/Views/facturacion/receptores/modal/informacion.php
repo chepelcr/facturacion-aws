@@ -17,7 +17,7 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="container-fluid">
-                            <?= view('facturacion/receptores/form', $data_form) ?>
+                            <?= view('empresa/cliente/form', $data_form) ?>
                         </div>
                     </div>
                 </div>

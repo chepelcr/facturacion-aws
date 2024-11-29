@@ -45,6 +45,14 @@ class DocumentValidations {
             );
         }
 
+        //Validar si el documento tiene un receptor, para eliminar el formato del numero de identificacion
+        if (isset($document['receiver']) && !empty($document['receiver'])) {
+            $identification = $document['receiver']['identification']['number'];
+            $identification = desformatear_cedula($identification);
+
+            $document['receiver']['identification']['number'] = $identification;
+        }
+
         //Si el tipo de documento no es una nota de credito o debito, se debe agregar al menos un pago
         if (empty($document['payments']) && $documentTypeCode != '02' && $documentTypeCode != '03') {
             return array(

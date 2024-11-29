@@ -19,7 +19,7 @@ abstract class IvoisApi extends RestApi {
      * @param $errorEnum Enumeración de errores de la API
      */
     public function __construct($base_url = "", $ivoisUrl = "") {
-        if($ivoisUrl == ""){
+        if ($ivoisUrl == "") {
             $ivoisUrl = getEnt("ivois.api.url");
         }
 
@@ -36,13 +36,13 @@ abstract class IvoisApi extends RestApi {
      * Actualizar un cliente
      * @param $id Identificador del cliente
      * @param $data Datos a actualizar
-     * @return object Cliente actualizado
+     * @return object Datos actualizados
      */
     public function update($id, $data, $reinsert = false) {
         if ($reinsert) {
-            $url = $id . "?reinsert=true";
+            $url = "/$id?reinsert=true";
         } else {
-            $url = $id;
+            $url = "/$id";
         }
 
         return $this->makePutRequest($data, $url);

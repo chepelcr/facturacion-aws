@@ -23,7 +23,7 @@ function formatear_cedula(cedula, tipo_cedula = "01") {
 
         case "01":
             //Formato de cedula
-            //01-0234-0569
+            //1-0234-0569
 
             //Formatear la cedula
             //Obtener el primer digito
@@ -34,18 +34,6 @@ function formatear_cedula(cedula, tipo_cedula = "01") {
 
             //Obtener el sexto digito al noveno digito
             var tercer_digito = cedula.substring(5, 9);
-
-            //Rellenar con ceros a la izquierda el primer digito hasta que tenga 2 digitos
-            primer_digito = primer_digito.padStart(2, '0');
-
-            //Rellenar con ceros a la izquierda el segundo digito y el tercer digito hasta que sean de 4 digitos
-            while (segundo_digito.length < 4) {
-                segundo_digito = "0" + segundo_digito;
-            }
-
-            while (tercer_digito.length < 4) {
-                tercer_digito = "0" + tercer_digito;
-            }
 
             //Unir los 3 digitos con -
             cedula_formateada = primer_digito + "-" + segundo_digito + "-" + tercer_digito;

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <?= view('empresa/cliente/elementos/datos_personales', $datos_personales) ?>
+        <?= view('base/persona/datos_personales', $datos_personales) ?>
     </div>
 
     <div class="col-md-12">

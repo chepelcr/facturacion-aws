@@ -23,7 +23,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-phone"></i></span>
                                 </div>
-                                <select name="personalPhone[countryCode]" class="form-control inp personalPhone_countryCode" required>
+                                <select name="<?= $personalPhoneCountryCodeName ?? "personalPhone[countryCode]" ?>" class="receiver form-control inp personalPhone_countryCode" required>
                                     <option value="">Seleccionar</option>
                                     <?php foreach ($countries as $country) : ?>
                                         <option value="<?= $country->isoCode ?>"
@@ -42,7 +42,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-phone"></i></span>
                                 </div>
-                                <input class="form-control inp personalPhone_number" name="personalPhone[number]" type="text" required max="8"
+                                <input class="receiver form-control inp personalPhone_number" name="<?= $personalPhoneNumberName ?? "personalPhone[number]" ?>" type="text" required max="8"
                                     value="<?php if (isset($personalPhone)) {
                                                 echo $personalPhone->number;
                                             } ?>" placeholder="Teléfono personal">
@@ -60,7 +60,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         </div>
-                        <input class="form-control inp perfil email" name="email" type="email" required max="100"
+                        <input class="receiver form-control inp perfil email" name="<?= $emailName ?? "email" ?>" type="email" required max="100"
                             value="<?php if (isset($email)) {
                                         echo $email;
                                     } ?>" placeholder="Correo electrónico">

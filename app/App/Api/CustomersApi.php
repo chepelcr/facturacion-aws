@@ -49,7 +49,7 @@ class CustomersApi extends IvoisApi {
      * @return array Lista de clientes
      */
     public function getCustomersByTaxpayerId() {
-        return $this->makeGetRequestUrl('all');
+        return $this->makeGetRequestUrl('/all');
     }
 
     /**
@@ -57,7 +57,7 @@ class CustomersApi extends IvoisApi {
      * @return array Lista de clientes extranjeros
      */
     public function getForeignCustomersByTaxpayerId() {
-        return $this->makeGetRequestUrl('national?foreign=true');
+        return $this->makeGetRequestUrl('/national?foreign=true');
     }
 
     /**
@@ -65,7 +65,7 @@ class CustomersApi extends IvoisApi {
      * @return array Lista de clientes nacionales
      */
     public function getNationalCustomersByTaxpayerId() {
-        return $this->makeGetRequestUrl('national?national=true');
+        return $this->makeGetRequestUrl('/national?national=true');
     }
 
     /**
@@ -86,7 +86,8 @@ class CustomersApi extends IvoisApi {
      * @return object Cliente actualizado
      */
     public function changeCustomerStatus($id, $data) {
-        return $this->makePatchRequest($data, $id);
+        $url = "/$id";
+        return $this->makePatchRequest($data, $url);
     }
 
     
@@ -107,7 +108,7 @@ class CustomersApi extends IvoisApi {
      * @return object Cliente
      */
     public function getCustomerByNationalityAndIdNumber($nationality, $idNumber) {
-        $url = "exists?nationality=$nationality&idNumber=$idNumber";
+        $url = "/exists?nationality=$nationality&idNumber=$idNumber";
 
         return $this->makeGetRequestUrl($url);
     }

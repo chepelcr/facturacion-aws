@@ -446,21 +446,37 @@ class DocumentosService {
         $dataServiceApi = new DataServiceApi();
 
         $countries = $locationsApi->get_countries();
-        $identificationTypes = $dataServiceApi->getIdentificationTypesByCountry(getCountryCode());
+        $identificaciones = $dataServiceApi->getIdentificationTypesByCountry(getCountryCode());
+        $customerTypes = $dataServiceApi->getCustomerTypes();
+
         $states = $locationsApi->get_states_by_iso_code(getCountryCode());
 
         return array(
             'data_form' => array(
                 'datos_personales' => array(
-                    'identificaciones' => $identificationTypes,
-                    'countries' => $countries
+                    'identificaciones' => $identificaciones,
+                    'countries' => $countries,
+                    'customerTypes' => $customerTypes,
+                    'customerTypeName'=>'receiver[customerType]',
+                    'nationalityName'=>'receiver[nationality]',
+                    'identificationTypeIdName'=>'receiver[identification][typeId]',
+                    'identificationNumberName'=>'receiver[identification][number]',
+                    'businessNameName'=>'receiver[businessName]',
+                    'tradeNameName'=>'receiver[tradeName]',
                 ),
                 'datos_contacto' => array(
                     'countries' => $countries,
+                    'personalPhoneCountryCodeName'=>'receiver[personalPhone][countryCode]',
+                    'personalPhoneNumberName'=>'receiver[personalPhone][number]',
+                    'emailName'=>'receiver[email]',
                 ),
-                'data_ubicaciones' => array(
-                    'countries' => $countries,
+                'dataProvincias' => array(
                     'states' => $states,
+                    'stateName'=>'receiver[residence][stateId]',
+                    'countyName'=>'receiver[residence][countyId]',
+                    'districtName'=>'receiver[residence][districtId]',
+                    'neighborhoodName'=>'receiver[residence][neighborhood]',
+                    'addressName'=>'receiver[residence][address]',
                 ),
             ),
             'numero_documento' => $numero_documento,
