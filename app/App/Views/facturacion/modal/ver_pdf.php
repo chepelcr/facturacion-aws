@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalVerPdf" tabindex="-1" aria-labelledby="titulo" aria-hidden="true">
+<div class="modal fade" id="modalVerPdf" tabindex="-1" aria-labelledby="titulo" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <!-- Encabezado -->

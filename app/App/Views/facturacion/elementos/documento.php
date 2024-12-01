@@ -408,6 +408,8 @@
         </div>
     </div>
 
+    <div class="contenedor-walmart"></div>
+
     <?= view('facturacion/modal/cierre_documento', $modalCierreDocumento) ?>
 
     <?= view('facturacion/modal/referencias', $data_referencias) ?>

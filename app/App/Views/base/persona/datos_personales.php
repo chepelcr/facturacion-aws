@@ -107,7 +107,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                         </div>
-                        <input class="receiver form-control inp businessName" placeholder="Nombre del contribuyente" name="<?= $businessNameName ?? 'businessName' ?> " required value="<?php if (isset($businessName)) {
+                        <input class="receiver form-control inp businessName" placeholder="Nombre del contribuyente" name="<?= $businessNameName ?? 'businessName' ?>" required value="<?php if (isset($businessName)) {
                                                                                                                                                                                             echo $businessName;
                                                                                                                                                                                         } ?>" type="text" max="100">
                     </div>

@@ -457,26 +457,26 @@ class DocumentosService {
                     'identificaciones' => $identificaciones,
                     'countries' => $countries,
                     'customerTypes' => $customerTypes,
-                    'customerTypeName'=>'receiver[customerType]',
-                    'nationalityName'=>'receiver[nationality]',
-                    'identificationTypeIdName'=>'receiver[identification][typeId]',
-                    'identificationNumberName'=>'receiver[identification][number]',
-                    'businessNameName'=>'receiver[businessName]',
-                    'tradeNameName'=>'receiver[tradeName]',
+                    'customerTypeName' => 'receiver[customerType]',
+                    'nationalityName' => 'receiver[nationality]',
+                    'identificationTypeIdName' => 'receiver[identification][typeId]',
+                    'identificationNumberName' => 'receiver[identification][number]',
+                    'businessNameName' => 'receiver[businessName]',
+                    'tradeNameName' => 'receiver[tradeName]',
                 ),
                 'datos_contacto' => array(
                     'countries' => $countries,
-                    'personalPhoneCountryCodeName'=>'receiver[personalPhone][countryCode]',
-                    'personalPhoneNumberName'=>'receiver[personalPhone][number]',
-                    'emailName'=>'receiver[email]',
+                    'personalPhoneCountryCodeName' => 'receiver[personalPhone][countryCode]',
+                    'personalPhoneNumberName' => 'receiver[personalPhone][number]',
+                    'emailName' => 'receiver[email]',
                 ),
                 'dataProvincias' => array(
                     'states' => $states,
-                    'stateName'=>'receiver[residence][stateId]',
-                    'countyName'=>'receiver[residence][countyId]',
-                    'districtName'=>'receiver[residence][districtId]',
-                    'neighborhoodName'=>'receiver[residence][neighborhood]',
-                    'addressName'=>'receiver[residence][address]',
+                    'stateName' => 'receiver[residence][stateId]',
+                    'countyName' => 'receiver[residence][countyId]',
+                    'districtName' => 'receiver[residence][districtId]',
+                    'neighborhoodName' => 'receiver[residence][neighborhoodId]',
+                    'addressName' => 'receiver[residence][address]',
                 ),
             ),
             'numero_documento' => $numero_documento,
@@ -505,7 +505,7 @@ class DocumentosService {
         $filters = array(
             'search' => "code_number:$code"
         );
-        
+
 
         $productosService = new ProductosService();
         return $productosService->getData('all', $filters);
@@ -632,8 +632,8 @@ class DocumentosService {
      * 
      * @return string Vista de los documentos de walmart
      */
-    public function getWalmart($documentTypeCode) {
-        return view('facturacion/modal/walmart', $this->getInfoWalmart($documentTypeCode));
+    public function getWalmart() {
+        return view('facturacion/modal/walmart', $this->getInfoWalmart());
     }
 
     /**
@@ -663,27 +663,28 @@ class DocumentosService {
     }
 
     /**Obtener la informacion para los documentos de walmart */
-    private function getInfoWalmart($documentTypeCode) {
+    private function getInfoWalmart() {
 
-        if ($documentTypeCode == '01') {
+        $tiendasModel = model('tiendas');
+        $numerosProveedorModel = model('departamentos');
 
-            $tiendasModel = model('tiendas');
-            $numerosProveedorModel = model('departamentos');
+        $dataTiendas = array(
+            'tiendas' => $tiendasModel->obtener('activos'),
+        );
 
-            $dataTiendas = array(
-                'tiendas' => $tiendasModel->obtener('activos'),
-            );
+        return array(
+            'numerosProveedor' => $numerosProveedorModel->getAll(),
+            'dataTiendas' => $dataTiendas
+        );
 
-            return array(
-                'numerosProveedor' => $numerosProveedorModel->getAll(),
-                'dataTiendas' => $dataTiendas,
-                'documentTypeCode' => $documentTypeCode,
-            );
+        /*if ($documentTypeCode == '01') {
+
+            
         } else {
             return array(
                 'documentTypeCode' => $documentTypeCode,
             );
-        }
+        }*/
     }
 
     public function getReporteZip($documentos) {

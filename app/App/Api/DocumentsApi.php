@@ -18,7 +18,7 @@ class DocumentsApi extends IvoisApi {
      * @param string $taxpayerId Identificación del contribuyente
      */
     public function __construct($taxpayerId) {
-        parent::__construct(getEnt('ivois.api.taxpayers.url') . $taxpayerId . getEnt('ivois.api.documents.url'));
+        parent::__construct(getEnt('ivois.api.taxpayers.url') . $taxpayerId . getEnt('ivois.api.documents.url'));//, "http://172.18.0.3:8089");
     }
 
     /**

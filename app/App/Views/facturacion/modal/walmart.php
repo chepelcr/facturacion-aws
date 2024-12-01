@@ -1,4 +1,4 @@
-<div class="modal fade modal-walmart" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade modal-walmart" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" role="document">
 
         <!-- Contenido del modal -->

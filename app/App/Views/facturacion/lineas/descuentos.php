@@ -62,7 +62,7 @@
                                                 <i class="fas fa-align-justify"></i>
                                             </span>
                                         </div>
-                                        <input class="form-control form-control-sm inp-fct discount_reason" type="text" name="details[0][discounts][0][reason]" placeholder="Motivo de descuento">
+                                        <input class="form-control form-control-sm inp-fct validar_linea discount_reason" type="text" name="details[0][discounts][0][reason]" placeholder="Motivo de descuento">
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@
                                             </span>
                                         </div>
 
-                                        <input class="form-control form-control-sm discount_percentage calcular inp-fct" name="details[0][discounts][0][percentage]" min="0" type="number" max="100" value="0">
+                                        <input class="form-control form-control-sm validar_linea inp-fct discount_percentage calcular" name="details[0][discounts][0][percentage]" min="0" type="number" max="100" value="0">
                                     </div>
                                 </div>
                             </div>

@@ -61,7 +61,7 @@ function agregar_linea_activa(producto, cantidad = 1, precio_final = 0) {
             }
         });
 
-        if(codigo_venta == 0){
+        if (codigo_venta == 0) {
             codigo_venta = lineas_activas + 1;
         }
     } else {
@@ -445,5 +445,21 @@ $(document).ready(function () {
     $(document).on("focus", ".gnl-agregar", function () {
         //Seleccionar la ultima .detail de la factura activa
         linea_activa = null;
+    });
+
+    //Cuando cambia el porcentaje de descuento o la razon
+    $(document).on("change keyup", ".validar_linea", function () {
+        var linea_activa = $(this).closest(".detail");
+
+        let descuentos_validos = validar_descuentos_detalle(linea_activa);
+        //let impuestos_validos = validar_impuestos_detalle(linea_activa);
+
+        if(!descuentos_validos){
+            //Bloquear el boton de finalizar detalle 'btn-fin-det'
+            linea_activa.find(".btn-fin-det").attr("disabled", true);
+        } else {
+            //Habilitar el boton de finalizar detalle 'btn-fin-det'
+            linea_activa.find(".btn-fin-det").attr("disabled", false);
+        }
     });
 });

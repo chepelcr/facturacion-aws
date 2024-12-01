@@ -341,9 +341,9 @@ class Documentos extends BaseController {
     /**Obtener el modal de agregar los elementos de Walmart */
     public function get_walmart() {
         if (is_login()) {
-            $documentType = $_GET['documentType'];
+            //$documentType = $_GET['documentType'];
 
-            return $this->documentosService->getWalmart($documentType);
+            return $this->documentosService->getWalmart();
         } else {
             $error = array(
                 'error' => 'No ha iniciado sesion',

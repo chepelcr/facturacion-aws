@@ -1,5 +1,5 @@
 <!-- Modal para enviar la notificación de un documento electronico -->
-<div class="modal fade" id="modalNotificar" tabindex="-1" role="dialog" aria-labelledby="tituloNotification" aria-hidden="true">
+<div class="modal fade" id="modalNotificar" tabindex="-1" role="dialog" aria-labelledby="tituloNotification" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">

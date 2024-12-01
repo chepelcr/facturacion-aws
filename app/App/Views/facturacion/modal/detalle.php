@@ -1,4 +1,4 @@
-<div class="modal fade modal_detalle" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade modal_detalle" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <!-- Contenido del modal -->
         <div class="modal-content">
@@ -45,7 +45,7 @@
                     <div class="fc-button-group">
                         <div class="d-flex justify-content-end">
                             <!-- Cerrar -->
-                            <button type="button" class="btn btn-success col-3 btn-block" data-dismiss="modal">
+                            <button type="button" class="btn btn-success col-3 btn-block btn-fin-det" data-dismiss="modal">
                                 Aceptar
                             </button>
                         </div>

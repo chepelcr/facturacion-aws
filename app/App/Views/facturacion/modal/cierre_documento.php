@@ -1,4 +1,4 @@
-<div class="modal fade modal-cierre" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade modal-cierre" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
 
         <!-- Contenido del modal -->
