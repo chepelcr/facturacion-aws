@@ -63,7 +63,7 @@
                                         </div>
 
                                         <!-- Recorrer select de impuestos -->
-                                        <select class="form-control form-control-sm taxTypes" name="details[0][taxes][0][taxTypeId]" onchange="activar_porcentajes(this)">
+                                        <select class="form-control form-control-sm validar_linea taxTypes" name="details[0][taxes][0][taxTypeId]" onchange="activar_porcentajes(this)">
                                             <option value="">Seleccione un impuesto</option>
                                             <?php foreach ($taxTypes as $taxType) : ?>
                                                 <option value="<?= $taxType->taxId ?>" data-code="<?= $taxType->code ?>">
@@ -83,7 +83,7 @@
                                         </div>
 
                                         <!-- Recorrer los porcentajes de impuesto -->
-                                        <select class="form-control form-control-sm taxRates" name="details[0][taxes][0][taxRateId]" disabled onchange="colocar_tarifa(this)">
+                                        <select class="form-control form-control-sm validar_linea taxRates" name="details[0][taxes][0][taxRateId]" disabled onchange="colocar_tarifa(this)">
                                             <option value="">No aplica</option>
                                             <?php foreach ($taxRates as $taxRate) : ?>
                                                 <option value="<?= $taxRate->rateId ?>" data-percentage="<?= $taxRate->percentage ?>" data-rateTypeId="<?= $taxRate->rateTypeId ?>" data-code="<?= $taxRate->code ?>">
@@ -101,7 +101,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="fas fa-percent"></i></span>
                                         </div>
-                                        <input value="0" class="form-control form-control-sm taxPercentage impuesto_number inp-fct calcular" type="text" name="details[0][taxes][0][rate]" placeholder="13%">
+                                        <input value="0" class="form-control form-control-sm validar_linea taxPercentage impuesto_number inp-fct calcular" type="text" name="details[0][taxes][0][rate]" placeholder="13%">
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                                     <!-- Exonerar impuesto -->
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-outline-info btn-block btn-sm" title="Exonerar" data-toggle="tooltip" onclick="exonerar_impuesto(this)">
+                                            <button type="button" class="btn btn-outline-info btn-block btn-sm btn-exn-imp" title="Exonerar" data-toggle="tooltip" onclick="exonerar_impuesto(this)">
                                                 <i class="fa fa-cog"></i>
                                             </button>
                                         </div>
@@ -159,7 +159,7 @@
                                             </div>
 
                                             <!-- Recorrer select de exoneracion -->
-                                            <select class="form-control form-control-sm inp-fct excemption_documentType" name="details[0][taxes][0][exemption][documentType]">
+                                            <select class="form-control form-control-sm validar_linea inp-fct excemption_documentType" name="details[0][taxes][0][exemption][documentType]">
                                                 <option value="">Seleccione un tipo de exoneración
                                                 </option>
                                                 <?php foreach ($exemptions as $exemption) : ?>
@@ -177,7 +177,7 @@
                                                 <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                                             </div>
 
-                                            <input placeholder="Numero de exoneración" class="form-control form-control-sm inp-fct impuesto_txt excemption_number" name="details[0][taxes][0][exemption][documentNumber]" type="text">
+                                            <input placeholder="Numero de exoneración" class="form-control form-control-sm validar_linea inp-fct impuesto_txt excemption_number" name="details[0][taxes][0][exemption][documentNumber]" type="text">
 
                                             <div class="input-group-append">
                                                 <!-- Boton para eliminar el contenido del campo -->
@@ -195,7 +195,7 @@
                                                 <span class="input-group-text"><i class="fas fa-building"></i></span>
                                             </div>
 
-                                            <input placeholder="Institución emisora" name="details[0][taxes][0][exemption][institutionName]" class="form-control form-control-sm impuesto_txt excemption_institutionName inp-fct" type="text">
+                                            <input placeholder="Institución emisora" name="details[0][taxes][0][exemption][institutionName]" class="form-control form-control-sm validar_linea impuesto_txt excemption_institutionName inp-fct" type="text">
                                         </div>
                                     </div>
 
@@ -206,7 +206,7 @@
                                                 <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                                             </div>
 
-                                            <input name="details[0][taxes][0][exemption][issueDate]" class="form-control form-control-sm inp-fct impuesto_txt excemption_issueDate" type="date">
+                                            <input name="details[0][taxes][0][exemption][issueDate]" class="form-control form-control-sm validar_linea inp-fct impuesto_txt excemption_issueDate" type="date">
                                         </div>
                                     </div>
 
@@ -216,7 +216,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-percent"></i></span>
                                             </div>
-                                            <input value="0" placeholder="13%" class="form-control form-control-sm inp-fct calcular impuesto_number excemption_percentage" type="text" name="details[0][taxes][0][exemption][percentage]" min="0" max="100">
+                                            <input placeholder="13%" class="form-control form-control-sm inp-fct calcular validar_linea impuesto_number excemption_percentage" type="text" name="details[0][taxes][0][exemption][percentage]" min="0" max="100">
                                         </div>
                                     </div>
 

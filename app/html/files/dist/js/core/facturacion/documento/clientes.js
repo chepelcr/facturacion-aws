@@ -66,10 +66,12 @@ function obtener_cliente(identificacion = "") {
                         //Mostrar el boton de agregar cliente
                         $(".btt-add-clt").hide();
 
-                        //Mostrar el card de clientes
-                        $("#modal-receptor-" + id_factura_activa).modal("show");
+                        abrir_receptor();
 
-                        cerrar_clientes();
+                        //Mostrar el card de clientes
+                        //$("#modal-receptor-" + id_factura_activa).modal("show");
+
+                        //cerrar_clientes();
                     } else {
                         notificacion(data.error, "", "error");
                     }
@@ -136,6 +138,8 @@ function editar_cliente() {
     campos_activos(false, elemento_activo);
 
     activar_campos_cedula("editar", elemento_activo);
+
+    estado_form = "editar";
 }
 
 /** Ver el modal del cliente del documento activo*/
@@ -193,6 +197,11 @@ function validarCliente() {
 
         elemento_activo = "";
         form_activo = "";
+
+        //Elininar los bordes rojos de los campos del cliente
+        $("#" + form_activo)
+            .find(".reveiver")
+            .removeClass("border-danger");
     } else {
         notificacion("Debe llenar todos los campos obligatorios del cliente", "", "error");
     }
@@ -302,4 +311,6 @@ function agregar_cliente() {
 
     //Mostrar el modal del receptor
     $("#modal-receptor-" + id_factura_activa).modal("show");
+
+    estado_form = "agregar";
 }

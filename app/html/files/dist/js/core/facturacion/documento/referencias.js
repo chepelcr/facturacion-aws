@@ -16,14 +16,17 @@ function aumentar_linea_referencia(linea_actual) {
 
 /**Eliminar una linea de referencia */
 function eliminar_referencia(boton_eliminar) {
-    var linea = $(boton_eliminar).parents(".referenceLine");
+    const linea = $(boton_eliminar).parents(".referenceLine");
     const activeDocument = $("#" + factura_activa);
-
-    $(linea).remove();
 
     //Si solamente queda una linea de referencia
     if (activeDocument.find(".referenceLine").length == 1) {
         activeDocument.find(".btn-dlt").attr("disabled", true);
+
+        //Vaciar todos los campos de la linea
+        $(linea).find("input, select").prop("value", "");
+    } else {
+        $(linea).remove();
     }
 
     contarReferencias();
@@ -38,6 +41,15 @@ function agregar_referencia() {
 
     if (lineas_referencia_activas < 10) {
         const documentReferences = activeDocument.find(".documentReferences");
+
+        const validReferences = validarReferencias(true);
+
+        if (!validReferences) {
+            mensajeAutomatico("Atencion", "Por favor complete los campos de la referencia para continuar", "info");
+            return;
+        }
+
+
         let lastReferenceLine = documentReferences.find(".referenceLine").last();
 
         //Agregar una nueva linea de referencia
@@ -97,10 +109,12 @@ function contarReferencias() {
             cantidad_referencias++;
         });
 
+    validarReferencias();
+
     return cantidad_referencias;
 }
 
-function validarReferencias() {
+function validarReferencias(addReference = false) {
     const activeDocument = $("#" + factura_activa);
     const references = activeDocument
         .find(".documentReferences")
@@ -110,7 +124,7 @@ function validarReferencias() {
 
     //Recorrer las lineas de referencia
     references.each(function (index, reference) {
-        let hasData = false;
+        //let hasData = false;
 
         //Obtener los inputs de la linea
         const referenceType = $(reference).find(".referenceType");
@@ -127,10 +141,32 @@ function validarReferencias() {
             $(referenceCode).val() == "" &&
             $(referenceReason).val() == ""
         ) {
-            //isComplete = false;
+            //Si solo hay una linea de referencia
+            if (references.length == 1) {
+                //Eliminar el borde rojo de los inputs
+                $(reference).find(".inp-fct-ref").removeClass("border border-danger");
 
-            //Elminar el borde rojo de los inputs
-            $(reference).find(".inp-fct-ref").removeClass("border border-danger");
+                //Activar el boton de aceptar
+                activeDocument.find(".btt-aceptar-ref").prop("disabled", false);
+
+                //Desactivar el boton de eliminar referencia de la linea
+                $(reference).find(".btn-dlt").prop("disabled", true);
+
+                if(addReference) {
+                    isComplete = false;
+                }
+            } else {
+                //Colocar el border rojo en los inputs
+                $(reference).find(".inp-fct-ref").addClass("border border-danger");
+
+                //Desactivar el boton de aceptar
+                activeDocument.find(".btt-aceptar-ref").prop("disabled", true);
+
+                //Activar el boton de eliminar referencia de la linea
+                $(reference).find(".btn-dlt").prop("disabled", false);
+
+                isComplete = false;
+            }
         } else {
             //Validar si el tipo de referencia esta vacio
             if ($(referenceType).val() == "") {
@@ -186,6 +222,9 @@ function validarReferencias() {
                 //Eliminar borde rojo del input
                 $(referenceReason).removeClass("border border-danger");
             }
+
+            //Activar el boton de eliminar referencia de la linea
+            $(reference).find(".btn-dlt").prop("disabled", false);
         }
     });
 
@@ -194,6 +233,8 @@ function validarReferencias() {
     } else {
         activeDocument.find(".btt-aceptar-ref").prop("disabled", true);
     }
+
+    return isComplete;
 }
 
 $(document).ready(function () {

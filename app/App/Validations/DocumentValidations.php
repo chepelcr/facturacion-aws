@@ -185,7 +185,7 @@ class DocumentValidations {
             if ($tax['taxTypeId'] != '' && ($tax['rate'] != '')) {
                 //Validar si el impuesto tiene una exoneración
                 if (isset($tax['exemption'])) {
-                    if ($tax['exemption']['documentType'] == '' && $tax['exemption']['documentNumber'] == '' && $tax['exemption']['institutionName'] == '' && $tax['exemption']['issueDate'] == '' && $tax['exemption']['percentage'] == 0) {
+                    if ($tax['exemption']['documentType'] == '' && $tax['exemption']['documentNumber'] == '' && $tax['exemption']['institutionName'] == '' && $tax['exemption']['issueDate'] == '' && ($tax['exemption']['percentage'] == 0 || $tax['exemption']['percentage'] == '')) {
                         unset($tax['exemption']);
                     } elseif ($tax['exemption']['documentType'] == '' || $tax['exemption']['documentNumber'] == '' || $tax['exemption']['institutionName'] == '' || $tax['exemption']['issueDate'] == '' || $tax['exemption']['percentage'] == 0) {
                         return array(

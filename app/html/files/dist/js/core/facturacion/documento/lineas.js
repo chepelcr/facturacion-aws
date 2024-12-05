@@ -22,10 +22,11 @@ function mostrar_detalles(boton) {
 
 /**Eliminar una linea de la facura activa */
 function eliminar_linea(boton_eliminar) {
-    var linea = $(boton_eliminar).parents(".detail");
+    const linea = $(boton_eliminar).parents(".detail");
+    const activeDocument = $("#" + factura_activa);
 
     //Si solo queda una linea en la factura
-    if ($("#" + factura_activa).find(".detail").length == 1) {
+    if (activeDocument.find(".detail").length == 1) {
         //Agregar una nueva linea
         aumentar_linea();
     }
@@ -42,12 +43,14 @@ function eliminar_linea(boton_eliminar) {
 
 /**Agregar un producto en la linea activa o una linea que tenga la misma informacion */
 function agregar_linea_activa(producto, cantidad = 1, precio_final = 0) {
-    var linea = linea_activa;
+    let linea = linea_activa;
 
     //Obtener el codigo del producto
     var codigo = producto.category.code;
     var taxPercentage = 0;
     var codigo_venta = 0;
+
+    const activeDocument = $("#" + factura_activa);
 
     if (producto.codes != null && producto.codes.length > 0) {
         console.log(producto.codes);
@@ -69,8 +72,8 @@ function agregar_linea_activa(producto, cantidad = 1, precio_final = 0) {
     }
 
     //Si solo hay una linea
-    if ($("#" + factura_activa).find(".detail").length == 1) {
-        linea = $("#" + factura_activa).find(".detail");
+    if (activeDocument.find(".detail").length == 1) {
+        linea = activeDocument.find(".detail");
 
         if (linea.find(".saleCode").val() != "" && linea.find(".saleCode").val() != 0) {
             //&& (linea.find(".cabys").val() != 0 || linea.find(".cabys").val() != '')) {
@@ -78,20 +81,18 @@ function agregar_linea_activa(producto, cantidad = 1, precio_final = 0) {
         }
     } else {
         //Recorrer las lineas de la factura
-        $("#" + factura_activa)
-            .find(".detail")
-            .each(function () {
-                //Si la linea es igual al producto
-                if ($(this).find(".saleCode").val() == codigo_venta) {
-                    //Obtener la cantidad de la linea
-                    var cantidad_linea = $(this).find(".quantity-det").val();
+        activeDocument.find(".detail").each(function () {
+            //Si la linea es igual al producto
+            if ($(this).find(".saleCode").val() == codigo_venta) {
+                //Obtener la cantidad de la linea
+                var cantidad_linea = $(this).find(".quantity-det").val();
 
-                    //Sumar la cantidad de la linea activa con la cantidad de la linea
-                    cantidad = parseFloat(cantidad) + parseFloat(cantidad_linea);
+                //Sumar la cantidad de la linea activa con la cantidad de la linea
+                cantidad = parseFloat(cantidad) + parseFloat(cantidad_linea);
 
-                    linea = $(this);
-                }
-            });
+                linea = $(this);
+            }
+        });
 
         //Si la linea no fue encontrada
         if (linea == null) {
@@ -165,14 +166,10 @@ function agregar_linea_activa(producto, cantidad = 1, precio_final = 0) {
     contar_lineas();
 
     //Eliminar el codigo de q_codigo_barras
-    $("#" + factura_activa)
-        .find(".gnl-agregar")
-        .val("");
+    activeDocument.find(".gnl-agregar").val("");
 
     //Poner el foco en q_codigo_barras
-    $("#" + factura_activa)
-        .find(".gnl-agregar")
-        .focus();
+    activeDocument.find(".gnl-agregar").focus();
 }
 
 /** Aumentar el numero de la ultima linea agregada al modulo */
@@ -183,10 +180,10 @@ function aumentar_linea() {
     //Incrementar el numero de lineas activas
     lineas_activas++;
 
+    const activeDocument = $("#" + factura_activa);
+
     //Obtener la ultima linea del documento activo
-    linea = $("#" + factura_activa)
-        .find(".detail")
-        .last();
+    const linea = activeDocument.find(".detail").last();
 
     eliminarDescuentosLinea(linea);
     eliminar_impuestos(linea);
@@ -235,66 +232,59 @@ function aumentar_linea() {
 function contar_lineas() {
     var lineas = 0;
 
-    $("#" + factura_activa)
-        .find(".detail")
-        .each(function () {
-            //Aumentar el numero de lineas
-            lineas++;
+    const activeDocument = $("#" + factura_activa);
 
-            //Colocar el numero de linea en la linea
-            $(this).find(".numero_linea").val(lineas);
-            $(this)
-                .find(".numero_linea_lbl")
-                .text("Linea " + lineas);
+    activeDocument.find(".detail").each(function () {
+        //Aumentar el numero de lineas
+        lineas++;
 
-            //Activar los tooltips
-            $(this).find('[data-toggle="tooltip"]').tooltip();
+        //Colocar el numero de linea en la linea
+        $(this).find(".numero_linea").val(lineas);
+        $(this)
+            .find(".numero_linea_lbl")
+            .text("Linea " + lineas);
 
-            //Si la linea no esta vacia
-            if ($(this).find(".cabys").val() != "" && $(this).find(".saleCode").val() != "") {
-                $(this).find(".eliminarLinea").prop("hidden", false);
-            } else {
-                $(this).find(".eliminarLinea").prop("hidden", true);
+        //Activar los tooltips
+        $(this).find('[data-toggle="tooltip"]').tooltip();
+
+        //Si la linea no esta vacia
+        if ($(this).find(".cabys").val() != "" && $(this).find(".saleCode").val() != "") {
+            $(this).find(".eliminarLinea").prop("hidden", false);
+        } else {
+            $(this).find(".eliminarLinea").prop("hidden", true);
+        }
+
+        var inputs = $(this).find("input, select");
+
+        //Recorrer los inputs de la nueva linea
+        inputs.each(function (index, input) {
+            //Validar si el input tiene nombre
+            if ($(input).attr("name") != undefined) {
+                //Obtener el nombre del input
+                const name = $(input).attr("name");
+
+                const newLineNumber = lineas - 1;
+
+                const newFieldName = name.replace(/details\[\d+\]/, `details[${newLineNumber}]`);
+
+                //Asignar el nuevo nombre al input
+                $(input).attr("name", newFieldName);
             }
-
-            var inputs = $(this).find("input, select");
-
-            //Recorrer los inputs de la nueva linea
-            inputs.each(function (index, input) {
-                //Validar si el input tiene nombre
-                if ($(input).attr("name") != undefined) {
-                    //Obtener el nombre del input
-                    const name = $(input).attr("name");
-
-                    const newLineNumber = lineas - 1;
-
-                    const newFieldName = name.replace(/details\[\d+\]/, `details[${newLineNumber}]`);
-
-                    //Asignar el nuevo nombre al input
-                    $(input).attr("name", newFieldName);
-                }
-            });
         });
+    });
 
     //Poner el cursor en el campo de codigo de barras (gnl) de la factura activa
-    $("#" + factura_activa)
-        .find(".gnl-agregar")
-        .focus();
+    activeDocument.find(".gnl-agregar").focus();
 
     return lineas;
 }
 
 /**Clonar una linea de la tabla */
 function cloneLine() {
+    const activeDocument = $("#" + factura_activa);
+
     //Agregar un clone de la ultima linea de la factura, en la tabla de detalles del documento
-    $("#" + factura_activa)
-        .find(".cont-details")
-        .append(
-            $("#" + factura_activa)
-                .find(".detail")
-                .last()
-                .clone()
-        );
+    activeDocument.find(".cont-details").append(activeDocument.find(".detail").last().clone());
 } //Fin del metodo cloneLine
 
 /**Calcular el valor total de una linea */
@@ -372,15 +362,20 @@ function totales() {
 
     let moneda = monedaDocumento;
 
-    $("#" + factura_activa)
-        .find(".detail")
-        .each(function (i, item) {
-            neto += parseFloat($(item).find(".neto").val());
-            descuentos += parseFloat($(item).find(".total_discount").val());
-            subtotal += parseFloat($(item).find(".subtotal").val());
-            IVA += parseFloat($(item).find(".ivNeto").val());
-            total += parseFloat($(item).find(".totalL").val());
-        });
+    const activeDocument = $("#" + factura_activa);
+
+    activeDocument.find(".detail").each(function (i, item) {
+        neto += parseFloat($(item).find(".neto").val());
+        descuentos += parseFloat($(item).find(".total_discount").val());
+        subtotal += parseFloat($(item).find(".subtotal").val());
+        IVA += parseFloat($(item).find(".ivNeto").val());
+        total += parseFloat($(item).find(".totalL").val());
+    });
+
+    activeDocument.find(".total_document").val(parseFloat(total).toFixed(2));
+
+
+    //console.log("iva: " + IVA);
 
     neto = formato_moneda(neto, 2, moneda);
     descuentos = formato_moneda(descuentos, 2, moneda);
@@ -388,21 +383,59 @@ function totales() {
     IVA = formato_moneda(IVA, 2, moneda);
     total = formato_moneda(total, 2, moneda);
 
-    $("#" + factura_activa)
-        .find(".lbl_neto")
-        .val(neto);
-    $("#" + factura_activa)
-        .find(".lbl_descuentos")
-        .val(descuentos);
-    $("#" + factura_activa)
-        .find(".lbl_subtotal")
-        .val(subtotal);
-    $("#" + factura_activa)
-        .find(".lbl_iva")
-        .val(IVA);
-    $("#" + factura_activa)
-        .find(".lbl_total")
-        .val(total);
+    activeDocument.find(".lbl_neto").val(neto);
+    activeDocument.find(".lbl_descuentos").val(descuentos);
+    activeDocument.find(".lbl_subtotal").val(subtotal);
+    activeDocument.find(".lbl_iva").val(IVA);
+    activeDocument.find(".lbl_total").val(total);
+
+    validarMontoPagos();
+}
+
+/**
+ * Validar el
+ */
+function validarMontoPagos() {
+    const activeDocument = $("#" + factura_activa);
+
+    let totalDocument = activeDocument.find(".total_document").val();
+
+    if (totalDocument == "") {
+        totalDocument = 0;
+    } else {
+        totalDocument = parseFloat(totalDocument);
+    }
+
+    let totalPagos = 0;
+
+    //Sumar el total de los valores de .monto cuando no esten vacios o sean 0
+    activeDocument.find(".monto").each(function (i, item) {
+        if ($(item).val() != "" && $(item).val() != 0) {
+            totalPagos += parseFloat($(item).val());
+        }
+    });
+
+    //Validar si el total de pagos es mayor al total del documento
+    console.log("totalPagos: " + totalPagos);
+
+    console.log("totalDocument: " + totalDocument);
+
+    console.log("totalPagos > totalDocument: " + (totalPagos > totalDocument));
+
+    //Si el total de pagos es mayor al total del documento, mostrar un mensaje de error y bloquear el boton de finalizar
+    if (totalPagos > totalDocument) {
+        mensajeAutomatico("Atención", "El total de los pagos no puede ser mayor al total del documento", "error");
+
+        activeDocument.find(".btn-guardar-documento").attr("disabled", true);
+
+        //Colocar el border rojo en los campos de .monto
+        activeDocument.find(".monto").addClass("border-danger");
+    } else {
+        activeDocument.find(".btn-guardar-documento").attr("disabled", false);
+
+        //Quitar el border rojo en los campos de .monto
+        activeDocument.find(".monto").removeClass("border-danger");
+    }
 }
 
 $(document).ready(function () {
@@ -421,6 +454,16 @@ $(document).ready(function () {
 
         //Si la cantidad es mayor a 0
         if (cantidad > 0) {
+            //Si la cantidad es mayor que 999999999
+            if (cantidad > 999999999) {
+                //Colocar en el campo de .quantity-det de la linea activa
+                linea_activa.find(".quantity-det").val(999999999);
+
+                cantidad = 999999999;
+
+                mensajeAutomatico("Atención", "La cantidad no puede ser mayor a 999999999", "info");
+            }
+
             //Colocar en el campo de .quantity-det de la linea activa
             linea_activa.find(".quantity-det-mod").val(cantidad);
         }
@@ -452,14 +495,24 @@ $(document).ready(function () {
         var linea_activa = $(this).closest(".detail");
 
         let descuentos_validos = validar_descuentos_detalle(linea_activa);
-        //let impuestos_validos = validar_impuestos_detalle(linea_activa);
+        let impuestos_validos = validar_impuestos_detalle(linea_activa);
 
-        if(!descuentos_validos){
+        if (!descuentos_validos || !impuestos_validos) {
             //Bloquear el boton de finalizar detalle 'btn-fin-det'
             linea_activa.find(".btn-fin-det").attr("disabled", true);
         } else {
             //Habilitar el boton de finalizar detalle 'btn-fin-det'
             linea_activa.find(".btn-fin-det").attr("disabled", false);
         }
+    });
+
+    //Cuando cambia un .monto
+    $(document).on("change keyup", ".monto", function () {
+        //Si hay un 0 por delante, eliminarlo
+        if ($(this).val().charAt(0) == "0") {
+            $(this).val($(this).val().substring(1));
+        }
+
+        validarMontoPagos();
     });
 });

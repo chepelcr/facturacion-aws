@@ -9,7 +9,7 @@
                     <i class="fas fa-clipboard-list"></i>
                     Referencias
                 </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-white btt-aceptar-ref" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

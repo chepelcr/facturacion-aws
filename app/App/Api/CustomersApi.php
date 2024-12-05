@@ -57,7 +57,7 @@ class CustomersApi extends IvoisApi {
      * @return array Lista de clientes extranjeros
      */
     public function getForeignCustomersByTaxpayerId() {
-        return $this->makeGetRequestUrl('/national?foreign=true');
+        return $this->makeGetRequestUrl('/national?national=false');
     }
 
     /**

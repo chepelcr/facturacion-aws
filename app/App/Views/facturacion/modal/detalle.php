@@ -9,7 +9,7 @@
                 <h5 class="modal-title titulo-form">
                     <i class="fas fa-clipboard-list"></i> Detalle de linea
                 </h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                <button type="button" class="close text-white btn-fin-det" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

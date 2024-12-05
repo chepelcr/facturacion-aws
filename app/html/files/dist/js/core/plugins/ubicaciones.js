@@ -268,7 +268,7 @@ function llenarUbicacion(residence, countryCode, ver = false) {
         .html(html);
     activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
 
-    if (!validarUbicacion(countryCode)) {
+    if (!validarUbicacion()) {
         let stateId = residence.stateId;
         let countyId = residence.countyId;
         let districtId = residence.districtId;

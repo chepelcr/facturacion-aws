@@ -1,4 +1,4 @@
-<div class="modal fade modal-receptor" tabindex="-1" role="dialog" aria-hidden="true" id="modal-receptor-<?= $numero_documento ?>">
+<div class="modal fade modal-receptor modal-receptor-<?= $numero_documento ?>" tabindex="-1" role="dialog" aria-hidden="true" id="modal-receptor-<?= $numero_documento ?>">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
 
         <!-- Contenido del modal -->

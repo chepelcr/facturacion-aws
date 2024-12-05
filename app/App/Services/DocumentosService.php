@@ -441,15 +441,28 @@ class DocumentosService {
      * @param string $numero_documento Numero de documento
      * @return array Informacion de los clientes
      */
-    public function getInfoClientes($numero_documento) {
+    public function getInfoClientes($numero_documento, $documentTypeCode) {
         $locationsApi = new LocationsApi();
         $dataServiceApi = new DataServiceApi();
 
-        $countries = $locationsApi->get_countries();
+        //Si el documento es de tipo 01 o 08 solo se obtienen los paises con serviceStatus = 1, si es 09 se obtienen los paises con serviceStatus = 2 o si es otro tipo de documento se obtienen todos los paises
+        if ($documentTypeCode == '01' || $documentTypeCode == '08') {
+            $countries = $locationsApi->get_countries(1);
+        } elseif ($documentTypeCode == '09') {
+            $countries = $locationsApi->get_countries(2);
+        } else {
+            $countries = $locationsApi->get_countries();
+        }
+
         $identificaciones = $dataServiceApi->getIdentificationTypesByCountry(getCountryCode());
         $customerTypes = $dataServiceApi->getCustomerTypes();
 
-        $states = $locationsApi->get_states_by_iso_code(getCountryCode());
+        //Si el documento es de tipo 01 o 08 se obtienen los estados del pais
+        if (($documentTypeCode == '01' || $documentTypeCode == '08') && $documentTypeCode != '09') {
+            $states = $locationsApi->get_states_by_iso_code(getCountryCode());
+        } else {
+            $states = array();
+        }
 
         return array(
             'data_form' => array(
@@ -586,7 +599,7 @@ class DocumentosService {
             'referenceCodes' => $referenceCodes,
         );
 
-        $data_cliente = $this->getInfoClientes($numero_documento);
+        $data_cliente = $this->getInfoClientes($numero_documento, $documentType->code);
 
         $taxpayersApi = new TaxpayersApi();
         $empresa = $taxpayersApi->getTaxpayerById(getTaxpayerId());

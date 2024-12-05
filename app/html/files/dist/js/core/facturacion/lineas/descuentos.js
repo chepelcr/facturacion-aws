@@ -252,16 +252,9 @@ function calcular_descuentos(linea_detalle = null) {
         var discounts = linea_detalle.find(".discounts");
 
         discounts.find(".discountLine").each(function (i, discountLine) {
-            descuento = calcular_descuento(discountLine, neto - descuento_total);
+            descuento = calcular_descuento(discountLine, neto, linea_detalle);
             descuento_total += descuento;
         });
-
-        //Si el descuento es 0 y solo hay una linea de descuento, desactivar el btn-dlt
-        if (descuento_total == 0 && discounts.find(".discountLine").length == 1) {
-            discounts.find(".btn-dlt").attr("disabled", true);
-        } else {
-            discounts.find(".btn-dlt").attr("disabled", false);
-        }
 
         //Colocar el valor total de los descuentos
         $(linea_detalle).find(".total_discount").val(descuento_total);
@@ -272,7 +265,7 @@ function calcular_descuentos(linea_detalle = null) {
 } //Fin del metodo calcular_descuento
 
 /**Calcular el descuento de una linea */
-function calcular_descuento(discountLine = null) {
+function calcular_descuento(discountLine = null, neto = 0, linea_activa = null) {
     var descuento = 0;
     var total_descuento = 0;
 
@@ -281,7 +274,7 @@ function calcular_descuento(discountLine = null) {
 
         if (discount_percentage > 0) {
             //Obtener el valor neto de la linea
-            var neto = linea_activa.find(".neto").val();
+            //var neto = linea_activa.find(".neto").val();
 
             //Calcular el descuento
             descuento = (discount_percentage * neto) / 100;

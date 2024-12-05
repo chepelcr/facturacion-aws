@@ -8,12 +8,11 @@ function exonerar_impuesto(boton = null) {
         //Abrir o cerrar el collapse de la linea
         if (linea.find(".collapse_impuesto").hasClass("show")) {
             linea.find(".collapse_impuesto").collapse("hide");
-        }
-        else {
+        } else {
             linea.find(".collapse_impuesto").collapse("show");
         }
-    }//Fin del if
-}//Fin del metodo exonerar_impuesto
+    } //Fin del if
+} //Fin del metodo exonerar_impuesto
 
 /**Agregar una linea de impuesto a la linea activa */
 function agregar_impuesto(boton = null, linea = null) {
@@ -25,15 +24,18 @@ function agregar_impuesto(boton = null, linea = null) {
     }
 
     if (linea != null) {
-
         var taxesTable = linea.find(".taxesTable");
 
         //Obtener la ultima linea de impuesto
         var taxLine = taxesTable.find(".taxLine").last();
 
         //Si el taxPercentage de la ultima .taxLine no esta vacio ni es 0
-        if ((taxLine.find(".taxTypes").val() != "" && taxLine.find(".taxPercentage").val() != "" && taxLine.find(".taxPercentage").val() != 0) || taxesTable.find(".taxRates").val() != "") {
-
+        if (
+            (taxLine.find(".taxTypes").val() != "" &&
+                taxLine.find(".taxPercentage").val() != "" &&
+                taxLine.find(".taxPercentage").val() != 0) ||
+            taxesTable.find(".taxRates").val() != ""
+        ) {
             //Clonar la ultima linea de impuesto
             var nueva_linea = taxLine.clone();
 
@@ -48,11 +50,11 @@ function agregar_impuesto(boton = null, linea = null) {
 
             return nueva_linea;
         } else {
-            notificacion('No se puede agregar un impuesto si el anterior no se ha definido.', '', 'warning');
+            notificacion("No se puede agregar un impuesto si el anterior no se ha definido.", "", "warning");
             return;
         }
     } else {
-        notificacion('No se ha definido la linea de detalle.', '', 'warning');
+        notificacion("No se ha definido la linea de detalle.", "", "warning");
         return;
     }
 }
@@ -89,28 +91,32 @@ function contar_lineas_impuestos(linea_activa) {
     var taxLines = 0;
 
     //Obtener la tabla de impuestos
-    linea_activa.find(".taxesTable").find(".taxLine").each(function () {
+    linea_activa
+        .find(".taxesTable")
+        .find(".taxLine")
+        .each(function () {
+            var inputs = $(this).find("input, select");
 
-        var inputs = $(this).find("input, select");
+            //Recorrer los inputs de la nueva linea
+            inputs.each(function (index, input) {
+                //Validar si el input tiene nombre
+                if ($(input).attr("name") != undefined) {
+                    //Obtener el nombre del input
+                    const name = $(input).attr("name");
 
-        //Recorrer los inputs de la nueva linea
-        inputs.each(function (index, input) {
-            //Validar si el input tiene nombre
-            if ($(input).attr("name") != undefined) {
-                //Obtener el nombre del input
-                const name = $(input).attr("name");
+                    const newLineNumber = taxLines;
 
-                const newLineNumber = taxLines;
+                    const newFieldName = name.replace(/\[taxes\]\[\d+\]/, `[taxes][${newLineNumber}]`);
 
-                const newFieldName = name.replace(/\[taxes\]\[\d+\]/, `[taxes][${newLineNumber}]`);
+                    //Asignar el nuevo nombre al input
+                    $(input).attr("name", newFieldName);
+                }
+            });
 
-                //Asignar el nuevo nombre al input
-                $(input).attr("name", newFieldName);
-            }
+            taxLines++;
         });
 
-        taxLines++;
-    });
+    validar_impuestos_detalle(linea_activa);
 
     return taxLines;
 }
@@ -128,6 +134,8 @@ function eliminar_impuestos(linea) {
 
     //Limpiar los campos de la linea
     limpiar_linea_impuesto(linea.find(".taxesTable").find(".taxLine").first());
+
+    validar_impuestos_detalle(linea);
 }
 
 /**Activar el porcentaje de una linea de impuesto */
@@ -266,6 +274,8 @@ function agregar_impuestos_api(linea_activa, impuestos) {
         }
     }
 
+    validar_impuestos_detalle(linea_activa);
+
     return taxPercentage;
 }
 
@@ -291,7 +301,7 @@ function eliminar_impuesto(boton) {
 
     contar_lineas_impuestos(linea_activa);
     calcular(linea_activa);
-}//Fin del metodo eliminar_impuesto
+} //Fin del metodo eliminar_impuesto
 
 /**Calcular impuestos de una linea de detalle */
 function calcular_impuestos(linea_detalle = null) {
@@ -310,13 +320,12 @@ function calcular_impuestos(linea_detalle = null) {
 
         //Recorrer todas las lineas de impuestos
         lineas_impuestos.each(function (index, taxLine) {
-            //Calcular el impuesto de la linea
-            var impuesto = calcular_impuesto(taxLine, subtotal);
-
             //Sumar el impuesto a la variable impuestoTotal
-            impuestoTotal += impuesto;
+            impuestoTotal += calcular_impuesto(taxLine, subtotal);
         });
     }
+
+    console.log("Impuesto total: " + impuestoTotal);
 
     //Colocar el impuesto total en el campo .ivNeto y .ivNetoVL
     linea_detalle.find(".ivNeto").val(impuestoTotal);
@@ -332,7 +341,9 @@ function calcular_impuesto(taxLine = null, subtotal = 0) {
 
         var taxPercentage = taxLine.find(".taxPercentage").val();
 
-        var impuesto = subtotal * taxPercentage / 100;
+        console.log("Porcentaje de impuesto: " + taxPercentage);
+
+        var impuesto = (subtotal * taxPercentage) / 100;
 
         var porcentajeExoneracion = 0;
 
@@ -344,7 +355,7 @@ function calcular_impuesto(taxLine = null, subtotal = 0) {
         //Si el porcentaje de exoneracion es mayor a 0
         if (porcentajeExoneracion > 0) {
             //Calcular el monto de exoneracion
-            var montoExoneracion = subtotal * porcentajeExoneracion / 100;
+            var montoExoneracion = (subtotal * porcentajeExoneracion) / 100;
 
             //Calcular el impuesto
             impuesto_neto = impuesto - montoExoneracion;
@@ -352,7 +363,6 @@ function calcular_impuesto(taxLine = null, subtotal = 0) {
             montoExoneracion = parseFloat(montoExoneracion);
             taxLine.find(".excemption_amount").val(montoExoneracion);
             taxLine.find(".excemption_amount_money").val(formato_moneda(montoExoneracion, 2, monedaDocumento));
-
         } else {
             impuesto_neto = impuesto;
         }
@@ -361,14 +371,14 @@ function calcular_impuesto(taxLine = null, subtotal = 0) {
         taxLine.find(".tax_amount_money").val(formato_moneda(impuesto, 2, monedaDocumento));
 
         return impuesto_neto;
-    }//Fin de validacion de taxLine
-}//Fin del calculo de la linea de impuesto
+    } //Fin de validacion de taxLine
+} //Fin del calculo de la linea de impuesto
 
-/**Buscar un numero de exoneracion en el ministerio de hacienda 
+/**Buscar un numero de exoneracion en el ministerio de hacienda
  * Formato: AL-00000000-20
-*/
+ */
 function buscar_exoneracion(exoneracion = "", taxLine = null) {
-    if (exoneracion != '') {
+    if (exoneracion != "") {
         //La exoneracion debe tener el formato ^[aA]{1}[lL]{1}-\d{8}-\d{2}$ (AL-00000000-00)
         var patron = /^[aA]{1}[lL]{1}-\d{8}-\d{2}$/;
 
@@ -380,29 +390,31 @@ function buscar_exoneracion(exoneracion = "", taxLine = null) {
                     url: url,
                     type: "GET",
                     dataType: "json",
-                }).done(function (data) {
-                    //Colocar la fechaEmision en formato yyyy-MM-dd (2020-03-30T00:00:00)
-                    var fechaEmision = data.fechaEmision.split("T")[0];
+                })
+                    .done(function (data) {
+                        //Colocar la fechaEmision en formato yyyy-MM-dd (2020-03-30T00:00:00)
+                        var fechaEmision = data.fechaEmision.split("T")[0];
 
-                    //Colocar los datos en los campos correspondientes
-                    taxLine.find(".excemption_issueDate").val(fechaEmision);
+                        //Colocar los datos en los campos correspondientes
+                        taxLine.find(".excemption_issueDate").val(fechaEmision);
 
-                    taxLine.find(".excemption_institutionName").val(data.nombreInstitucion);
-                    taxLine.find(".excemption_percentage").val(data.porcentajeExoneracion);
+                        taxLine.find(".excemption_institutionName").val(data.nombreInstitucion);
+                        taxLine.find(".excemption_percentage").val(data.porcentajeExoneracion);
 
-                    campos_exoneracion(taxLine, true);
-                    activarBotonExoneracion(false, taxLine);
+                        campos_exoneracion(taxLine, true);
+                        activarBotonExoneracion(false, taxLine);
 
-                    calcular(taxLine.parents(".detail"));
+                        calcular(taxLine.parents(".detail"));
 
-                    return;
-                }).fail(function (xhr, textStatus, errorThrown) {
-                    //Mostrar la respuesta
-                    notificacion("No se ha encontrado la autorizacion solicitada", '', 'warning');
+                        return;
+                    })
+                    .fail(function (xhr, textStatus, errorThrown) {
+                        //Mostrar la respuesta
+                        notificacion("No se ha encontrado la autorizacion solicitada", "", "warning");
 
-                    campos_exoneracion(taxLine, false);
-                    activarBotonExoneracion(false, taxLine);
-                });
+                        campos_exoneracion(taxLine, false);
+                        activarBotonExoneracion(false, taxLine);
+                    });
             });
         } else {
             //Habilitar los campos
@@ -441,17 +453,20 @@ function activarBotonExoneracion(estado = false, taxLine = null) {
 }
 
 function vaciarExoneracion(botonEliminar) {
-    taxLine = $(botonEliminar).parents(".taxLine");
+    const taxLine = $(botonEliminar).parents(".taxLine");
 
+    taxLine.find(".excemption_documentType").val("");
     taxLine.find(".excemption_issueDate").val("");
     taxLine.find(".excemption_institutionName").val("");
     taxLine.find(".excemption_percentage").val(0);
-    taxLine.find(".excemption_amount").val(0);
+    taxLine.find(".excemption_amount").val("");
     taxLine.find(".excemption_amount_money").val(formato_moneda(0));
     taxLine.find(".excemption_number").val("");
 
     campos_exoneracion(taxLine, true);
     activarBotonExoneracion(true, taxLine);
+    validar_exoneracion(taxLine);
+    validar_impuestos_detalle(taxLine.parents(".detail"));
 
     calcular(taxLine.parents(".detail"));
 }
@@ -482,4 +497,229 @@ function setExcemptionMax(taxLine) {
     const taxPercentage = taxLine.find(".taxPercentage").val();
 
     taxLine.find(".excemption_percentage").attr("max", taxPercentage);
+}
+
+function validar_impuestos_detalle(linea_activa) {
+    let validLines = true;
+
+    //Obtener la tabla de impuestos
+    const taxesTable = linea_activa.find(".taxesTable");
+
+    //Obtener todas las lineas de impuestos
+    const taxLines = taxesTable.find(".taxLine");
+
+    let hasIva = false;
+
+    //Recorrer todas las lineas de impuestos
+    taxLines.each(function (index, taxLine) {
+        //Obtener el taxType de la linea
+        const taxtype = $(taxLine).find(".taxTypes").val();
+
+        const taxPercentage = $(taxLine).find(".taxPercentage").val();
+
+        const taxRate = $(taxLine).find(".taxRates");
+
+        if (taxtype == "") {
+            //Si solo hay una linea de impuesto y el taxType no esta seleccionado, deshabilitar el boton de eliminar
+            if (taxLines.length == 1) {
+                $(taxLine).find(".btn-elm").attr("disabled", true);
+
+                //Eliminar el borde rojo de los campos
+                $(taxLine).find(".taxTypes").removeClass("border-danger");
+            } else {
+                //Habilitar el boton de eliminar
+                $(taxLine).find(".btn-elm").attr("disabled", false);
+
+                //Agregar el borde rojo de los campos
+                $(taxLine).find(".taxTypes").addClass("border-danger");
+
+                validLines = false;
+            }
+
+            $(taxLine).find(".taxPercentage").removeClass("border-danger");
+
+            //Eliminar el borde rojo del campo de taxRate
+            $(taxLine).find(".taxRates").removeClass("border-danger");
+
+            //Desabilitar el campo de porcentaje
+            $(taxLine).find(".taxPercentage").attr("disabled", true);
+            $(taxLine).find(".taxRates").attr("disabled", true);
+
+            //Poner los campos en readonly
+            $(taxLine).find(".taxPercentage").attr("readonly", true);
+            $(taxLine).find(".taxRates").attr("readonly", true);
+
+            //Desactivar el boton de exonerar btn-exn-imp
+            $(taxLine).find(".btn-exn-imp").attr("disabled", true);
+        } else {
+            //Habilitar el boton de eliminar
+            $(taxLine).find(".btn-elm").attr("disabled", false);
+
+            //Eliminar el borde rojo de los campos
+            $(taxLine).find(".taxTypes").removeClass("border-danger");
+
+            const taxCode = $(taxLine).find(".taxTypes option:selected").data("code");
+
+            //Si el taxCode es '01' o '07', validar que el taxRate no este vacio
+            if (taxCode == "01" || taxCode == "07" || taxCode == "08") {
+                //Desabilitar el campo de porcentaje
+                $(taxLine).find(".taxPercentage").attr("disabled", true);
+                $(taxLine).find(".taxPercentage").attr("readonly", true);
+
+                if (hasIva) {
+                    //Colocar un borde rojo en el campo de taxType
+                    $(taxLine).find(".taxTypes").addClass("border-danger");
+
+                    notificacion("Solo se puede agregar un impuesto de tipo IVA.", "", "warning");
+
+                    //Habilitar el campo de taxRate
+                    taxRate.attr("disabled", true);
+                    taxRate.attr("readonly", true);
+
+                    //Eliminar el borde rojo del campo de taxPercentage
+                    $(taxLine).find(".taxPercentage").removeClass("border-danger");
+
+                    //Desactivar el boton de exonerar btn-exn-imp
+                    $(taxLine).find(".btn-exn-imp").attr("disabled", true);
+
+                    validLines = false;
+                } else {
+                    hasIva = true;
+
+                    //Habilitar el campo de taxRate
+                    taxRate.attr("disabled", false);
+                    taxRate.attr("readonly", false);
+
+                    //Desabilitar el campo de porcentaje
+                    $(taxLine).find(".taxPercentage").attr("disabled", true);
+                    $(taxLine).find(".taxPercentage").attr("readonly", true);
+
+                    if (taxRate.val() == "") {
+                        taxRate.addClass("border-danger");
+
+                        validLines = false;
+                    } else {
+                        taxRate.removeClass("border-danger");
+                    }
+
+                    $(taxLine).find(".taxPercentage").removeClass("border-danger");
+
+                    //Activar el boton de exonerar btn-exn-imp
+                    $(taxLine).find(".btn-exn-imp").attr("disabled", false);
+
+                    const validExcemption = validar_exoneracion($(taxLine));
+
+                    if (!validExcemption) {
+                        validLines = false;
+                    }
+                }
+            } else {
+                $(taxLine).find(".taxRates").removeClass("border-danger");
+
+                //Habilitar el campo de porcentaje
+                $(taxLine).find(".taxPercentage").attr("disabled", false);
+                $(taxLine).find(".taxPercentage").attr("readonly", false);
+
+                //Desabilitar el campo de taxRate
+                $(taxLine).find(".taxRates").attr("disabled", true);
+                $(taxLine).find(".taxRates").attr("readonly", true);
+
+                //Agregar el borde rojo al campo de porcentaje si esta vacio
+                if (taxPercentage == "" || taxPercentage == 0) {
+                    $(taxLine).find(".taxPercentage").addClass("border-danger");
+
+                    validLines = false;
+                } else {
+                    $(taxLine).find(".taxPercentage").removeClass("border-danger");
+                }
+
+                //Desactivar el boton de exonerar btn-exn-imp
+                $(taxLine).find(".btn-exn-imp").attr("disabled", true);
+
+                vaciarExoneracion($(taxLine).find(".btn-elm-excemption"));
+            }
+        }
+    });
+
+    if (validLines) {
+        //Desactivar el boton de finalizar detalle
+        linea_activa.find(".btn-fin-det").attr("disabled", false);
+    } else {
+        //Activar el boton de finalizar detalle
+        linea_activa.find(".btn-fin-det").attr("disabled", true);
+    }
+
+    return validLines;
+}
+
+function validar_exoneracion(taxLine) {
+    let validExcemption = true;
+
+    //Validar si la linea tiene todo vacio
+    if (
+        taxLine.find(".excemption_documentType").val() != "" ||
+        taxLine.find(".excemption_number").val() != "" ||
+        taxLine.find(".excemption_issueDate").val() != "" ||
+        taxLine.find(".excemption_institutionName").val() != "" ||
+        (taxLine.find(".excemption_percentage").val() != "" && taxLine.find(".excemption_percentage").val() != 0)
+    ) {
+        activarBotonExoneracion(false, taxLine);
+
+        //Si el excemption_documentType esta vacio
+        if (taxLine.find(".excemption_documentType").val() == "") {
+            taxLine.find(".excemption_documentType").addClass("border-danger");
+        } else {
+            taxLine.find(".excemption_documentType").removeClass("border-danger");
+        }
+
+        //Si el excemption_number esta vacio
+        if (taxLine.find(".excemption_number").val() == "") {
+            taxLine.find(".excemption_number").addClass("border-danger");
+        } else {
+            taxLine.find(".excemption_number").removeClass("border-danger");
+        }
+
+        //Si el excemption_issueDate esta vacio
+        if (taxLine.find(".excemption_issueDate").val() == "") {
+            taxLine.find(".excemption_issueDate").addClass("border-danger");
+        } else {
+            taxLine.find(".excemption_issueDate").removeClass("border-danger");
+        }
+
+        //Si el excemption_institutionName esta vacio
+        if (taxLine.find(".excemption_institutionName").val() == "") {
+            taxLine.find(".excemption_institutionName").addClass("border-danger");
+        } else {
+            taxLine.find(".excemption_institutionName").removeClass("border-danger");
+        }
+
+        //Si el excemption_percentage esta vacio
+        if (taxLine.find(".excemption_percentage").val() == "" || taxLine.find(".excemption_percentage").val() == 0) {
+            taxLine.find(".excemption_percentage").addClass("border-danger");
+        } else {
+            taxLine.find(".excemption_percentage").removeClass("border-danger");
+        }
+
+        validExcemption = false;
+    } else {
+        activarBotonExoneracion(true, taxLine);
+
+        //Eliminar el borde rojo de los campos
+        taxLine.find(".excemption_documentType").removeClass("border-danger");
+        taxLine.find(".excemption_number").removeClass("border-danger");
+        taxLine.find(".excemption_issueDate").removeClass("border-danger");
+        taxLine.find(".excemption_institutionName").removeClass("border-danger");
+        taxLine.find(".excemption_percentage").removeClass("border-danger");
+    }
+
+    const taxPercentage = taxLine.find(".taxPercentage").val();
+
+    if (taxLine.find(".excemption_percentage").val() != "" && taxLine.find(".excemption_percentage").val() > taxPercentage) {
+        notificacion("El porcentaje de exoneración no puede ser mayor al porcentaje de impuesto.", "", "info");
+
+        //Colocar el porcentaje de exoneracion en el taxPercentage
+        taxLine.find(".excemption_percentage").val(taxPercentage);
+    }
+
+    return validExcemption;
 }
