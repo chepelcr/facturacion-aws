@@ -239,13 +239,12 @@
 
                                 <div class="card-body">
                                     <div class="row cont-details">
-                                        <div class="col-md-6 detail">
+                                        <div class="col-md-6 detail" id="fac-<?= $numero_documento ?>-det-0">
                                             <div class="card">
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col-md-3 col-sm-12 mb-2">
                                                             <span class="numero_linea_lbl">Linea 1</span>
-                                                            <input type="hidden" class="form-control form-control-sm productId" name="details[0][productId]">
                                                         </div>
 
                                                         <div class="col-md-9 col-sm-12 mb-2">
@@ -255,7 +254,7 @@
                                                                     <span class="input-group-text"><i class="fas fa-align-justify"></i></span>
                                                                 </div>
 
-                                                                <input class="form-control form-control-sm inp-fct description" name="details[0][description]" type="text" placeholder="Descripción" readonly disabled>
+                                                                <input class="form-control form-control-sm name det-name" type="text" placeholder="Descripción" readonly disabled>
                                                             </div>
                                                         </div>
 
@@ -268,7 +267,7 @@
                                                                         <span class="input-group-text"><i class="fas fa-barcode"></i></span>
                                                                     </div>
 
-                                                                    <input class="form-control form-control-sm inp-fct saleCode" type="number" min="0" readonly placeholder="Código de barras" disabled>
+                                                                    <input class="form-control form-control-sm saleCode" type="number" min="0" readonly placeholder="Código de barras" disabled readonly>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -276,7 +275,7 @@
                                                         <!-- Cantidad -->
                                                         <div class="col-md-3 col-sm-6 mb-2">
                                                             <div class="input-group input-group-sm">
-                                                                <input value="0" class="form-control form-control-sm quantity-det calcular inp-fct" min="1" type="number" name="details[0][quantity]" required max="99">
+                                                                <input value="0" class="form-control form-control-sm quantity-det inp-fct" min="1" type="number" max="99">
                                                             </div>
                                                         </div>
 
@@ -288,13 +287,8 @@
                                                                     <span class="input-group-text"><i class="fas fa-boxes"></i></span>
                                                                 </div>
 
-                                                                <select class="form-control form-control-sm unitId inp-fct" required>
+                                                                <select class="form-control form-control-sm measurementUnit_unitId" disabled>
                                                                     <option value="">Seleccionar</option>
-                                                                    <!-- Recorrer unidades de medida -->
-                                                                    <?php foreach ($unidades_medida as $unidad) : ?>
-                                                                        <option value="<?= $unidad->unitId ?>" <?= $unidad->unitId == 85 ? 'selected' : '' ?>>
-                                                                            <?= $unidad->description ?></option>
-                                                                    <?php endforeach; ?>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -313,7 +307,7 @@
                                                         <div class="col-md-6 col-sm-6 mb-2">
                                                             <div class="row row-cols-2 row-cols-md-2 row-cols-lg-2 row-cols-sm-2">
                                                                 <div class="col d-flex justify-content-center">
-                                                                    <button class="btn btn-primary descB btn-sm w-100" type="button" onclick="mostrar_detalles(this)">
+                                                                    <button class="btn btn-primary descB btn-sm w-100 btn-ver-det" type="button" onclick="mostrar_detalles(this)" disabled>
                                                                         <i class="fas fa-percent"></i>
                                                                     </button>
                                                                 </div>
@@ -380,7 +374,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text">Impuestos</span>
+                                            <span class="input-group-text">I.V.A.</span>
                                         </div>
                                         <input type="text" disabled readonly class="form-control lbl_iva">
                                     </div>

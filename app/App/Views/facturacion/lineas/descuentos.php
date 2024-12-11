@@ -16,7 +16,6 @@
                                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                             </div>
                             <input class="form-control form-control-sm total_discount_money" value="0" disabled readonly>
-                            <input value="0" class="total_discount inp-fct" type="hidden">
                         </div>
                     </div>
 

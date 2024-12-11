@@ -27,7 +27,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                     </div>
-                                    <input type="number" class="form-control form-control-sm salePrice" value="<?= $producto->salePrice; ?>">
+                                    <input type="number" class="form-control form-control-sm" value="<?= $producto->salePrice; ?>" disabled readonly>
                                 </div>
                             </div>
                         </div>

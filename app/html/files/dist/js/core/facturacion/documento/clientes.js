@@ -139,6 +139,11 @@ function editar_cliente() {
 
     activar_campos_cedula("editar", elemento_activo);
 
+    //Collapse todos los card del elemento activo
+    $("#" + form_activo)
+        .find(".card")
+        .CardWidget("expand");
+
     estado_form = "editar";
 }
 

@@ -51,7 +51,7 @@ function agregar(titulo = "") {
                         campos_cabys(estado, form_activo);
                         getUnitCode(activeForm.find(".measurementUnit_unitId"));
 
-                        activeForm.find(".salePrice").val(0);
+                        activeForm.find(".totalValue").val(0);
                         activeForm.find(".taxValue").val(0);
                         activeForm.find(".unitPrice").val(0);
                         activeForm.find(".netValue").val(0);
@@ -138,10 +138,8 @@ function llenarObjeto(nombre_form, objeto, estado) {
         if (key == "identification") {
             activar_campos_cedula("agregar-todos", nombre_form);
 
-            var identificacion = valor.number;
-            var tipoIdentificacion = valor.code;
-
-            identificacion = formatear_cedula(identificacion, tipoIdentificacion);
+            const tipoIdentificacion = valor.code;
+            const identificacion = formatear_cedula(valor.number, tipoIdentificacion);
 
             activeForm.find(".identification_number").val(identificacion);
 
@@ -187,13 +185,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
         } else if (key == "customerType") {
             selectCustomerType(valor);
         } else if (key == "category") {
-            selectProductType(valor.productType.id, true);
-
-            let description = valor.description + " - IVA: " + valor.suggestedTax + "%";
-
-            activeForm.find(".category_code").val(valor.code);
-            activeForm.find(".category_suggestedTax").val(valor.suggestedTax);
-            activeForm.find(".category_description").val(description);
+            colocar_valores_cabys(valor);
         } else {
             // Validar si el elemento es un objeto
             if (typeof valor == "object") {
@@ -215,7 +207,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
             activeForm.find(".tradeName").val(objeto.businessName);
         }
     } else if (modulo_activo == "empresa" && submodulo_activo == "productos") {
-        calcular_con_precio_venta(nombre_form, objeto.salePrice);
+        calcular_con_precio_venta(nombre_form);
     }
 
     //Si existe el campo objeto.status

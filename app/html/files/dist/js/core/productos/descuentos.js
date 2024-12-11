@@ -160,51 +160,38 @@ function agregar_descuentos_producto(descuentos = []) {
 }
 
 /** Calcular el valor de los descuentos de una linea de detalle */
-function calcular_descuentos_producto() {
+function calcular_descuentos_producto(netValue, isBiller = false) {
     const form = $("#" + form_activo);
 
     let descuento_total = 0;
 
-    let netValue = form.find(".netValue").val();
-
-    if (netValue == "" || isNaN(netValue)) {
-        netValue = 0;
-
-        form.find(".netValue").val(0);
-    }
-
     const discounts = form.find(".discounts");
 
     discounts.find(".discountLine").each(function (i, discountLine) {
-        descuento_total += calcular_descuento_producto(discountLine, netValue);
+        descuento_total += calcular_descuento_producto(discountLine, netValue, isBiller);
     });
 
     const subtotal = new Decimal(netValue).minus(descuento_total).toDecimalPlaces(5).toNumber();
 
-    //Colocar el valor total de los descuentos
-    form.find(".total_discount").val(descuento_total);
-    form.find(".total_discount_money").val(formato_moneda(descuento_total, 5));
+    if (isBiller) {
+        //Colocar el valor total de los descuentos
+        form.find(".detail_discount_total").val(formato_moneda(descuento_total, 2));
 
-    form.find(".subtotal").val(subtotal);
+        form.find(".detail_subtotal").val(subtotal);
+    } else {
+        //Colocar el valor total de los descuentos
+        form.find(".total_discount").val(descuento_total);
+        form.find(".total_discount_money").val(formato_moneda(descuento_total, 5));
 
-    validateDiscountLines(form_activo);
+        form.find(".subtotal").val(subtotal);
+    }
 
     return descuento_total;
 } //Fin del metodo calcular_descuento
 
 /**Calcular el descuento de una linea */
-function calcular_descuento_producto(discountLine, netValue = 0) {
-    const form = $("#" + form_activo);
-
+function calcular_descuento_producto(discountLine, netValue, isBiller = false) {
     let descuento = 0;
-
-    if (netValue == null) {
-        netValue = form.find(".netValue").val();
-    } else {
-        if (isNaN(netValue) || netValue == "") {
-            netValue = 0;
-        }
-    }
 
     let discount_percentage = $(discountLine).find(".discount_percentage").val();
 
@@ -224,10 +211,12 @@ function calcular_descuento_producto(discountLine, netValue = 0) {
 
     console.log("Descuento: ", descuento);
 
-    $(discountLine).find(".discount_amount").val(descuento);
+    if (!isBiller) {
+        $(discountLine).find(".discount_amount").val(descuento);
 
-    //Colocar el descuento en la linea de descuento
-    $(discountLine).find(".discount_amount_money").val(formato_moneda(descuento, 5));
+        //Colocar el descuento en la linea de descuento
+        $(discountLine).find(".discount_amount_money").val(formato_moneda(descuento, 5));
+    }
 
     return descuento;
 } //Fin del metodo calcular_descuento

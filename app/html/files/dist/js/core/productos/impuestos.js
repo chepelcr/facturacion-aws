@@ -15,7 +15,7 @@ function agregar_impuesto_producto(force = false) {
     console.log("Tarifa de impuesto: " + taxRates);
 
     // (Si el producto tiene un taxType y un taxPercentage diferente de 0) o (Si el producto tiene un taxType y un taxRate)
-    if ((taxTypes != "" && (taxPercentage != "" && taxPercentage != "0")) || (taxTypes != "" && taxRates != "")) {
+    if ((taxTypes != "" && taxPercentage != "" && taxPercentage != "0") || (taxTypes != "" && taxRates != "")) {
         //Clonar la ultima linea de impuesto
         const nueva_linea = limpiar_impuesto_producto(taxLine.clone());
 
@@ -371,18 +371,11 @@ function eliminar_impuesto_producto(boton) {
 } //Fin del metodo eliminar_impuesto
 
 /**Calcular impuestos de una linea de detalle */
-function calcular_impuestos_producto() {
-    var impuestoTotal = 0;
+function calcular_impuestos_producto(subtotal, isBiller = false) {
+    let impuestoTotal = 0;
+    let totalAmountLine = subtotal;
 
     const form = $("#" + form_activo);
-
-    let subtotal = form.find(".subtotal").val();
-
-    if (subtotal == "" || isNaN(subtotal)) {
-        subtotal = 0;
-
-        form.find(".subtotal").val(subtotal);
-    }
 
     //Obtener la tabla de impuestos
     const taxesTable = form.find(".taxesTable");
@@ -392,20 +385,34 @@ function calcular_impuestos_producto() {
 
     //Recorrer todas las lineas de impuestos
     taxLines.each(function (index, taxLine) {
+        const taxTypeCode = $(taxLine).find(".taxTypes option:selected").data("code");
+
+        if (taxTypeCode != "01" && taxTypeCode != "07") {
+            taxValue = calcular_impuesto_producto(taxLine, subtotal, isBiller);
+            totalAmountLine += taxValue;
+        } else {
+            taxValue = calcular_impuesto_producto(taxLine, totalAmountLine, isBiller);
+        }
+
         //Calcular el impuesto de la linea
-        impuestoTotal += calcular_impuesto_producto(taxLine, subtotal);
+        impuestoTotal += taxValue;
     });
 
-    //Colocar el impuesto total en el campo .ivNetoVL
-    form.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 5));
+    if (isBiller) {
+        //Colocar el valor en el campo detail_discount_total
+        form.find(".detail_tax_total").val(formato_moneda(impuestoTotal, 2));
+    } else {
+        //Colocar el impuesto total en el campo .ivNetoVL
+        form.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 5));
 
-    form.find(".taxValue").val(formato_moneda(impuestoTotal, 5));
+        form.find(".taxValue").val(formato_moneda(impuestoTotal, 5));
+    }
 
     return impuestoTotal;
 }
 
 /**Calcular una linea de impuesto */
-function calcular_impuesto_producto(taxLine = null, subtotal = 0) {
+function calcular_impuesto_producto(taxLine = null, subtotal = 0, isBiller = false) {
     taxLine = $(taxLine);
 
     let taxAmount = 0;
@@ -428,8 +435,10 @@ function calcular_impuesto_producto(taxLine = null, subtotal = 0) {
     console.log("Valor neto: " + subtotal);
     console.log("Valor impuesto: " + taxAmount);
 
-    taxLine.find(".tax_amount").val(taxAmount);
-    taxLine.find(".tax_amount_money").val(formato_moneda(taxAmount, 5));
+    if (!isBiller) {
+        taxLine.find(".tax_amount").val(taxAmount);
+        taxLine.find(".tax_amount_money").val(formato_moneda(taxAmount, 5));
+    }
 
     return taxAmount;
 } //Fin del calculo de la linea de impuesto
@@ -440,10 +449,14 @@ function calcular_impuesto_producto(taxLine = null, subtotal = 0) {
  * @param {string} form_activo
  * @returns  porcentaje del impuesto
  */
-function contar_porcentaje_impuesto(form_activo) {
+function contar_porcentaje_impuesto(form_activo, type="all") {
     const form = $("#" + form_activo);
 
     let totalTaxPercentage = 0;
+
+    let ivaTaxPercentage = 0;
+
+    let otherTaxesPercentage = 0;
     //Obtener la tabla de impuestos
     const taxesTable = form.find(".taxesTable");
 
@@ -460,9 +473,23 @@ function contar_porcentaje_impuesto(form_activo) {
         }
 
         totalTaxPercentage += parseFloat(taxPercentage);
+
+        const taxType = $(taxLine).find(".taxTypes option:selected").data("code");
+
+        if (taxType == "01" || taxType == "07" || taxType == "08") {
+            ivaTaxPercentage += parseFloat(taxPercentage);
+        } else {
+            otherTaxesPercentage += parseFloat(taxPercentage);
+        }
     });
 
-    return totalTaxPercentage;
+    if (type == "iva") {
+        return ivaTaxPercentage;
+    } else if (type == "other") {
+        return otherTaxesPercentage;
+    } else {
+        return totalTaxPercentage;
+    }
 }
 
 function validateTaxLines(form_activo) {

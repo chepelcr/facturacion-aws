@@ -15,8 +15,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                             </div>
-                            <input class="form-control form-control-sm ivNetoVL" value="0" disabled readonly>
-                            <input value="0" class="ivNeto inp-fct" type="hidden">
+                            <input class="form-control form-control-sm totalTaxVL" value="0" disabled readonly>
                         </div>
                     </div>
 
@@ -63,7 +62,7 @@
                                         </div>
 
                                         <!-- Recorrer select de impuestos -->
-                                        <select class="form-control form-control-sm validar_linea taxTypes" name="details[0][taxes][0][taxTypeId]" onchange="activar_porcentajes(this)">
+                                        <select class="form-control form-control-sm taxTypes detailTaxType" name="details[0][taxes][0][taxTypeId]">
                                             <option value="">Seleccione un impuesto</option>
                                             <?php foreach ($taxTypes as $taxType) : ?>
                                                 <option value="<?= $taxType->taxId ?>" data-code="<?= $taxType->code ?>">
@@ -83,7 +82,7 @@
                                         </div>
 
                                         <!-- Recorrer los porcentajes de impuesto -->
-                                        <select class="form-control form-control-sm validar_linea taxRates" name="details[0][taxes][0][taxRateId]" disabled onchange="colocar_tarifa(this)">
+                                        <select class="form-control form-control-sm validar_linea taxRates" name="details[0][taxes][0][taxRateId]" disabled>
                                             <option value="">No aplica</option>
                                             <?php foreach ($taxRates as $taxRate) : ?>
                                                 <option value="<?= $taxRate->rateId ?>" data-percentage="<?= $taxRate->percentage ?>" data-rateTypeId="<?= $taxRate->rateTypeId ?>" data-code="<?= $taxRate->code ?>">
@@ -115,7 +114,6 @@
                                         </div>
 
                                         <input class="form-control form-control-sm money_value tax_amount_money" value="0" disabled readonly>
-
                                         <input value="0" class="tax_amount hide_num" type="hidden">
                                     </div>
                                 </div>

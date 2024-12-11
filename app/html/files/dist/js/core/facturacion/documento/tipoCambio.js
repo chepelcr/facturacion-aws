@@ -48,9 +48,7 @@ function cambiarPrecioLineas(tipoCambio) {
       newPrice = parseFloat(newPrice);
       newPrice.toFixed(2);
 
-      $(item).find(".salePrice").val(newPrice);
-
-      $(item).find(".salePrice_money").val(formato_moneda(newPrice, 2, moneda));
+      $(item).find(".netPrice").val(newPrice);
 
       calcular($(item));
     });

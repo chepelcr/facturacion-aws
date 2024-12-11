@@ -37,11 +37,9 @@ $(document).ready(function () {
             }
 
             console.log("Precio de venta: " + salePrice);
-        } else {
-            salePrice = 0;
         }
 
-        calcular_con_precio_venta(form_activo, $(this).val());
+        calcular_con_precio_venta(form_activo);
     }); //Fin de cambiar el precio de venta
 
     //Cuando cambia la cantidad
@@ -96,10 +94,14 @@ $(document).ready(function () {
     }); //Fin de cambiar el valor unitario
 });
 
-function calcular_valor_producto(elemento = "", netValue = 0, unit = false) {
+function calcular_valor_producto(elemento = "", isBiller = false) {
     const form = $("#" + elemento);
 
-    if (netValue == null || netValue == "" || isNaN(netValue)) {
+    let netValue = 0;
+
+    if (isBiller == true) {
+        netValue = form.find(".netPrice").val();
+    } else {
         netValue = form.find(".netValue").val();
     }
 
@@ -109,60 +111,64 @@ function calcular_valor_producto(elemento = "", netValue = 0, unit = false) {
     }
 
     //Calcular el valor del descuento
-    calcular_descuentos_producto();
+    const discounts = calcular_descuentos_producto(netValue, isBiller);
 
-    const subtotal = form.find(".subtotal").val();
+    const subtotal = new Decimal(netValue).minus(discounts).toDecimalPlaces(5).toNumber();
 
     //Calcular el valor del impuesto
-    const impuestoTotal = calcular_impuestos_producto();
+    const impuestoTotal = calcular_impuestos_producto(subtotal, isBiller);
 
-    const total = new Decimal(subtotal).plus(impuestoTotal).toDecimalPlaces(5).toNumber();
+    const total = new Decimal(subtotal).plus(impuestoTotal).toDecimalPlaces(2).toNumber();
 
-    //Colocar el total en el campo .totalValue
-    form.find(".totalValue").val(total);
+    if (isBiller == true) {
+        //Colocar el total en el campo .detail_total_value
+        form.find(".detail_total_value").val(total);
+    } else {
+        //Colocar el total en el campo .totalValue
+        form.find(".totalValue").val(total);
+    }
 
-    if (unit == false) {
+    if (isBiller == false) {
         //Calcular el valor unitario
         calcular_valor_unitario(elemento);
     }
 }
 
-function calcular_con_precio_venta(elemento = "", salePrice = 0) {
+function calcular_con_precio_venta(elemento = "", isBiller = false) {
     const form = $("#" + elemento);
 
     let taxValue = 0;
+    let salePrice = 0;
     let netValue;
+
+    if (isBiller == true) {
+        salePrice = form.find(".totalValue").val();
+    } else {
+        salePrice = form.find(".detail_total_value").val();
+    }
 
     console.log("Precio de venta: " + salePrice);
 
-    if (salePrice != null && salePrice > 0) {
-        //Colocar el valor de venta en el elemento salePrice
-        form.find(".totalValue").val(salePrice);
-    } else {
-        //Obtener el valor de venta del elemento salePrice
-        salePrice = form.find(".totalValue").val();
-    }
-
-    if (isNaN(salePrice) || salePrice == "") {
-        salePrice = 0;
-
-        form.find(".totalValue").val(salePrice);
-    }
-
-    let taxPercentage = contar_porcentaje_impuesto(elemento);
-
-    console.log("Porcentaje de impuesto: " + taxPercentage);
+    let ivaTaxPercentage = contar_porcentaje_impuesto(elemento, "iva");
+    let otherTaxPercentage = contar_porcentaje_impuesto(elemento, "other");
 
     salePrice = new Decimal(salePrice);
 
-    if (taxPercentage > 0) {
-        taxPercentage = new Decimal(taxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
+    if (ivaTaxPercentage > 0) {
+        ivaTaxPercentage = new Decimal(ivaTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
 
-        console.log("Porcentaje de impuesto total: " + taxPercentage);
+        console.log("Porcentaje de IVA: " + ivaTaxPercentage);
 
-        taxValue = salePrice.minus(salePrice.dividedBy(taxPercentage)).toDecimalPlaces(5).toNumber();
+        taxValue += salePrice.minus(salePrice.dividedBy(ivaTaxPercentage)).toDecimalPlaces(5).toNumber();
     }
 
+    if (otherTaxPercentage > 0) {
+        otherTaxPercentage = new Decimal(otherTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
+
+        console.log("Porcentaje de impuesto total: " + otherTaxPercentage);
+
+        taxValue += salePrice.minus(salePrice.dividedBy(otherTaxPercentage)).toDecimalPlaces(5).toNumber();
+    }
 
     const subtotal = new Decimal(salePrice).minus(taxValue).toDecimalPlaces(5).toNumber();
 
@@ -173,7 +179,11 @@ function calcular_con_precio_venta(elemento = "", salePrice = 0) {
 
         discountPercentage = new Decimal(discountPercentage).dividedBy(100).toDecimalPlaces(5).toNumber();
 
-        let discountAmount = new Decimal(subtotal).dividedBy(1 - discountPercentage).minus(subtotal).toDecimalPlaces(5).toNumber();
+        let discountAmount = new Decimal(subtotal)
+            .dividedBy(1 - discountPercentage)
+            .minus(subtotal)
+            .toDecimalPlaces(5)
+            .toNumber();
 
         console.log("Descuento: " + discountAmount);
 
@@ -185,15 +195,27 @@ function calcular_con_precio_venta(elemento = "", salePrice = 0) {
         netValue = subtotal;
     }
 
-    form.find(".netValue").val(netValue);
+    if (!isBiller) {
+        form.find(".netValue").val(netValue);
 
-    calcular_descuentos_producto();
+        calcular_descuentos_producto(netValue);
 
-    //Calcular el valor del impuesto
-    calcular_impuestos_producto();
+        //Calcular el valor del impuesto
+        calcular_impuestos_producto();
 
-    //Calcular el valor unitario
-    calcular_valor_unitario(elemento);
+        //Calcular el valor unitario
+        calcular_valor_unitario(elemento);
+    } else {
+        const tipoCambio = tipoCambioDocumento;
+
+        if (tipoCambio != 1) {
+            netValue = netValue / tipoCambio;
+        } else {
+            form.find(".originalSalePrice").val(netValue);
+        }
+
+        form.find(".netPrice").val(netValue);
+    }
 }
 
 function calcular_con_unitario(elemento = "") {
@@ -206,7 +228,7 @@ function calcular_con_unitario(elemento = "") {
 
     form.find(".netValue").val(netValue);
 
-    calcular_valor_producto(elemento, netValue, true);
+    calcular_valor_producto(elemento);
 }
 
 function calcular_valor_unitario(elemento = "", show = true) {
@@ -228,9 +250,8 @@ function calcular_valor_unitario(elemento = "", show = true) {
         isPackaged.prop("checked", false);
     }
 
-    if(show == true) {
-
-    showPackagingInfo(isPackaged);
+    if (show == true) {
+        showPackagingInfo(isPackaged);
     }
 
     let salePrice = form.find(".netValue").val();
@@ -243,37 +264,4 @@ function calcular_valor_unitario(elemento = "", show = true) {
 
     //Colocar el valor unitario en el elemento unitPrice
     form.find(".unitPrice").val(unitPrice, 5);
-}
-
-function calcular_valor_final(elemento = "") {
-    const form = $("#" + elemento);
-
-    let subtotal = 0;
-
-    let valor_total = 0;
-
-    let valor_impuesto = 0;
-
-    let porcentaje_impuesto = 0;
-
-    //Calcular el valor del descuento
-    calcular_descuentos_producto();
-
-    subtotal = form.find(".subtotal").val();
-
-    porcentaje_impuesto = contar_porcentaje_impuesto(elemento);
-
-    valor_impuesto = new Decimal(subtotal).times(porcentaje_impuesto).dividedBy(100).toDecimalPlaces(5).toNumber();
-
-    //valor_impuesto = valor_impuesto.toFixed(2);
-
-    //Colocar el valor del impuesto en el campo .taxValue
-    form.find(".taxValue").val(formato_moneda(valor_impuesto, 5));
-
-    valor_total = new Decimal(subtotal).plus(valor_impuesto).toDecimalPlaces(5).toNumber();
-
-    //    valor_total = valor_total.toFixed(2);
-
-    //Colocar el valor total en el campo .totalValue
-    form.find(".totalValue").val(valor_total, 5);
 }

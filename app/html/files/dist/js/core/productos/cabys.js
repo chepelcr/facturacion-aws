@@ -147,21 +147,16 @@ function buscar_categorias(search) {
  * @param {int} valor Posicion del codigo cabys en la lista
  */
 function seleccionar_cabys(valor) {
-    const activeElement = $("#" + elemento_activo);
-    const activeForm = $("#" + form_activo);
+    const category = cabys[valor];
 
+    const activeElement = $("#" + elemento_activo);
+    
     campos_cabys("almacenando", form_activo);
 
     activeElement.find("#cabys").html("");
     activeElement.find(".q_cabys").val("");
 
-    let description = cabys[valor].description + " - IVA: " + cabys[valor].suggestedTax + "%";
-
-    activeForm.find(".category_code").val(cabys[valor].code);
-    activeForm.find(".category_suggestedTax").val(cabys[valor].suggestedTax);
-    activeForm.find(".category_description").val(description);
-
-    selectProductType(cabys[valor].productType.id, true);
+    colocar_valores_cabys(category);
 
     agregar_impuesto_cabys();
 
@@ -175,10 +170,26 @@ function seleccionar_cabys(valor) {
 }
 
 /**
+ * Colocar los valores de una categoría seleccionada en el formulario
+ * @param {*} category Categoría seleccionada
+ */
+function colocar_valores_cabys(category) {
+    const activeForm = $("#" + form_activo);
+
+    let description = category.description + " - IVA: " + category.suggestedTax + "%";
+
+    activeForm.find(".category_code").val(category.code);
+    activeForm.find(".category_suggestedTax").val(category.suggestedTax);
+    activeForm.find(".category_description").val(description);
+
+    selectProductType(category.productType.id, true);
+}
+
+/**
  * Seleccionar el tipo de producto
  * @param {int} productType Id del tipo de producto
  */
-function selectProductType(productType, click = false) {
+function selectProductType(productType) {
     const activeForm = $("#" + form_activo);
 
     //Quitar el radio seleccionado de todos los productType exepto el seleccionado

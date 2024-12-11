@@ -17,6 +17,14 @@
             <!-- Contenido del modal -->
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-md-12">
+                        <?= view('empresa/producto/elementos/hacienda', $data_hacienda) ?>
+                    </div>
+
+                    <div class="col-md-12">
+                        <?= view('facturacion/lineas/general', $data_general) ?>
+                    </div>
+
                     <!-- Descuentos -->
                     <div class="col-12">
                         <?= view('facturacion/lineas/descuentos') ?>
@@ -29,9 +37,13 @@
                     </div>
                     <!-- /.col-12 -->
 
+                    <!-- Valores -->
+                    <div class="col-12">
+                        <?= view('empresa/producto/elementos/valor', $data_valor) ?>
+
                     <!-- Totales -->
                     <div class="col-12">
-                        <?= view('facturacion/lineas/totales', $data_totales) ?>
+                        <?= view('facturacion/lineas/totales') ?>
                     </div>
                     <!-- /.col-12 -->
                 </div>

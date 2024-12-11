@@ -21,7 +21,12 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                         </div>
-                        <input type="text" class="form-control netValue inp netPrice" name="netPrice" placeholder="Monto base (sin impuestos o descuentos)" data-toggle="tooltip" title="Sin impuestos o descuentos" disabled readonly>
+                        <?php if (isset($isDetail)) : ?>
+                            <input value="0" class="netPrice form-control form-control-sm" min="0" type="text" name="details[0][salePrice]">
+                            <input value="0" class="originalSalePrice" type="hidden">
+                        <?php else : ?>
+                            <input type="text" class="form-control netValue inp" placeholder="Monto base (sin impuestos o descuentos)" data-toggle="tooltip" title="Sin impuestos o descuentos" disabled readonly>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -34,8 +39,12 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-percent"></i></span>
                         </div>
-                        <input type="text" class="form-control total_discount_money inp-product-money" placeholder="Descuentos" disabled readonly data-toggle="tooltip" title="Precio base * (% Descuentos / 100)">
-                        <input type="hidden" class="total_discount">
+                        <?php if (!isset($isDetail)) : ?>
+                            <input type="text" class="form-control total_discount_money inp-product-money" placeholder="Descuentos" disabled readonly data-toggle="tooltip" title="Precio unitario * (% Descuentos / 100)">
+                            <input type="hidden" class="total_discount">
+                        <?php else : ?>
+                            <input type="text" class="form-control detail_discount_total" placeholder="Descuentos" disabled readonly data-toggle="tooltip" title="Precio unitario * (% Descuentos / 100)">
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -43,7 +52,11 @@
             <!-- Valor con descuentos (subtotal) -->
             <div hidden>
                 <div class="form-group">
-                    <input type="hidden" class="subtotal">
+                    <?php if (!isset($isDetail)) : ?>
+                        <input type="hidden" class="subtotal">
+                    <? else : ?>
+                        <input type="hidden" class="detail_subtotal">
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -55,7 +68,12 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                         </div>
-                        <input type="text" class="form-control taxValue inp-product-money" placeholder="Impuesto" disabled readonly data-toggle="tooltip" title="Precio base con descuentos * (% Impuestos / 100)">
+
+                        <?php if (!isset($isDetail)) : ?>
+                            <input type="text" class="form-control taxValue inp-product-money" placeholder="Impuesto" disabled readonly data-toggle="tooltip" title="Precio base con descuentos * (% Impuestos / 100)">
+                        <?php else : ?>
+                            <input type="text" class="form-control detail_tax_total" placeholder="Impuesto" disabled readonly data-toggle="tooltip" title="Precio base con descuentos * (% Impuestos / 100)">
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -68,7 +86,11 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                         </div>
-                        <input type="text" class="form-control totalValue inp" placeholder="Valor total con impuestos" disabled readonly data-toggle="tooltip" title="Precio base con descuentos + Impuestos" name="salePrice">
+                        <?php if (!isset($isDetail)) : ?>
+                            <input type="text" class="form-control salePrice totalValue inp" placeholder="Valor total con impuestos" disabled readonly data-toggle="tooltip" title="Precio base con descuentos + Impuestos" name="salePrice">
+                        <?php else : ?>
+                            <input type="text" class="form-control inp-fct detail_total_value" placeholder="Valor total con impuestos" data-toggle="tooltip" title="Precio base con descuentos + Impuestos">
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

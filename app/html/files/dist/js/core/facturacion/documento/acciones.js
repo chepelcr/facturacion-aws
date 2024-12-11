@@ -49,8 +49,10 @@ function cancelar_documento() {
         //Eliminar el contenido de la factura activa
         $("#" + factura_activa).empty();
 
-        //Ocultar el boton de la factura activa
-        $(".col-btn-fct-" + id_factura_activa).hide();
+        //Eliminar el boton de la factura activa del #nav-facturacion (.col-btn-fct-" + id_factura_activa)
+        $("#nav-facturacion").find(".col-btn-fct-" + id_factura_activa).remove();
+
+        //$(".col-btn-fct-" + id_factura_activa).hide();
 
         //Cargar documentos
         cargar_documentos("emitidos");
@@ -64,6 +66,9 @@ function ver_factura(id_factura) {
     //Si la factura esta vacia o no existe
     if ($("#" + factura).length == 0 || $("#" + factura).is(":empty")) {
         mensajeAutomatico("Atencion", "No existe factura con ese ID", "info");
+
+        //Eliminar el boton de la factura activa del #nav-facturacion (.col-btn-fct-" + id_factura_activa)
+        $("#nav-facturacion").find(".col-btn-fct-" + id_factura).remove();
     } else {
         submodulo_activo = "facturacion";
 

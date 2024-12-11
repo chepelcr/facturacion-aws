@@ -22,8 +22,11 @@
                                 <!-- Radio buttons -->
                                 <div class="form-check form-check-inline">
                                     <input class="form-check form-check-input cabys ivois-radio productType-radio productType-<?php echo $productType->id; ?>" type="radio" value="<?php echo $productType->id; ?>" <?php if ($productType->id == 1) {
-                                                                                                                                                                                                                    echo 'checked';
-                                                                                                                                                                                                                } ?>>
+                                                                                                                                                                                                                        echo 'checked';
+                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                    if (isset($isDetail)) {
+                                                                                                                                                                                                                        echo "disabled readonly";
+                                                                                                                                                                                                                    } ?>>
 
                                     <label class="form-check form-check-label ivois-label" for="productType-<?php echo $productType->id; ?>"><?php echo $productType->description; ?></label>
                                 </div>
@@ -50,10 +53,14 @@
                                 <i class="fas fa-id-card"></i>
                             </span>
                         </div>
-                        <input class="form-control inp category_description">
+                        <input class="form-control inp category_description" <?php if (isset($isDetail)) {
+                                                                                    echo 'disabled';
+                                                                                } ?>>
                         <!-- Buscar codigo -->
                         <div class="input-group-append">
-                            <button class="btn btn-cabys" type="button" onclick="buscar_cabys()">
+                            <button class="btn btn-cabys" type="button" onclick="buscar_cabys()" <?php if (isset($isDetail)) {
+                                                                                                        echo 'disabled';
+                                                                                                    } ?>>
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
@@ -61,8 +68,8 @@
                 </div>
             </div>
 
-             <!-- Codigo CABYS -->
-             <div class="col-md-4">
+            <!-- Codigo CABYS -->
+            <div class="col-md-4">
                 <div class="form-group">
                     <label for="codigo_cabys" class="ivois-label">
                         Código cabys
@@ -75,7 +82,11 @@
                                 <i class="fas fa-keyboard"></i>
                             </span>
                         </div>
-                        <input class="form-control inp category_code cabys" name="cabys" required max="13">
+                        <input class="form-control inp category_code cabys" <? if (isset($isDetail)) {
+                                                                                echo "disabled";
+                                                                            } else {
+                                                                                echo 'name="cabys" required';
+                                                                            } ?> max="13">
                     </div>
                 </div>
             </div>

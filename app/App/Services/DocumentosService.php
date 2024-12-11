@@ -548,9 +548,7 @@ class DocumentosService {
 
         $documentVersions = $dataServiceApi->getDocumentVersionsByCountry(getCountryCode());
         $paymentTypes = $dataServiceApi->getPaymentTypesByCountry(getCountryCode());
-        $unidadesMedida = $dataServiceApi->getMeasurementUnits();
         $saleConditions = $dataServiceApi->getSaleConditionsByCountry(getCountryCode());
-
 
         if ((is_array($documentVersions) && empty($documentVersions)) || isset($documentVersions->error)) {
             if (isset($documentVersions->error)) {
@@ -570,6 +568,7 @@ class DocumentosService {
         $taxTypes = $dataServiceApi->getTaxTypesByCountry(getCountryCode());
         $taxRates = $dataServiceApi->getTaxRatesByCountry(getCountryCode());
         $exemptions = $dataServiceApi->getExonerationTypesByCountry(getCountryCode());
+        $productTypes = $dataServiceApi->getProductTypes();
 
         $referenceTypes = $dataServiceApi->getReferenceTypesByCountry(getCountryCode());
         $referenceCodes = $dataServiceApi->getReferenceCodesByCountry(getCountryCode());
@@ -580,13 +579,27 @@ class DocumentosService {
             'exemptions' => $exemptions,
         );
 
-        $dataTotales = array(
-            'unidades_medida' => $unidadesMedida,
+        $data_general = array(
+            'data_general' => array(
+                'unidades' => array(),
+                'isDetail' => true,
+            )
+        );
+
+        $data_hacienda = array(
+            'isDetail' => true,
+            'productTypes' => $productTypes,
+        );
+
+        $data_valor = array(
+            'isDetail' => true,
         );
 
         $modalLinea = array(
             'data_impuesto' => $impuestos,
-            'data_totales' => $dataTotales,
+            'data_general' => $data_general,
+            'data_hacienda' => $data_hacienda,
+            'data_valor' => $data_valor,
         );
 
         $modalCierreDocumento = array(
@@ -611,7 +624,6 @@ class DocumentosService {
             'paymentTypes' => $paymentTypes,
             'saleConditions' => $saleConditions,
             'empresa' => (object) $empresa,
-            'unidades_medida' => $unidadesMedida,
             'numero_documento' => $numero_documento,
             'modalCierreDocumento' => $modalCierreDocumento,
             'data_referencias' => $data_referencias,
