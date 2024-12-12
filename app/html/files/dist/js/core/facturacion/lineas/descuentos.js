@@ -124,7 +124,7 @@ function agregar_descuento(boton = null, linea = null) {
         linea = linea;
     }
 
-    var cantidad_lineas = $(linea).find(".discounts").find(".discountLine").length;
+    const cantidad_lineas = $(linea).find(".discounts").find(".discountLine").length;
 
     //Si ya hay 5 lineas de descuento, mostrar un mensaje de error
     if (cantidad_lineas >= 5) {
@@ -132,32 +132,30 @@ function agregar_descuento(boton = null, linea = null) {
         return;
     }
 
-    //Obtener la tabla de descuentos de la linea activa
-    var table_descuentos = $(linea).find(".discounts");
+    const validDiscounts = validar_descuentos_detalle(linea);
 
-    //Obtener la ultima linea de descuento de la tabla
-    var ultima_linea = table_descuentos.find(".discountLine").last();
-
-    //Si la ultima linea tiene un descuento de 0, no se puede agregar otra linea
-    if (ultima_linea.find(".discount_amount").val() == 0) {
+    if (!validDiscounts) {
         notificacion("No se puede agregar un descuento si el anterior es 0.", "", "warning");
         return;
+    } else {
+        //Obtener la tabla de descuentos de la linea activa
+        const table_descuentos = $(linea).find(".discounts");
+
+        //Clonar la ultima linea de descuento
+        let nueva_linea = table_descuentos.find(".discountLine").last().clone();
+
+        nueva_linea = limpiar_linea_descuento(nueva_linea);
+
+        //Agregar la nueva linea a la tabla
+        table_descuentos.append(nueva_linea);
+
+        contar_lineas_descuento(linea);
+
+        //Activar los btn-dlt de la tabla
+        //table_descuentos.find(".btn-dlt").attr("disabled", false);
+
+        return nueva_linea;
     }
-
-    //Clonar la ultima linea de descuento
-    var nueva_linea = ultima_linea.clone();
-
-    nueva_linea = limpiar_linea_descuento(nueva_linea);
-
-    //Agregar la nueva linea a la tabla
-    table_descuentos.append(nueva_linea);
-
-    contar_lineas_descuento(linea);
-
-    //Activar los btn-dlt de la tabla
-    //table_descuentos.find(".btn-dlt").attr("disabled", false);
-
-    return nueva_linea;
 } //Fin del metodo agregar_descuento
 
 function limpiar_linea_descuento(linea) {
@@ -185,6 +183,8 @@ function eliminar_descuento(boton) {
     }
 
     contar_lineas_descuento(linea_activa);
+
+    calcular_valor_producto(elemento_activo, true);
 
     calcular(linea_activa);
 } //Fin del metodo eliminar_descuento

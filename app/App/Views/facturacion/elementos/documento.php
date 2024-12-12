@@ -267,7 +267,7 @@
                                                                         <span class="input-group-text"><i class="fas fa-barcode"></i></span>
                                                                     </div>
 
-                                                                    <input class="form-control form-control-sm saleCode" type="number" min="0" readonly placeholder="Código de barras" disabled readonly>
+                                                                    <input class="form-control form-control-sm saleCode" type="text" readonly placeholder="Código de barras" disabled readonly>
                                                                 </div>
                                                             </div>
                                                         </div>

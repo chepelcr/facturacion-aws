@@ -313,7 +313,9 @@ function eliminar_impuesto(boton) {
         taxLine.remove();
     }
 
-    validar_impuestos_detalle(linea_activa, true);
+    validar_impuestos_detalle(linea_activa);
+
+    calcular_valor_producto(elemento_activo, true);
 
     calcular(linea_activa);
 } //Fin del metodo eliminar_impuesto
@@ -351,6 +353,15 @@ function calcular_impuestos(linea_detalle, subtotal, moneda) {
             totalAmountLine += taxValue;
             otherTaxes += taxValue;
         } else {
+            //Validar si es tipo de impuesto '01' o '07'
+            if(taxCode == "01" || taxCode == "07") {
+                //Obtener el porcentaje del tarRate
+                const taxPercentage = $(taxLine).find(".taxRates option:selected").data("percentage");
+
+                //Colocar el porcentaje en el campo .taxPercentage
+                $(taxLine).find(".taxPercentage").val(taxPercentage);
+            }
+
             taxValue = calcular_impuesto(taxLine, totalAmountLine);
             ivaTax = taxValue;
         }
@@ -445,9 +456,9 @@ function calcular_impuestos(linea_detalle, subtotal, moneda) {
 function calcular_impuesto(taxLine, subtotal) {
     taxLine = $(taxLine);
 
-    const taxPercentage = taxLine.find(".taxPercentage").val();
+    let taxPercentage = taxLine.find(".taxPercentage").val();
 
-    if (taxPercentage == "") {
+    if (taxPercentage == "" || isNaN(taxPercentage)) {
         taxLine.find(".taxPercentage").val(0);
         taxPercentage = 0;
     }
@@ -475,6 +486,8 @@ function calcular_impuesto(taxLine, subtotal) {
     } else {
         impuesto_neto = impuesto;
     }
+
+    console.log("Impuesto neto: " + impuesto_neto);
 
     taxLine.find(".excemption_amount").val(montoExoneracion);
     taxLine.find(".excemption_amount_money").val(formato_moneda(montoExoneracion, 2, monedaDocumento));
@@ -582,30 +595,8 @@ function vaciarExoneracion(botonEliminar) {
 
     validar_exoneracion(taxLine);
 
-    calcular(taxLine.parents(".detail"));
+    //calcular(taxLine.parents(".detail"));
 }
-
-//Document Ready
-$(document).ready(function () {
-    //Cuando sale del campo .excemption_number
-    $(document).on("blur", ".excemption_number", function () {
-        buscar_exoneracion($(this).val(), $(this).parents(".taxLine"));
-    });
-
-    //Cuando cambia el campo .excemption_percentage
-    $(document).on("change keyup", ".excemption_percentage", function () {
-        //Calcular la linea activa
-        calcular($(this).parents(".detail"));
-    });
-
-    //Cuando cambia el campo .taxPercentage
-    $(document).on("change keyup", ".taxPercentage", function () {
-        //Colocar el valor en el max de excemption_percentage
-        const taxLine = $(this).parents(".taxLine");
-
-        setExcemptionMax(taxLine);
-    });
-});
 
 function setExcemptionMax(taxLine) {
     const taxPercentage = taxLine.find(".taxPercentage").val();
@@ -621,8 +612,6 @@ function validar_impuestos_detalle(linea_activa) {
 
     //Obtener todas las lineas de impuestos
     const taxLines = taxesTable.find(".taxLine");
-
-    let hasIva = false;
 
     let lineNumber = 0;
 
@@ -929,6 +918,25 @@ function validar_exoneracion(taxLine) {
 }
 
 $(document).ready(function () {
+    //Cuando sale del campo .excemption_number
+    $(document).on("blur", ".excemption_number", function () {
+        buscar_exoneracion($(this).val(), $(this).parents(".taxLine"));
+    });
+
+    //Cuando cambia el campo .excemption_percentage
+    $(document).on("change keyup", ".excemption_percentage", function () {
+        //Calcular la linea activa
+        calcular($(this).parents(".detail"));
+    });
+
+    //Cuando cambia el campo .taxPercentage
+    $(document).on("change keyup", ".taxPercentage", function () {
+        //Colocar el valor en el max de excemption_percentage
+        const taxLine = $(this).parents(".taxLine");
+
+        setExcemptionMax(taxLine);
+    });
+
     //Cuando cambia el campo detailTaxType
     $(document).on("change", ".detailTaxType", function () {
         //Eliminar el porcentaje de impuesto
@@ -941,5 +949,12 @@ $(document).ready(function () {
         if (!selectedIva) {
             validar_impuestos_detalle($(this).parents(".detail"));
         }
+    });
+
+    //Cuando el usuario da click en btn-elm-excemption
+    $(document).on("click", ".btn-elm-excemption", function () {
+        vaciarExoneracion(this);
+
+        calcular($(this).parents(".detail"));
     });
 }); //Fin del document ready

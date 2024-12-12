@@ -9,6 +9,11 @@
         <?= view('empresa/producto/elementos/datos_generales', $datos_generales) ?>
     </div>
 
+    <!-- Partida arancelaria -->
+    <div class="col-md-12">
+        <?= view('empresa/producto/elementos/partida_arancelaria') ?>
+    </div>
+
     <!-- Datos del empaque -->
     <div class="col-md-12">
         <?= view('empresa/producto/elementos/empaque') ?>

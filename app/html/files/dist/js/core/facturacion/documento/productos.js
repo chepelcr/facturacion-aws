@@ -5,6 +5,9 @@ function seleccionar_producto(id_producto, boton_producto) {
     //Obtener la cantidad
     const cantidad = $(linea_producto).find(".quantity").val();
 
+    //Obtener el precio
+    const precio = $(linea_producto).find(".salePrice").val();
+
     //Obtener el producto
     $.ajax({
         url: base + "empresa/obtener/productos/" + id_producto,
@@ -12,7 +15,7 @@ function seleccionar_producto(id_producto, boton_producto) {
     })
         .done(function (response) {
             if (!response.error) {
-                agregar_linea_activa(response, cantidad, true); //, precio);
+                agregar_linea_activa(response, cantidad, precio, true); //, precio);
             } else {
                 mensajeAutomatico("Atencion", response.error, "error");
             }
@@ -51,7 +54,7 @@ function buscar_producto() {
                     //Si la respuesta trae solamente un producto
                     if (response.length == 1) {
                         response = response[0];
-                        agregar_linea_activa(response, 1); //, response.salePrice);
+                        agregar_linea_activa(response, 1, response.salePrice);
                     } else {
                         //Mostrar los productos en el modal
                         buscar_productos(gnl);
@@ -65,7 +68,12 @@ function buscar_producto() {
                 }
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
-                json = JSON.parse(jqXHR.responseText);
+                if (jqXHR.responseText != undefined && jqXHR.responseText != null && jqXHR.responseText != "") {
+                    json = JSON.parse(jqXHR.responseText);
+                } else {
+                    json = { error: "Error al buscar el producto" };
+                }
+                
                 mensajeAutomatico("Atencion", json.error, "error");
             });
     } else {
@@ -82,35 +90,37 @@ function buscar_productos(gnl = "") {
         url: base + "documentos/get_productos",
         type: "GET",
         dataType: "html",
-    }).done(function (data) {
-        //Agregar los productos al modal
-        $("#contenedor_busqueda_productos").empty().append(data);
+    })
+        .done(function (data) {
+            //Agregar los productos al modal
+            $("#contenedor_busqueda_productos").empty().append(data);
 
-        if (gnl != "") {
-            //Hacer trim al gnl
-            gnl = gnl.trim();
+            if (gnl != "") {
+                //Hacer trim al gnl
+                gnl = gnl.trim();
 
-            //Escribir el gnl en el input
-            $("#q_productos").val(gnl);
+                //Escribir el gnl en el input
+                $("#q_productos").val(gnl);
 
-            //Buscar los productos
-            filtrar_elemento("contenedor_busqueda_productos", "producto", gnl);
-        } else {
-            //Eliminar el contenido del input
-            $("#q_productos").val("");
-        }
+                //Buscar los productos
+                filtrar_elemento("contenedor_busqueda_productos", "producto", gnl);
+            } else {
+                //Eliminar el contenido del input
+                $("#q_productos").val("");
+            }
 
-        //Mostrar el modal de busqueda de productos
-        $("#modalProductos").modal("show");
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        if(jqXHR.responseText != undefined && jqXHR.responseText != null && jqXHR.responseText != ""){
-            json = JSON.parse(jqXHR.responseText);
-        } else {
-            json = {error: "Error al buscar los productos"};
-        }
+            //Mostrar el modal de busqueda de productos
+            $("#modalProductos").modal("show");
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.responseText != undefined && jqXHR.responseText != null && jqXHR.responseText != "") {
+                json = JSON.parse(jqXHR.responseText);
+            } else {
+                json = { error: "Error al buscar los productos" };
+            }
 
-        mensajeAutomatico("Atencion", json.error, "error");
-    });
+            mensajeAutomatico("Atencion", json.error, "error");
+        });
 } //Fin de buscar_productos
 
 $(document).ready(function () {

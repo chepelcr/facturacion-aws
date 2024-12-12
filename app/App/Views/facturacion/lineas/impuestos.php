@@ -82,7 +82,7 @@
                                         </div>
 
                                         <!-- Recorrer los porcentajes de impuesto -->
-                                        <select class="form-control form-control-sm validar_linea taxRates" name="details[0][taxes][0][taxRateId]" disabled>
+                                        <select class="form-control form-control-sm validar_linea calcular taxRates" name="details[0][taxes][0][taxRateId]" disabled>
                                             <option value="">No aplica</option>
                                             <?php foreach ($taxRates as $taxRate) : ?>
                                                 <option value="<?= $taxRate->rateId ?>" data-percentage="<?= $taxRate->percentage ?>" data-rateTypeId="<?= $taxRate->rateTypeId ?>" data-code="<?= $taxRate->code ?>">
@@ -179,7 +179,7 @@
 
                                             <div class="input-group-append">
                                                 <!-- Boton para eliminar el contenido del campo -->
-                                                <button class="btn btn-danger inp btn-elm-excemption" disabled type="button" onclick="vaciarExoneracion(this)" data-toggle="tooltip" data-placement="top" title="Eliminar exoneración">
+                                                <button class="btn btn-danger inp btn-elm-excemption" disabled type="button" data-toggle="tooltip" data-placement="top" title="Eliminar exoneración">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </div>

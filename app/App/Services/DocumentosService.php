@@ -600,6 +600,7 @@ class DocumentosService {
             'data_general' => $data_general,
             'data_hacienda' => $data_hacienda,
             'data_valor' => $data_valor,
+            'documentType' => $documentType,
         );
 
         $modalCierreDocumento = array(

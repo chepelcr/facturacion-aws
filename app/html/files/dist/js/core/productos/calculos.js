@@ -134,14 +134,17 @@ function calcular_valor_producto(elemento = "", isBiller = false) {
     }
 }
 
-function calcular_con_precio_venta(elemento = "", isBiller = false) {
+function calcular_con_precio_venta(elemento, isBiller = false) {
+    console.log(elemento);
+    
     const form = $("#" + elemento);
 
     let taxValue = 0;
+    let discountAmount = 0;
     let salePrice = 0;
     let netValue;
 
-    if (isBiller == true) {
+    if (!isBiller) {
         salePrice = form.find(".totalValue").val();
     } else {
         salePrice = form.find(".detail_total_value").val();
@@ -162,24 +165,28 @@ function calcular_con_precio_venta(elemento = "", isBiller = false) {
         taxValue += salePrice.minus(salePrice.dividedBy(ivaTaxPercentage)).toDecimalPlaces(5).toNumber();
     }
 
+    let subtotal = new Decimal(salePrice).minus(taxValue).toDecimalPlaces(5).toNumber();
+
     if (otherTaxPercentage > 0) {
+        subtotal = new Decimal(subtotal);
+
         otherTaxPercentage = new Decimal(otherTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
 
         console.log("Porcentaje de impuesto total: " + otherTaxPercentage);
 
-        taxValue += salePrice.minus(salePrice.dividedBy(otherTaxPercentage)).toDecimalPlaces(5).toNumber();
-    }
+        let otherTaxValue = subtotal.minus(subtotal.dividedBy(otherTaxPercentage)).toDecimalPlaces(5).toNumber();
 
-    const subtotal = new Decimal(salePrice).minus(taxValue).toDecimalPlaces(5).toNumber();
+        taxValue += otherTaxValue;
+
+        subtotal = subtotal.minus(otherTaxValue).toDecimalPlaces(5).toNumber();
+    }
 
     let discountPercentage = contarPorcentajeDescuentos(elemento);
 
     if (discountPercentage > 0) {
-        //discountAmount = (subtotal / (1 - discountPercentage / 100)) - subtotal
-
         discountPercentage = new Decimal(discountPercentage).dividedBy(100).toDecimalPlaces(5).toNumber();
 
-        let discountAmount = new Decimal(subtotal)
+        discountAmount = new Decimal(subtotal)
             .dividedBy(1 - discountPercentage)
             .minus(subtotal)
             .toDecimalPlaces(5)
@@ -215,6 +222,12 @@ function calcular_con_precio_venta(elemento = "", isBiller = false) {
         }
 
         form.find(".netPrice").val(netValue);
+
+        //Colocar el valor de impuesto total en detail_tax_total
+        form.find(".detail_tax_total").val(taxValue);
+
+        //Colocar el valor de descuento en detail_discount_total
+        form.find(".detail_discount_total").val(discountAmount);
     }
 }
 

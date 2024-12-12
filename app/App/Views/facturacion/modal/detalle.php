@@ -21,31 +21,41 @@
                         <?= view('empresa/producto/elementos/hacienda', $data_hacienda) ?>
                     </div>
 
+                    <!--Informacion general-->
                     <div class="col-md-12">
                         <?= view('facturacion/lineas/general', $data_general) ?>
                     </div>
 
+                    <?php if ($documentType->code == '09') : ?>
+                        <!-- Partida arancelaria -->
+                        <div class="col-md-12">
+                            <?= view('empresa/producto/elementos/partida_arancelaria', $data_valor) ?>
+                        </div>
+                        <!-- /.col-md-12 -->
+                    <?php endif; ?>
+
                     <!-- Descuentos -->
-                    <div class="col-12">
+                    <div class="col-md-12">
                         <?= view('facturacion/lineas/descuentos') ?>
                     </div>
-                    <!-- /.col-12 -->
+                    <!-- /.col-md-12 -->
 
                     <!-- Impuestos -->
-                    <div class="col-12">
+                    <div class="col-md-12">
                         <?= view('facturacion/lineas/impuestos', $data_impuesto) ?>
                     </div>
-                    <!-- /.col-12 -->
+                    <!-- /.col-md-12 -->
 
                     <!-- Valores -->
-                    <div class="col-12">
+                    <div class="col-md-12">
                         <?= view('empresa/producto/elementos/valor', $data_valor) ?>
+                    </div>
 
                     <!-- Totales -->
-                    <div class="col-12">
+                    <div class="col-md-12">
                         <?= view('facturacion/lineas/totales') ?>
                     </div>
-                    <!-- /.col-12 -->
+                    <!-- /.col-md-12 -->
                 </div>
                 <!-- /.row -->
             </div>

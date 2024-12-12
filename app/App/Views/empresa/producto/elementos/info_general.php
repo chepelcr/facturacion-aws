@@ -7,12 +7,8 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                 </div>
-                <input class="form-control inp name det-name-mod" name="<?php if (isset($isDetail)) {
-                                                                echo "details[0][description]";
-                                                            } else {
-                                                                echo 'name';
-                                                            } ?>"
-                    type="text" required max="128">
+                <input class="form-control inp name <?= isset($isDetail) ? 'det-name-mod validar_linea' : '' ?>"
+                    name="<?= isset($isDetail) ? "details[0][description]" : "name" ?>" type="text" required max="128">
             </div>
         </div>
     </div>

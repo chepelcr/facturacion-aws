@@ -589,7 +589,11 @@ class UsuariosService extends BaseService {
         if ($contrasenia) {
             $data = array(
                 'contrasenia' => encriptar_texto($pass),
-                'fecha_expiracion' => date('Y-m-d H:i:s')
+                'fecha_expiracion' => date('Y-m-d H:i:s'),
+                'bloqueado' => 0,
+                'intentos_fallidos' => 0,
+                'fecha_bloqueo' => null,
+                'fecha_desbloqueo' => null,
             );
 
             $contraseniaModel = new ContraseniaModel();
@@ -639,20 +643,18 @@ class UsuariosService extends BaseService {
 
             $correo = new Correo();
 
-            if ($correo->enviarCorreo($data))
+            if ($correo->enviarCorreo($data)) {
                 return array(
                     'estado' => 1,
                     'mensaje' => 'Se ha enviado un correo electronico con la nueva contraseña.'
                 );
-
-            else
+            } else {
                 return array(
                     'estado' => 0,
                     'mensaje' => 'No se ha podido enviar el correo electronico con la nueva contraseña.'
                 );
-        } //Fin de validacion de id
-
-        else {
+            }
+        } else {
             return array(
                 'estado' => 0,
                 'mensaje' => 'No se ha podido actualizar la contraseña.'

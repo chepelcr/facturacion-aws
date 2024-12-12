@@ -22,7 +22,7 @@
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                         </div>
                         <?php if (isset($isDetail)) : ?>
-                            <input value="0" class="netPrice form-control form-control-sm" min="0" type="text" name="details[0][salePrice]">
+                            <input value="0" class="netPrice form-control form-control-sm validar_linea" min="0" type="text" name="details[0][salePrice]">
                             <input value="0" class="originalSalePrice" type="hidden">
                         <?php else : ?>
                             <input type="text" class="form-control netValue inp" placeholder="Monto base (sin impuestos o descuentos)" data-toggle="tooltip" title="Sin impuestos o descuentos" disabled readonly>
@@ -89,7 +89,7 @@
                         <?php if (!isset($isDetail)) : ?>
                             <input type="text" class="form-control salePrice totalValue inp" placeholder="Valor total con impuestos" disabled readonly data-toggle="tooltip" title="Precio base con descuentos + Impuestos" name="salePrice">
                         <?php else : ?>
-                            <input type="text" class="form-control inp-fct detail_total_value" placeholder="Valor total con impuestos" data-toggle="tooltip" title="Precio base con descuentos + Impuestos">
+                            <input type="text" class="form-control inp-fct detail_total_value validar_linea" placeholder="Valor total con impuestos" data-toggle="tooltip" title="Precio base con descuentos + Impuestos">
                         <?php endif; ?>
                     </div>
                 </div>
