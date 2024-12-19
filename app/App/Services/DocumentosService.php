@@ -454,6 +454,8 @@ class DocumentosService {
             $countries = $locationsApi->get_countries();
         }
 
+        $phoneCountries = $locationsApi->get_countries();
+
         $identificaciones = $dataServiceApi->getIdentificationTypesByCountry(getCountryCode());
         $customerTypes = $dataServiceApi->getCustomerTypes();
 
@@ -472,13 +474,13 @@ class DocumentosService {
                     'customerTypes' => $customerTypes,
                     'customerTypeName' => 'receiver[customerType]',
                     'nationalityName' => 'receiver[nationality]',
-                    'identificationTypeIdName' => 'receiver[identification][typeId]',
+                    'identificationTypeIdName' => 'receiver[identification][type]',
                     'identificationNumberName' => 'receiver[identification][number]',
                     'businessNameName' => 'receiver[businessName]',
                     'tradeNameName' => 'receiver[tradeName]',
                 ),
                 'datos_contacto' => array(
-                    'countries' => $countries,
+                    'countries' => $phoneCountries,
                     'personalPhoneCountryCodeName' => 'receiver[personalPhone][countryCode]',
                     'personalPhoneNumberName' => 'receiver[personalPhone][number]',
                     'emailName' => 'receiver[email]',

@@ -103,8 +103,10 @@ class ProductosService extends BaseService {
         $nombreForm = 'empresa/producto/form';
 
         $datos_generales = array(
-            'categorias' => $categorias,
-            'unidades' => $unidades,
+            'datos_generales' => array(
+                'categorias' => $categorias,
+                'unidades' => $unidades,
+            )
         );
 
         $data_codigos = array(
@@ -158,7 +160,7 @@ class ProductosService extends BaseService {
 
         $data = ProductValidations::validateProductStructure($data);
 
-        if(isset($data['error'])){
+        if (isset($data['error'])) {
             return (object) $data;
         }
 
@@ -174,7 +176,7 @@ class ProductosService extends BaseService {
 
         $data = ProductValidations::validateProductStructure($data);
 
-        if(isset($data['error'])){
+        if (isset($data['error'])) {
             return (object) $data;
         }
 

@@ -38,8 +38,38 @@ function setActiveLine(line) {
 }
 
 /**Eliminar una linea de la facura activa */
-function eliminar_linea(boton_eliminar) {
+function eliminar_linea(boton_eliminar, validate = false) {
     const linea = $(boton_eliminar).parents(".detail");
+
+    if (validate) {
+        //Eliminar el disabled del boton de btn-fin-det
+        linea.find(".btn-fin-det").attr("disabled", false);
+
+        //Cerrar el modal de detalles
+        linea.find(".btn-fin-det").click();
+
+        Swal.fire({
+            title: "Atención",
+            text: "¿Está seguro que desea eliminar la línea?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí",
+            cancelButtonText: "No",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteLine(linea);
+            } else {
+                mostrar_detalles(linea.find(".btn-ver-det"));
+                validarLineaDetalle(linea);
+            }
+        });
+    } else {
+        deleteLine(linea);
+    }
+} //Fin de la funcion eliminar_linea
+
+function deleteLine(line) {
+    //const linea = $(boton_eliminar).parents(".detail");
     const activeDocument = $("#" + factura_activa);
 
     //Si solo queda una linea en la factura
@@ -52,23 +82,29 @@ function eliminar_linea(boton_eliminar) {
 
         //Desactivar el boton de btn-ver-det
         newLine.find(".btn-ver-det").attr("disabled", true);
+
+        $("body").removeClass("modal-open");
+        $(".modal-backdrop").remove();
     }
 
     //Eliminar la linea de la factura
-    $(linea).remove();
+    $(line).remove();
+
+    setActiveLine(null);
 
     //Contar las lineas de la factura
     contar_lineas();
 
     //Calcular el total de la factura
     totales();
-} //Fin de la funcion eliminar_linea
+}
 
 /**Agregar un producto en la linea activa o una linea que tenga la misma informacion */
-function agregar_linea_activa(producto, cantidad, salePrice, openModal = false) {
-    //, precio_final = 0) {
+function agregar_linea_activa(producto, cantidad, salePrice) {
     let linea = null;
     var codigo_venta = 0;
+
+    let openModal = false;
 
     const activeDocument = $("#" + factura_activa);
     const documentTypeCode = activeDocument.find(".documentTypeCode").val();
@@ -152,7 +188,7 @@ function agregar_linea_activa(producto, cantidad, salePrice, openModal = false) 
     linea.find(".quantity-det").val(cantidad);
     linea.find(".detail_total_value").val(salePrice);
 
-    if(documentTypeCode == "09") {
+    if (documentTypeCode == "09") {
         //Si el objeto producto tiene la propiedad customsPart
         if (producto.customsPart != undefined && producto.customsPart != null && producto.customsPart != "") {
             //Colocar el valor de customsPart en el campo de la linea
@@ -178,15 +214,15 @@ function agregar_linea_activa(producto, cantidad, salePrice, openModal = false) 
 
     const validLine = validarLineaDetalle(linea);
 
-    if(!validLine) {
+    if (!validLine) {
         openModal = true;
     }
 
+    //Cerrar el modal de busqueda
+    $("#modalProductos").modal("hide");
+
     if (openModal) {
         mostrar_detalles(linea.find(".btn-ver-det"));
-
-        //Cerrar el modal de busqueda
-        $("#modalProductos").modal("hide");
     } else {
         //Poner el foco en q_codigo_barras
         activeDocument.find(".gnl-agregar").focus();
@@ -213,6 +249,9 @@ function colocar_unidad_medida(linea, unidad_medida) {
 
     //Agregar la opcion a la lista de unidades de medida
     units.append(option);
+
+    //Agregar el option de la unidad de medida al select detailUnitId
+    linea.find(".detailUnitId").append(option);
 }
 
 /** Aumentar el numero de la ultima linea agregada al modulo */
@@ -462,24 +501,42 @@ function validarMontoPagos() {
 }
 
 function validarCantidad(linea, cantidad, modal = false) {
-    //Si la cantidad es mayor a 0
-    if (cantidad > 0) {
-        //Si la cantidad es mayor que 999999999
-        if (cantidad > 999999999) {
-            //Colocar en el campo de .quantity-det de la linea activa
-            linea.find(".quantity-det").val(999999999);
+    if (isNaN(cantidad) || cantidad == "") {
+        cantidad = 1;
 
-            cantidad = 999999999;
+        linea.find(".quantity-det").val(cantidad);
+    }
 
-            mensajeAutomatico("Atención", "La cantidad no puede ser mayor a 999999999", "info");
+    //si la cantidad tiene un 0 a la izquierda, quitarlo
+    if (cantidad != 0) {
+        cantidad = cantidad.toString();
+
+        if (cantidad.charAt(0) == "0") {
+            cantidad = cantidad.substring(1);
         }
 
+        //Convertir la cantidad a entero
+        cantidad = parseInt(cantidad);
+
+        //Colocar la cantidad en el campo de .quantity-det
+        linea.find(".quantity-det").val(cantidad);
+    }
+
+    //Si la cantidad es mayor que 999999999
+    if (cantidad > 999999999) {
         //Colocar en el campo de .quantity-det de la linea activa
-        if (!modal) {
-            linea_activa.find(".quantity-det-mod").val(cantidad);
-        } else {
-            linea.find(".quantity-det").val(cantidad);
-        }
+        linea.find(".quantity-det").val(999999999);
+
+        cantidad = 999999999;
+
+        mensajeAutomatico("Atención", "La cantidad no puede ser mayor a 999999999", "info");
+    }
+
+    //Colocar en el campo de .quantity-det de la linea activa
+    if (!modal) {
+        linea_activa.find(".quantity-det-mod").val(cantidad);
+    } else {
+        linea.find(".quantity-det").val(cantidad);
     }
 
     calcular(linea_activa);
@@ -490,7 +547,7 @@ function validarCantidad(linea, cantidad, modal = false) {
  *
  * @param {} linea Linea que se va a validar
  */
-function validarLineaDetalle(linea) {
+function validarLineaDetalle(linea, changedElement = null) {
     let descuentos_validos = validar_descuentos_detalle(linea);
     let impuestos_validos = validar_impuestos_detalle(linea);
 
@@ -500,25 +557,50 @@ function validarLineaDetalle(linea) {
 
     let validLine = true;
 
-    if (linea.find(".netPrice").val() == "" || linea.find(".netPrice").val() == 0) {
-        validLine = false;
+    //Validar si el elemento que vino es .netPrice
+    if (changedElement != null && changedElement.hasClass("netPrice")) {
+        //Obtener el valor de .netPrice
+        const netPrice = changedElement.val();
 
-        //Colocar el borde rojo en el campo de .netPrice
-        linea.find(".netPrice").addClass("border-danger");
-    } else {
-        //Quitar el borde rojo en el campo de .netPrice
-        linea.find(".netPrice").removeClass("border-danger");
+        //Si el elemento es diferente de "" y 0
+        if (netPrice != "" && netPrice != 0) {
+            //Quitar el borde rojo en el campo de .netPrice
+            linea.find(".netPrice").removeClass("border-danger");
+
+            //Quitar el borde rojo en el campo de .detail_total_value
+            linea.find(".detail_total_value").removeClass("border-danger");
+        } else {
+            //Colocar el borde rojo en el campo de .netPrice
+            linea.find(".netPrice").addClass("border-danger");
+
+            //Colocar el borde rojo en el campo de .detail_total_value
+            linea.find(".detail_total_value").addClass("border-danger");
+
+            validLine = false;
+        }
     }
 
-    //detail_total_value
-    if(linea.find(".detail_total_value").val() == "" || linea.find(".detail_total_value").val() == 0) {
-        validLine = false;
+    //Validar si el campo que cambio es .detail_total_value
+    if (changedElement != null && changedElement.hasClass("detail_total_value")) {
+        //Obtener el valor de .detail_total_value
+        const detail_total_value = changedElement.val();
 
-        //Colocar el borde rojo en el campo de .detail_total_value
-        linea.find(".detail_total_value").addClass("border-danger");
-    } else {
-        //Quitar el borde rojo en el campo de .detail_total_value
-        linea.find(".detail_total_value").removeClass("border-danger");
+        //Si el elemento es diferente de "" y 0
+        if (detail_total_value != "" && detail_total_value != 0) {
+            //Quitar el borde rojo en el campo de .netPrice
+            linea.find(".netPrice").removeClass("border-danger");
+
+            //Quitar el borde rojo en el campo de .detail_total_value
+            linea.find(".detail_total_value").removeClass("border-danger");
+        } else {
+            //Colocar el borde rojo en el campo de .netPrice
+            linea.find(".netPrice").addClass("border-danger");
+
+            //Colocar el borde rojo en el campo de .detail_total_value
+            linea.find(".detail_total_value").addClass("border-danger");
+
+            validLine = false;
+        }
     }
 
     //Validar si el nombre de la linea no esta vacio
@@ -544,7 +626,14 @@ function validarLineaDetalle(linea) {
 
             linea.find(".customsPart").addClass("border-danger");
         } else {
-            linea.find(".customsPart").removeClass("border-danger");
+            //Validar que tenga al menos 12 caracteres
+            if (customsPart.length < 12) {
+                validLine = false;
+
+                linea.find(".customsPart").addClass("border-danger");
+            } else {
+                linea.find(".customsPart").removeClass("border-danger");
+            }
         }
     }
 
@@ -636,7 +725,7 @@ $(document).ready(function () {
             }
         }
 
-        validarLineaDetalle(linea_activa);
+        validarLineaDetalle(linea_activa, (changedElement = $(this)));
     });
 
     //Cuando cambia un .monto
@@ -666,6 +755,9 @@ $(document).ready(function () {
                 netValue = netValue.substring(1);
                 $(this).val(netValue);
             }
+        } else {
+            //Colocar 0 en el campo de .detail_total_value
+            linea_activa.find(".detail_total_value").val(0);
         }
 
         calcular_valor_producto(elemento_activo, true);
@@ -690,6 +782,9 @@ $(document).ready(function () {
                 netValue = netValue.substring(1);
                 $(this).val(netValue);
             }
+        } else {
+            //Colocar 0 en el campo de .netPrice
+            linea_activa.find(".netPrice").val(0);
         }
 
         calcular_con_precio_venta(form_activo, true);

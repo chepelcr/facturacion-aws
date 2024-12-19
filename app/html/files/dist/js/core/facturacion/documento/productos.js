@@ -15,7 +15,7 @@ function seleccionar_producto(id_producto, boton_producto) {
     })
         .done(function (response) {
             if (!response.error) {
-                agregar_linea_activa(response, cantidad, precio, true); //, precio);
+                agregar_linea_activa(response, cantidad, precio);
             } else {
                 mensajeAutomatico("Atencion", response.error, "error");
             }
@@ -73,7 +73,7 @@ function buscar_producto() {
                 } else {
                     json = { error: "Error al buscar el producto" };
                 }
-                
+
                 mensajeAutomatico("Atencion", json.error, "error");
             });
     } else {

@@ -135,8 +135,8 @@ function calcular_valor_producto(elemento = "", isBiller = false) {
 }
 
 function calcular_con_precio_venta(elemento, isBiller = false) {
-    console.log(elemento);
-    
+    //console.log(elemento);
+
     const form = $("#" + elemento);
 
     let taxValue = 0;
@@ -208,7 +208,7 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
         calcular_descuentos_producto(netValue);
 
         //Calcular el valor del impuesto
-        calcular_impuestos_producto();
+        calcular_impuestos_producto(subtotal);
 
         //Calcular el valor unitario
         calcular_valor_unitario(elemento);

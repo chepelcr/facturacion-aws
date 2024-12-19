@@ -62,16 +62,19 @@
             <!-- /.modal-body -->
 
             <!-- Footer del modal -->
-            <div class="modal-footer">
-                <div class="col-md-12">
-                    <div class="fc-button-group">
-                        <div class="d-flex justify-content-end">
-                            <!-- Cerrar -->
-                            <button type="button" class="btn btn-success col-3 btn-block btn-fin-det" data-dismiss="modal">
-                                Aceptar
-                            </button>
-                        </div>
-                    </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div class="col-md-3">
+                    <!-- Eliminar -->
+                    <button type="button" class="btn btn-danger w-100" data-toggle="tooltip" title="Eliminar detalle" onclick="eliminar_linea(this, true)">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </button>
+                </div>
+
+                <div class="col-md-3">
+                    <!-- Cerrar -->
+                    <button type="button" class="btn btn-success w-100 btn-fin-det" data-dismiss="modal">
+                        <i class="fas fa-check"></i> Cerrar detalle
+                    </button>
                 </div>
             </div>
         </div>

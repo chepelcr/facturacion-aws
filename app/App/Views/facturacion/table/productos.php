@@ -13,7 +13,7 @@
             <div class=" card">
                 <div class="card-header">
                     <h5 class="card-title">
-                        <?= $producto->description ?>
+                        <?= $producto->name ?>
                     </h5>
                 </div>
 
@@ -44,7 +44,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="unidad">Unidad</label>
-                                <select class="form-control form-control-sm unidad">
+                                <select class="form-control form-control-sm unidad" disabled readonly>
                                     <?php $unidad = $producto->measurementUnit; ?>
                                     <option value="<?= $unidad->unitId; ?>"><?= $unidad->description; ?></option>
                                 </select>

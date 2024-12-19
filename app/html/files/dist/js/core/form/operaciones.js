@@ -194,10 +194,14 @@ function llenarObjeto(nombre_form, objeto, estado) {
                         inner_key = key + "_" + inner_key;
 
                         activeForm.find("." + inner_key).val(inner_value);
+
+                        console.log(inner_key + " - " + inner_value);
                     });
                 }
             } else {
                 activeForm.find("." + key).val(valor);
+
+                console.log(key + " - " + valor);
             }
         }
     });
@@ -206,7 +210,10 @@ function llenarObjeto(nombre_form, objeto, estado) {
         if (objeto.tradeName == null) {
             activeForm.find(".tradeName").val(objeto.businessName);
         }
-    } else if (modulo_activo == "empresa" && submodulo_activo == "productos") {
+    }
+    
+    if (modulo_activo == "empresa" && submodulo_activo == "productos") {
+        activeForm.find(".salePrice").val(objeto.salePrice);
         calcular_con_precio_venta(nombre_form);
     }
 

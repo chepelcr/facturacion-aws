@@ -63,7 +63,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                                 </div>
-                                <select name="<?= $identificationTypeIdName ?? "identification[typeId]" ?>" class="receiver form-control inp identification_typeId">
+                                <select name="<?= $identificationTypeIdName ?? "identification[type]" ?>" class="receiver form-control inp identification_typeId">
                                     <option value="">Seleccionar</option>
                                     <?php foreach ($identificaciones as $identificationType) : ?>
                                         <option value="<?= $identificationType->typeId ?>" <?php if (isset($identification) && $identificationType->typeId == $identification->typeId) {

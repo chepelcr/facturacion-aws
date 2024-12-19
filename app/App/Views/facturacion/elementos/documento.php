@@ -37,7 +37,7 @@
                                 <!-- Tipo de venta -->
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="tipo_venta">Tipo de venta</label>
+                                        <label for="tipo_venta" class="ivois-label">Tipo de venta</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-handshake"></i></span>
@@ -71,7 +71,7 @@
                                         <!-- Selector de Moneda -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="currencyCode">Moneda</label>
+                                                <label for="currencyCode" class="ivois-label">Moneda</label>
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
@@ -104,7 +104,7 @@
                                         <!-- Valor de la moneda -->
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="exchangeRate">Tipo de cambio</label>
+                                                <label for="exchangeRate" class="ivois-label">Tipo de cambio</label>
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-hand-holding-usd"></i></span>
@@ -120,7 +120,7 @@
                                 <!-- Actividades económicas -->
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="actividad_economica">Actividad económica</label>
+                                        <label for="actividad_economica" class="ivois-label">Actividad económica</label>
                                         <select class="form-control form-control-sm activityCode required inp-fct" name="activityCode" <?= count($empresa->activities) == 1 ? 'disabled' : '' ?>>
                                             <option value="">Seleccionar</option>
                                             <?php foreach ($empresa->activities as $actividad_economica) : ?>
@@ -139,7 +139,7 @@
                                 <!-- Receptor -->
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="customerId">Receptor</label>
+                                        <label for="customerId" class="ivois-label">Receptor</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="far fa-user"></i></span>
@@ -159,7 +159,7 @@
                                 <!-- Medios de pago -->
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="medio_pago">Medio de pago</label>
+                                        <label for="medio_pago" class="ivois-label">Seleccionar medio de pago</label>
                                         <div class="row">
                                             <!-- Efectivo -->
                                             <div class="col-md-3 col-sm-6">
@@ -275,7 +275,7 @@
                                                         <!-- Cantidad -->
                                                         <div class="col-md-3 col-sm-6 mb-2">
                                                             <div class="input-group input-group-sm">
-                                                                <input value="0" class="form-control form-control-sm quantity-det inp-fct" min="1" type="number" max="99">
+                                                                <input value="0" class="form-control form-control-sm quantity-det inp-fct" min="1" type="number">
                                                             </div>
                                                         </div>
 
@@ -287,8 +287,8 @@
                                                                     <span class="input-group-text"><i class="fas fa-boxes"></i></span>
                                                                 </div>
 
-                                                                <select class="form-control form-control-sm measurementUnit_unitId" disabled>
-                                                                    <option value="">Seleccionar</option>
+                                                                <select class="form-control form-control-sm detailUnitId " disabled readonly>
+                                                                    <option >Seleccionar</option>
                                                                 </select>
                                                             </div>
                                                         </div>

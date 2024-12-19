@@ -15,7 +15,7 @@
 
         <div class="row">
             <div class="col-md-7">
-                <?= view('empresa/producto/elementos/info_general') ?>
+                <?= view('empresa/producto/elementos/info_general', $datos_generales) ?>
             </div>
             
             <!-- Imagen -->

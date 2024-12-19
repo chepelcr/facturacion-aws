@@ -29,7 +29,7 @@
                             <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
                         </div>
 
-                        <input class="form-control form-control-sm inp-fct quantity-det quantity-det-mod" name="details[0][quantity]" type="number" placeholder="Cantidad" min="1" max="99">
+                        <input class="form-control form-control-sm inp-fct quantity-det quantity-det-mod" name="details[0][quantity]" type="number" placeholder="Cantidad" min="1">
                     </div>
                 </div>
             </div>

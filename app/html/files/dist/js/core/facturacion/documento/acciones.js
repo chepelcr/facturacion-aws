@@ -52,7 +52,8 @@ function cancelar_documento() {
         //Eliminar el boton de la factura activa del #nav-facturacion (.col-btn-fct-" + id_factura_activa)
         $("#nav-facturacion").find(".col-btn-fct-" + id_factura_activa).remove();
 
-        //$(".col-btn-fct-" + id_factura_activa).hide();
+        //Eliminar el contenedor de la factura activa
+        $("#" + factura_activa).remove();
 
         //Cargar documentos
         cargar_documentos("emitidos");

@@ -29,7 +29,7 @@ function contar_lineas_descuento(linea) {
             });
     }
 
-    validar_descuentos_detalle(linea);
+    validarLineaDetalle(linea);
 
     return lineas;
 }

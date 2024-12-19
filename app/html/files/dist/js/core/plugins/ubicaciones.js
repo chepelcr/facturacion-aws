@@ -357,7 +357,7 @@ function validarUbicacion() {
     }
 
     //Colocar el mismo codigo en el campo .personalPhone_countryCode
-    activeElement.find(".personalPhone_countryCode").val(activeElement.find(".nationality").val());
+    activeElement.find(".personalPhone_countryCode").val("188");//activeElement.find(".nationality").val());
 
     activar_campo_clase("personalPhone_countryCode", true, elemento_activo);
 
