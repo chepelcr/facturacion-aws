@@ -23,6 +23,157 @@ class DocumentValidations {
     }
 
     /**
+     * Validar la estructura de un receptor
+     * 
+     * {
+     *	"identification":{
+     *		"type":1,
+     *		"number": "207710445"
+     *	},
+     *	"nationality":"188",
+     *	"customerType":1,
+     *	"email": "svega@interfaz.io",
+     *	"businessName":"Sirlene Vega",
+     *	"tradename": "Heladeria Donde Eli.",
+     *	"residence": {
+     *		"stateId": 2,
+     *		"countyId": 2,
+     *		"districtId": 1,
+     *		"neighborhoodId": 1,
+     *		"address": "Piedades Sur."
+     *	},
+     *	"personalPhone": {
+     *		"countryCode": "188",
+     *		"number": "24478245"
+     *	}
+     *}
+     * 
+     * @param array $receiver Receptor del documento
+     * @param string $documentTypeCode Tipo de documento
+     * @return array Receptor validado
+     */
+    private static function validateDocumentReceiver($receiver, $documentTypeCode) {
+        $valid = true;
+
+        //Validar si el receptor tiene un numero y tipo de identificacion
+        if (isset($receiver['identification']) && ($receiver['identification']['number'] == '' || $receiver['identification']['type'] == '')) {
+            $valid = false;
+        }
+
+        if ($valid) {
+            //Eliminar el formato del numero de identificacion
+            $identification = $receiver['identification']['number'];
+            $identification = desformatear_cedula($identification);
+
+            $receiver['identification']['number'] = $identification;
+        } else {
+            if ($documentTypeCode == '01' || $documentTypeCode == '08' || $documentTypeCode == '09') {
+                return array(
+                    'message' => 'No se ha ingresado el receptor del documento',
+                    'status' => '400',
+                    'error' => "Bad Request",
+                );
+            } else {
+                return null;
+            }
+        }
+
+
+        //Validar si el receptor tiene una nacionalidad
+        if (!isset($receiver['nationality']) || $receiver['nationality'] == '') {
+            return array(
+                'message' => 'No se ha ingresado la nacionalidad del receptor',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        }
+
+        //Validar si el receptor tiene un tipo de cliente
+        if (!isset($receiver['customerType']) || $receiver['customerType'] == '') {
+            return array(
+                'message' => 'No se ha ingresado el tipo de cliente del receptor',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        }
+
+        //Validar si el receptor tiene un correo electronico
+        if (!isset($receiver['email']) || $receiver['email'] == '') {
+            return array(
+                'message' => 'No se ha ingresado el correo electronico del receptor',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        } else {
+            //Validar el formato del correo electronico
+            if (!filter_var($receiver['email'], FILTER_VALIDATE_EMAIL)) {
+                return array(
+                    'message' => 'El correo electronico del receptor no tiene un formato valido',
+                    'status' => '400',
+                    'error' => "Bad Request",
+                );
+            }
+        }
+
+        //Validar si el receptor tiene una razon social
+        if (!isset($receiver['businessName']) || $receiver['businessName'] == '') {
+            return array(
+                'message' => 'No se ha ingresado la razon social del receptor',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        }
+
+        //Validar si el receptor tiene residencia
+        if (!isset($receiver['residence']) || $receiver['residence'] == '') {
+            return array(
+                'message' => 'No se ha ingresado la residencia del receptor',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        } else {
+            //Validar si la residencia tiene un estado, canton, distrito, barrio y direccion cuando la nacionalidad es 188
+            if ($receiver['nationality'] == "188" && (!isset($receiver['residence']['stateId']) || $receiver['residence']['stateId'] == '' || !isset($receiver['residence']['countyId']) || $receiver['residence']['countyId'] == '' || !isset($receiver['residence']['districtId']) || $receiver['residence']['districtId'] == '' || !isset($receiver['residence']['neighborhoodId']) || $receiver['residence']['neighborhoodId'] == '' || !isset($receiver['residence']['address']) || $receiver['residence']['address'] == '')) {
+                return array(
+                    'message' => 'No se han ingresado todos los campos de la residencia del receptor',
+                    'status' => '400',
+                    'error' => "Bad Request",
+                );
+            }
+
+            //Validar la direccion de la residencia
+            if (!isset($receiver['residence']['address']) || $receiver['residence']['address'] == '') {
+                return array(
+                    'message' => 'No se ha ingresado la direccion de la residencia del receptor',
+                    'status' => '400',
+                    'error' => "Bad Request",
+                );
+            }
+        }
+
+        //Validar si el receptor tiene un telefono personal y los campos del telefono estan vacios
+        if (!isset($receiver['personalPhone']) || $receiver['personalPhone'] == '') {
+            return array(
+                'message' => 'No se ha ingresado el telefono personal del receptor',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        } else {
+            //Validar si el telefono personal tiene un codigo de pais y numero
+            if (!isset($receiver['personalPhone']['countryCode']) || $receiver['personalPhone']['countryCode'] == '' || !isset($receiver['personalPhone']['number']) || $receiver['personalPhone']['number'] == '') {
+                return array(
+                    'message' => 'No se han ingresado todos los campos del telefono personal del receptor',
+                    'status' => '400',
+                    'error' => "Bad Request",
+                );
+            }
+        }
+
+        return $receiver;
+    }
+
+
+    /**
      * Validar la estructura de un documento
      * 
      * @param array $document Documento a validar
@@ -37,20 +188,14 @@ class DocumentValidations {
         $documentTypeCode = $document['documentTypeCode'];
 
         //Validar si el documento tiene un receptor
-        if ((!isset($document['receiver']) || empty($document['receiver'])) && ($documentTypeCode == '01' && $documentTypeCode == '08' && $documentTypeCode == '09')) {
-            return array(
-                'message' => 'No se ha ingresado el receptor del documento',
-                'status' => '400',
-                'error' => "Bad Request",
-            );
-        }
+        if (isset($document['receiver'])) {
+            $document['receiver'] = self::validateDocumentReceiver($document['receiver'], $documentTypeCode);
 
-        //Validar si el documento tiene un receptor, para eliminar el formato del numero de identificacion
-        if (isset($document['receiver']) && !empty($document['receiver'])) {
-            $identification = $document['receiver']['identification']['number'];
-            $identification = desformatear_cedula($identification);
-
-            $document['receiver']['identification']['number'] = $identification;
+            if ($document['receiver'] != null && isset($document['receiver']['error'])) {
+                return $document['receiver'];
+            } elseif ($document['receiver'] == null) {
+                unset($document['receiver']);
+            }
         }
 
         //Si el tipo de documento no es una nota de credito o debito, se debe agregar al menos un pago

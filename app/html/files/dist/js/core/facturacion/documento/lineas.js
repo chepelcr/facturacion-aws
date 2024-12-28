@@ -627,7 +627,7 @@ function validarLineaDetalle(linea, changedElement = null) {
             linea.find(".customsPart").addClass("border-danger");
         } else {
             //Validar que tenga al menos 12 caracteres
-            if (customsPart.length < 12) {
+            if (customsPart.length != 12) {
                 validLine = false;
 
                 linea.find(".customsPart").addClass("border-danger");

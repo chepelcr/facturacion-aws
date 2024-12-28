@@ -122,7 +122,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <input type="text" class="receiver form-control inp tradeName" name="<?= $tradeNameName ?? "tradeName" ?>" placeholder="Nombre de la empresa" value="<?= $tradeName ?? $businessName ?>">
+                        <input type="text" class="receiver form-control inp tradeName" name="<?= $tradeNameName ?? "tradeName" ?>" placeholder="Nombre de la empresa" value="<?= $tradeName!= null ? $tradeName : "" ?>" required max="100">
                     </div>
                 </div>
             </div>
