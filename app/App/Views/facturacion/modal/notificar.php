@@ -16,7 +16,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="correo">Correo electronico</label>
-                            <input type="email" class="form-control email" id="correo" name="email" placeholder="opcional">
+                            <input type="email" class="form-control email" name="email" placeholder="opcional">
                         </div>
                     </div>
                     <!-- /.col-md-12 -->

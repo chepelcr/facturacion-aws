@@ -94,4 +94,17 @@ class DocumentsApi extends IvoisApi {
             return $this->makeGetRequestUrl('/all?search=' . $filter);
         }
     }
+
+    /**
+     * Obtener la validación de un documento electrónico
+     * 
+     * @param string $documentId Identificador del documento
+     * @return object Validación del documento
+     */
+    public function getDocumentValidation($documentId) {
+        ///taxpayers/{taxpayerId}/documents/{documentKey}/invoice-validation
+        $url = "/$documentId/invoice-validation";
+
+        return $this->makeGetRequestUrl($url);
+    }
 }

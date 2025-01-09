@@ -58,7 +58,20 @@ function validar_email(email) {
     return re.test(email);
 }
 
-function abrirModalNotificar(documentkey = "") {
+function abrirModalNotificar(documentkey, atvStatus) {
+    console.log(atvStatus);
+
+    if (atvStatus == 1) {
+        //Desactivar el campo email
+        $("#modalNotificar").find(".email").prop("disabled", false);
+        $("#modalNotificar").find(".email").prop("readonly", false);
+        $("#modalNotificar").find(".email").val("");
+    } else {
+        //Activar el campo email
+        $("#modalNotificar").find(".email").prop("disabled", true);
+        $("#modalNotificar").find(".email").prop("readonly", true);
+    }
+
     $("#modalNotificar").modal("show");
 
     //Colocar el documentkey en el campo btn-enviar del modalNotificar
@@ -85,7 +98,7 @@ function enviar_hacienda(id_documento = null) {
 } //Fin de la funcion para enviar el documento al ministerio de hacienda
 
 /**Validar el estado de un documento enviado al ministerio de hacienda */
-function validar_documento(id = "") {
+function solicitar_validacion(id = "") {
     if (id != "") {
         Pace.track(function () {
             $.ajax({
@@ -93,16 +106,21 @@ function validar_documento(id = "") {
                 method: "get",
                 dataType: "json",
             }).done(function (response) {
-                var mensaje = "El documento ha sido " + response.validar_estado + " por el Ministerio de Hacienda";
+                console.log(response);
 
-                if (response.validar_estado == "rechazado") {
+                let mensaje = "";
+
+                if (response.validationStatus == 3) {
                     response.estado = "error";
-                }
-
-                if (response.validar_estado == "procesando") {
+                    mensaje = "El documento ha sido rechazado por el Ministerio de Hacienda";
+                } else if (response.validationStatus == 2) {
                     response.estado = "warning";
                     mensaje = "El documento esta siendo procesado por el Ministerio de Hacienda";
+                } else if (response.validationStatus == 1) {
+                    response.estado = "success";
+                    mensaje = "El documento ha sido aceptado por el Ministerio de Hacienda";
                 }
+
                 Swal.fire({
                     title: "Atencion",
                     text: mensaje,

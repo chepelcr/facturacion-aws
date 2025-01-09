@@ -5,13 +5,13 @@
             <!-- Icono -->
 
             <?php
-            if ($modulo->icono != 'walmart'):
+            if ($modulo->icono != 'walmart') {
             ?>
                 <i class="fa-solid <?= $modulo->icono ?>"></i>
             <?php
-            else:
+            } else {
                 echo icono('walmart.png', 'Walmart');
-            endif;
+            }
             ?>
 
             <!-- Titulo -->

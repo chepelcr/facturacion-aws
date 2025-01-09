@@ -7,6 +7,7 @@
 namespace App\Controllers;
 
 use App\Services\AutenticacionService;
+use App\Services\ModulosService;
 use App\Services\TaxpayersService;
 
 /**
@@ -76,36 +77,6 @@ class Configuracion extends BaseController {
             redirect(baseUrl('login'));
         }
     } //Fin de la función empresa
-
-    /**
-     * Obtener los modulos de la aplicacion
-     */
-    public function modulos(){
-        if (is_login()) {
-            if (validar_permiso("configuracion", "modulos", "consultar")) {
-                $autenticationService = new AutenticacionService();
-
-                //$modulos = $autenticationService->obtenerModulos();
-
-                if (isset($modulos->error)) {
-                    $data = array(
-                        'error' => $modulos->error,
-                        'status' => $modulos->status
-                    );
-
-                    return $this->error($data);
-                } else {
-                    return view('seguridad/configuracion/modulos', $modulos);
-                }
-            } else {
-                $error = $this->object_error(500, 'No tiene permisos para consultar modulos.');
-
-                return $this->error($error);
-            }
-        } else {
-            header(self::LOCATION . baseUrl('login'));
-        }
-    }
 
     /**
      * Entrar a la configuracion del modulo de facturacion

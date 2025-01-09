@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Services\ModulosService;
 use App\Services\RolesService;
 use App\Services\UsuariosService;
 use Core\Auditorias\AuditoriasService;
@@ -18,7 +19,7 @@ class Seguridad extends BaseController {
 
     protected $nombreModulo = 'seguridad';
 
-    protected $objetos = ['usuarios', 'roles'];
+    protected $objetos = ['usuarios', 'roles', 'modulos'];
 
     protected $validationFields = array(
         'usuarios' => 'identificacion',
@@ -28,6 +29,7 @@ class Seguridad extends BaseController {
     protected $validacion_login = array(
         'usuarios' => true,
         'roles' => true,
+        'modulos' => true
     );
 
     /**
@@ -129,6 +131,35 @@ class Seguridad extends BaseController {
             redirect(baseUrl('login'));
         }
     } //Fin de la funcion para mostrar el listado de auditorias
+
+    /**
+     * Obtener los modulos de la aplicacion
+     */
+    public function modulos() {
+        if (is_login()) {
+            if (validar_permiso("seguridad", "modulos", "consultar")) {
+                if (getSegment(3) == 'listado') {
+
+                    $modulosService = new ModulosService();
+                    $dataModulos = $modulosService->obtenerModulos();
+
+                    return $this->listado($dataModulos);
+                } else {
+                    $data = array(
+                        'script' => cargar('cargar_listado("seguridad", "modulos", "Seguridad", "Modulos", "' . baseUrl('seguridad/modulos/listado') . '");')
+                    );
+
+                    return $this->inicio($data);
+                }
+            } else {
+                $error = $this->object_error(500, 'No tiene permisos para consultar modulos.');
+
+                return $this->error($error);
+            }
+        } else {
+            header(self::LOCATION . baseUrl('login'));
+        }
+    }
 
     /**Obtener los errores del sistema */
     public function errores() {

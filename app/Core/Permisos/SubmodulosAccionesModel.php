@@ -109,4 +109,32 @@ class SubmodulosAccionesModel extends Model
         return (object) $acciones;
     } //Fin de la funcion
 
+    /**
+     * Obtener un modulo por su ID
+     * 
+     * @param int $id_modulo ID del modulo a consultar
+     * @return object Modulo consultado
+     */
+    public function getModulo($id_modulo)
+    {
+        $this->vista('modulos');
+
+        $this->select('id_modulo');
+        $this->select('nombre_modulo');
+        $this->select('icono');
+
+        $this->where('id_modulo', $id_modulo);
+        
+        $modulo = $this->fila();
+
+        //Obtener los submodulos
+        $permisosModel = new SubmodulosAccionesModel();
+
+        $submodulos = $permisosModel->submodulos($id_modulo);
+
+        $modulo->submodulos = $submodulos;
+
+        return $modulo;
+    } //Fin de la funcion
+
 }//Fin de la clase

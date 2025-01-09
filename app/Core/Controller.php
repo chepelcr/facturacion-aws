@@ -102,7 +102,7 @@ abstract class Controller {
     protected function object_error($codigo, $mensaje) {
         $error = array(
             'status' => $codigo,
-            'message' => $mensaje
+            'error' => $mensaje
         );
 
         return (object) $error;

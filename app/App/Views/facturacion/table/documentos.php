@@ -91,31 +91,63 @@
                                                 if ($documento->atvValidation->validationStatus == '1') {
                                                 ?>
                                                     <!-- Revalidar documento -->
-                                                    <div class="col-md-12 pb-1">
-                                                        <button onclick="validar_documento('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Revalidar documento" class="btn btn-warning btn-validar btn-block">
+                                                    <div class="col-md-6 pb-1">
+                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
                                                             <i class="fas fa-check-circle"></i>
                                                         </button>
                                                     </div>
 
                                                     <!-- Notificar -->
-                                                    <div class="col-md-4">
-                                                        <button onclick="abrirModalNotificar('<?= $documento->documentKey ?>')" type="button" data-toggle="tooltip" title="Reenviar correo" class="btn btn-info btn-correo btn-block">
+                                                    <div class="col-md-6 pb-1">
+                                                        <button onclick="abrirModalNotificar('<?= $documento->documentKey ?>', 1)" type="button" data-toggle="tooltip" title="Reenviar correo" class="btn btn-info btn-correo btn-block">
                                                             <i class="fas fa-envelope"></i>
                                                         </button>
                                                     </div>
 
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-6">
                                                         <button onclick="emitir_nota_credito('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" disabled title="Emitir nota de credito" class="btn btn-danger btn-nota-credito btn-block">
                                                             <i class="fas fa-funnel-dollar"></i>
                                                         </button>
                                                     </div>
 
-                                                    <div class="col-md-4">
-                                                        <button onclick="emitir_nota_debito(' . $documento->documentKey . ');" type="button" data-toggle="tooltip" disabled title="Emitir nota de debito" class="btn btn-warning btn-nota-debito btn-block">
+                                                    <div class="col-md-6">
+                                                        <button onclick="emitir_nota_debito('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" disabled title="Emitir nota de debito" class="btn btn-warning btn-nota-debito btn-block">
                                                             <i class="fas fa-coins"></i>
                                                         </button>
                                                     </div>
 
+                                                <?php
+                                                } elseif ($documento->atvValidation->validationStatus == '3') {
+                                                ?>
+                                                    <!-- Información de validación -->
+                                                    <div class="col-md-6 pb-1">
+                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Notificar -->
+                                                    <div class="col-md-6 pb-1">
+                                                        <button onclick="abrirModalNotificar('<?= $documento->documentKey ?>', 3)" type="button" data-toggle="tooltip" title="Reenviar correo" class="btn btn-info btn-correo btn-block">
+                                                            <i class="fas fa-envelope"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Regenerar -->
+                                                    <div class="col-md-12">
+                                                        <button onclick="regenerar_documento('<?= $documento->documentKey ?>');" type="button" disabled data-toggle="tooltip" title="Regenerar documento" class="btn btn-danger btn-regenerar btn-block">
+                                                            <i class="fas fa-rotate-right"></i>
+                                                        </button>
+                                                    </div>
+                                                <?php
+                                                } else {
+                                                ?>
+                                                    <!-- Información de validación -->
+                                                    <div class="col-md-12">
+                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </button>
+                                                    </div>
                                                 <?php
                                                 }
                                                 ?>

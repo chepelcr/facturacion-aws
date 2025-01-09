@@ -66,21 +66,6 @@ class Documentos extends BaseController {
         }
     } //Fin de la funcion emitidos
 
-    /**Validar el estado los documentos que se encuentran en proceso en el ministerio de hacienda */
-    public function validar_documentos() {
-        if (!is_login()) {
-            $data = array(
-                'error' => 'login',
-                'estado' => 'warning',
-                'status' => '505',
-            );
-
-            return $this->error($data);
-        } else {
-            return $this->documentosService->validarDocumentos();
-        }
-    } //Fin de la funcion validar_documentos
-
     /**Obtener los indicadores de compra y venta desde el banco central */
     public function indicadores() {
         $indicador = getSegment(3);
@@ -164,12 +149,17 @@ class Documentos extends BaseController {
     public function validar_documento() {
         if (is_login()) {
             if (getSegment(3)) {
-                $id_documento = getSegment(3);
 
-                return $this->documentosService->validarDocumento($id_documento);
+                $documentValidation = $this->documentosService->validarDocumento(getSegment(3));
+
+                if (isset($documentValidation->error)) {
+                    return $this->error($documentValidation);
+                } else {
+                    return json_encode($documentValidation);
+                }
             } else {
                 $data = array(
-                    'error' => 'El document solicitado no existe',
+                    'error' => 'No se ha enviado un documento para validar',
                     'estado' => 'warning',
                     'status' => '404',
                 );
@@ -186,23 +176,6 @@ class Documentos extends BaseController {
             return $this->error($data);
         }
     }
-
-    /**Enviar un document al ministerio de hacienda */
-    public function enviar_hacienda() {
-        if (!is_login()) {
-            $error = array(
-                'estado' => 'error',
-                'error' => 'login',
-                'status' => '505',
-            );
-
-            return $this->error($error);
-        } else {
-            $id_documento = getSegment(3);
-
-            return $this->documentosService->enviarHacienda($id_documento);
-        }
-    } //Fin de la function para enviar un document al ministerio de hacienda
 
 
     /**Esperar la respuesta del Ministerio de Hacienda 

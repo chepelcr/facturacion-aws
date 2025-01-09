@@ -30,11 +30,17 @@ class DocumentosService {
     private $documentsApi;
 
     /**
+     * Api de Ubicaciones
+     */
+    private $locationsApi;
+
+    /**
      * Constructor
      */
     public function __construct() {
         $this->dataServiceApi = new DataServiceApi();
         $this->documentsApi = new DocumentsApi(getTaxpayerId());
+        $this->locationsApi = new LocationsApi();
     }
 
     /**
@@ -46,60 +52,6 @@ class DocumentosService {
         return $customersApi->getCustomerById($idCliente);
     }
 
-    /**
-     * Validar los documentos que se encuentran en proceso
-     */
-    public function validarDocumentos() {
-        $hacienda = new Hacienda();
-
-        $documentoModel = model('document');
-        $documentos = $documentoModel->obtener('proceso');
-
-        $validados = 'inicio';
-        $status = 'success';
-        $htmlStatusCode = '200';
-
-        foreach ($documentos as $document) {
-            $hacienda->setClave($document->documentKey);
-            $validar = json_decode($hacienda->validar());
-
-            if (isset($validar['xml']['ind-estado'])) {
-                $fecha_gmt = date('Y-m-d\TH:i:s');
-
-                if ($validar['xml']['ind-estado'] != "procesando") {
-                    $json = json_decode(json_encode(simplexml_load_string(base64_decode($validar['xml']['respuesta-xml']))));
-
-                    $data_validado = array(
-                        'valido_atv' => $json->Mensaje,
-                        'detalle_atv' => $json->DetalleMensaje,
-                        'fecha_valido' => $fecha_gmt,
-                    );
-
-                    $documentosModel = model('document');
-                    $documentosModel->update($data_validado, $document->idDocumento);
-
-                    $hacienda->enviar_documento($document->idDocumento);
-
-                    if ($validados != 'procesando') {
-                        $validados = 'validado';
-                    }
-                } else {
-                    $validados = 'procesando';
-                    $status = 'warning';
-
-                    //Colocar el codigo de html
-                    $htmlStatusCode = '202';
-                }
-            } //Fin de validacion de estado
-        } //Fin del ciclo de documentos
-
-        return json_encode(array(
-            'validados' => $validados,
-            'status' => $status,
-            'htmlStatusCode' => $htmlStatusCode,
-        ));
-    } //Fin del metodo
-
     public function recibirRespuestaHacienda($documentKey, $respuesta) {
         //Decodificar la documentKey
         $documentKey = base64_decode($documentKey);
@@ -110,12 +62,13 @@ class DocumentosService {
     }
 
     /**
-     * Enviar un document a hacienda
-     * @param int $idDocumento Id del document
+     * Enviar una notificación de un documento a un correo electrónico o al correo del cliente
+     * 
+     * @param int $idDocumento Id del documento a enviar
      * @return array Retorna el resultado del envio
      */
     public function enviarDocumento($idDocumento, $email = null) {
-        $documentsApi = new DocumentsApi(getTaxpayerId());
+        $documentsApi = $this->documentsApi;
 
         if ($email) {
             $result = $documentsApi->sendDocumentNotification($idDocumento, $email);
@@ -153,7 +106,7 @@ class DocumentosService {
     }
 
     public function cargarDocumentos($documentTypeId, $issuerFilter, $reportType = null, $startDate = '', $endDate = '') {
-        $documentsApi = new DocumentsApi(getTaxpayerId());
+        $documentsApi = $this->documentsApi;
 
         $filter = '';
 
@@ -235,7 +188,7 @@ class DocumentosService {
             $documentos = $this->filterDocumentsByDate($documentos, $startDate, $endDate);
         }
 
-        $dataServiceApi = new DataServiceApi();
+        $dataServiceApi = $this->dataServiceApi;
         $documentTypes = $dataServiceApi->getDocumentTypesByCountry(getCountryCode());
 
         $dataView = array(
@@ -250,147 +203,13 @@ class DocumentosService {
         return view('facturacion/table/documentos', $dataView);
     }
 
-    public function validarDocumento($idDocumento) {
-        //$model = model('document');
+    /**
+     * Obtener la validacion de un documento electronico
+     */
+    public function validarDocumento($documentKey) {
+        $documentsApi = $this->documentsApi;
 
-        //$document = $model->obtener($idDocumento);
-
-        /*if ($document) {
-            $hacienda = new Hacienda($idDocumento);
-
-            $validar = json_decode($hacienda->validar());
-
-            if (isset($validar['xml']['ind-estado'])) {
-                //$fecha_gmt = date('Y-m-d\TH:i:s', strtotime('-6 hours'));
-
-                if ($validar['xml']['ind-estado'] != "procesando") {
-                    $json = json_decode(json_encode(simplexml_load_string(base64_decode($validar['xml']['respuesta-xml']))));
-
-                    $data_validado = array(
-                        'valido_atv' => $json->Mensaje,
-                        'detalle_atv' => $json->DetalleMensaje,
-                        'fecha_valido' => $fecha_gmt,
-                    );
-
-                    //$documentosModel = model('document');
-                    //$documentosModel->update($data_validado, $idDocumento);
-
-                    //$correo_enviado = $hacienda->enviar_documento($idDocumento);
-
-                    return json_encode(array(
-                        'documentKey' => $idDocumento,
-                        "validar_estado" => $validar['xml']['ind-estado'],
-                        "mensaje" => $json->Mensaje,
-                        "validar_mensaje" => $json->DetalleMensaje,
-                        'estado' => 'success',
-                        'correo_enviado' => $correo_enviado,
-                    ));
-                } else {
-                    return json_encode(array(
-                        'documentKey' => $idDocumento,
-                        "validar_estado" => $validar['xml']['ind-estado'],
-                        "mensaje" => "2",
-                        "validar_mensaje" => "Procesando document",
-                        'estado' => 'warning',
-                        'correo_enviado' => false,
-                    ));
-                }
-            } else {
-                return json_encode(array(
-                    'documentKey' => $idDocumento,
-                    "validar_estado" => 'procesando',
-                    "mensaje" => "2",
-                    "validar_mensaje" => "Procesando document",
-                    'estado' => 'warning',
-                    'correo_enviado' => false,
-                ));
-            }
-        }*/
-    }
-
-    public function enviarHacienda($idDocumento) {
-        $documentoModel = model('document');
-        $document = $documentoModel->obtener($idDocumento);
-
-        if ($document) {
-            $hacienda = new Hacienda($document->documentKey);
-
-            $enviar = json_decode($hacienda->enviar());
-
-            if ($enviar->status >= 200 && $enviar->status < 300) {
-                //Obtener la fecha en gmt-6
-                $fecha_gmt = date('Y-m-d\TH:i:s', strtotime('-6 hours'));
-
-                $data_envio = array(
-                    'envio_atv' => 1,
-                    'fecha_envio' => $fecha_gmt,
-                );
-
-                $documentosModel = model('document');
-                $documentosModel->update($data_envio, $document->id_documento);
-
-                sleep(4);
-
-                $validar = json_decode($hacienda->validar(), true);
-
-                if (isset($validar['xml']['ind-estado'])) {
-                    if ($validar['xml']['ind-estado'] != "procesando") {
-                        $json = json_decode(json_encode(simplexml_load_string(base64_decode($validar['xml']['respuesta-xml']))));
-
-                        $data_validado = array(
-                            'valido_atv' => $json->Mensaje,
-                            'fecha_valido' => $fecha_gmt,
-                            'detalle_atv' => $json->DetalleMensaje,
-                        );
-
-                        $documentosModel = model('document');
-                        $documentosModel->update($data_validado, $document->id_documento);
-
-                        $correo_enviado = $hacienda->enviar_documento($document->id_documento);
-
-                        return json_encode(array(
-                            'documentKey' => $document->id_documento,
-                            "enviar" => $enviar->status,
-                            "validar_estado" => $validar['xml']['ind-estado'],
-                            "mensaje" => $json->Mensaje,
-                            "validar_mensaje" => $json->DetalleMensaje,
-                            "correo_enviado" => $correo_enviado,
-                            'estado' => 'success',
-                        ));
-                    } else {
-                        return json_encode(array(
-                            'documentKey' => $document->id_documento,
-                            "enviar" => $enviar->status,
-                            "validar_estado" => $validar['xml']['ind-estado'],
-                            "mensaje" => "Procesando",
-                            "validar_mensaje" => "El document se encuentra en proceso de validación",
-                            "correo_enviado" => false,
-                            'estado' => 'warning',
-                        ));
-                    }
-                } else {
-                    return json_encode(array(
-                        'documentKey' => $document->id_documento,
-                        "enviar" => $enviar->status,
-                        "validar_estado" => 'procesando',
-                        "mensaje" => "Procesando",
-                        "validar_mensaje" => 'El document se encuentra en proceso de validación',
-                        "correo_enviado" => false,
-                        'estado' => 'error',
-                    ));
-                }
-            } else {
-                return json_encode(array(
-                    'documentKey' => $document->id_documento,
-                    "enviar" => $enviar->status,
-                    "validar_estado" => "",
-                    "mensaje" => "Error",
-                    "error" => 'Se ha generado un error al enviar la factura al Ministerio de Hacienda',
-                    "correo_enviado" => false,
-                    'estado' => 'error',
-                ));
-            }
-        }
+        return $documentsApi->getDocumentValidation($documentKey);
     }
 
     /**
@@ -442,8 +261,8 @@ class DocumentosService {
      * @return array Informacion de los clientes
      */
     public function getInfoClientes($numero_documento, $documentTypeCode) {
-        $locationsApi = new LocationsApi();
-        $dataServiceApi = new DataServiceApi();
+        $locationsApi = $this->locationsApi;
+        $dataServiceApi = $this->dataServiceApi;
 
         //Si el documento es de tipo 01 o 08 solo se obtienen los paises con serviceStatus = 1, si es 09 se obtienen los paises con serviceStatus = 2 o si es otro tipo de documento se obtienen todos los paises
         if ($documentTypeCode == '01' || $documentTypeCode == '08') {
@@ -537,8 +356,8 @@ class DocumentosService {
     public function crearDocumento($tipo_documento, $numero_documento) {
         $nombreVista = 'facturacion/elementos/documento';
 
-        $dataServiceApi = new DataServiceApi();
-        $locationsApi = new LocationsApi();
+        $dataServiceApi = $this->dataServiceApi;
+        $locationsApi = $this->locationsApi;
 
         $countries = $locationsApi->get_countries();
 
@@ -650,7 +469,7 @@ class DocumentosService {
             return (object) $document;
         }
 
-        $documentsApi = new DocumentsApi(getTaxpayerId());
+        $documentsApi = $this->documentsApi;
 
         return $documentsApi->sendDocument($document);
     }
@@ -660,8 +479,8 @@ class DocumentosService {
      * 
      * @return string Vista de los documentos de walmart
      */
-    public function getWalmart() {
-        return view('facturacion/modal/walmart', $this->getInfoWalmart());
+    public function getWalmart($documentTypeCode = "01") {
+        return view('facturacion/modal/walmart', $this->getInfoWalmart($documentTypeCode));
     }
 
     /**
@@ -691,7 +510,7 @@ class DocumentosService {
     }
 
     /**Obtener la informacion para los documentos de walmart */
-    private function getInfoWalmart() {
+    private function getInfoWalmart($documentTypeCode) {
 
         $tiendasModel = model('tiendas');
         $numerosProveedorModel = model('departamentos');
@@ -700,19 +519,17 @@ class DocumentosService {
             'tiendas' => $tiendasModel->obtener('activos'),
         );
 
-        return array(
-            'numerosProveedor' => $numerosProveedorModel->getAll(),
-            'dataTiendas' => $dataTiendas
-        );
-
-        /*if ($documentTypeCode == '01') {
-
-            
-        } else {
+        if($documentTypeCode == '01') {
+            return array(
+                'numerosProveedor' => $numerosProveedorModel->getAll(),
+                'dataTiendas' => $dataTiendas,
+                'documentTypeCode' => $documentTypeCode,
+            );
+        } elseif($documentTypeCode == '03') {
             return array(
                 'documentTypeCode' => $documentTypeCode,
             );
-        }*/
+        }
     }
 
     public function getReporteZip($documentos) {
