@@ -19,6 +19,46 @@ $(document).ready(function () {
         calcular_valor_producto(form_activo);
     }); //Fin de cambiar el netValue
 
+    //Cuando cambia el netValue
+    $(document).on("change keyup", ".baseAmount", function () {
+        //Validar si el netValue es un numero
+        if (isNaN($(this).val()) || $(this).val() == "") {
+            $(this).val(0);
+        }
+
+        //Si el baseAmount tiene un 0 a la izquierda, quitarlo
+        if ($(this).val() != 0) {
+            let baseAmount = $(this).val();
+
+            if (baseAmount.charAt(0) == "0") {
+                baseAmount = baseAmount.substring(1);
+                $(this).val(baseAmount);
+            }
+        }
+
+        calcular_valor_producto(form_activo);
+    }); //Fin de cambiar el baseAmount
+
+    //Cuando cambia el netValue
+    $(document).on("change keyup", ".base_imponible", function () {
+        //Validar si el netValue es un numero
+        if (isNaN($(this).val()) || $(this).val() == "") {
+            $(this).val(0);
+        }
+
+        //Si el baseAmount tiene un 0 a la izquierda, quitarlo
+        if ($(this).val() != 0) {
+            let baseAmount = $(this).val();
+
+            if (baseAmount.charAt(0) == "0") {
+                baseAmount = baseAmount.substring(1);
+                $(this).val(baseAmount);
+            }
+        }
+
+        calcular_valor_producto(form_activo);
+    }); //Fin de cambiar el netValue
+
     //Cuando cambia el precio de venta
     $(document).on("change keyup", ".totalValue", function () {
         //Validar si el salePrice es un numero
@@ -135,8 +175,6 @@ function calcular_valor_producto(elemento = "", isBiller = false) {
 }
 
 function calcular_con_precio_venta(elemento, isBiller = false) {
-    //console.log(elemento);
-
     const form = $("#" + elemento);
 
     let taxValue = 0;
@@ -152,7 +190,20 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
 
     console.log("Precio de venta: " + salePrice);
 
-    let ivaTaxPercentage = contar_porcentaje_impuesto(elemento, "iva");
+    const ivaTax = contar_porcentaje_impuesto(elemento, "iva");
+
+    let ivaTaxPercentage = ivaTax["taxPercentage"];
+    const ivatTaxType = ivaTax["taxType"];
+
+    //Usar el baseAmount
+    let baseAmount = form.find(".base_imponible").val();
+
+    baseAmount = new Decimal(baseAmount);
+
+    if (ivatTaxType != null && !ivatTaxType == "07") {
+        form.find(".base_imponible").val(0);
+    }
+
     let otherTaxPercentage = contar_porcentaje_impuesto(elemento, "other");
 
     salePrice = new Decimal(salePrice);
@@ -160,9 +211,22 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
     if (ivaTaxPercentage > 0) {
         ivaTaxPercentage = new Decimal(ivaTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
 
-        console.log("Porcentaje de IVA: " + ivaTaxPercentage);
+        if (ivatTaxType != null && ivatTaxType != "07") {
+            taxValue += salePrice.minus(salePrice.dividedBy(ivaTaxPercentage)).toDecimalPlaces(5).toNumber();
+        } else {
+            taxValue += baseAmount.minus(baseAmount.dividedBy(ivaTaxPercentage)).toDecimalPlaces(5).toNumber();
+        }
 
-        taxValue += salePrice.minus(salePrice.dividedBy(ivaTaxPercentage)).toDecimalPlaces(5).toNumber();
+        //Colocar el valor de impuesto total en detail_tax_total
+        form.find(".detail_tax_total").val(taxValue);
+
+        //col-iva
+        form.find(".col-iva").show();
+    } else {
+        form.find(".detail_tax_total").val(0);
+
+        //col-iva
+        form.find(".col-iva").hide();
     }
 
     let subtotal = new Decimal(salePrice).minus(taxValue).toDecimalPlaces(5).toNumber();
@@ -170,15 +234,32 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
     if (otherTaxPercentage > 0) {
         subtotal = new Decimal(subtotal);
 
+        form.find(".col-other-taxes").show();
+
         otherTaxPercentage = new Decimal(otherTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
 
         console.log("Porcentaje de impuesto total: " + otherTaxPercentage);
 
-        let otherTaxValue = subtotal.minus(subtotal.dividedBy(otherTaxPercentage)).toDecimalPlaces(5).toNumber();
+        let otherTaxValue;
+
+        if (ivatTaxType != null && ivatTaxType == "07") {
+            otherTaxValue = baseAmount.minus(baseAmount.dividedBy(otherTaxPercentage)).toDecimalPlaces(5).toNumber();
+        } else {
+            otherTaxValue = subtotal.minus(subtotal.dividedBy(otherTaxPercentage)).toDecimalPlaces(5).toNumber();
+        }
+
+        //other_taxes
+        if (isBiller) {
+            form.find(".other_taxes").val(formato_moneda(otherTaxValue, 2, monedaDocumento));
+        } else {
+            form.find(".other_taxes").val(formato_moneda(otherTaxValue, 5));
+        }
 
         taxValue += otherTaxValue;
 
         subtotal = subtotal.minus(otherTaxValue).toDecimalPlaces(5).toNumber();
+    } else {
+        form.find(".col-other-taxes").hide();
     }
 
     let discountPercentage = contarPorcentajeDescuentos(elemento);
@@ -222,9 +303,6 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
         }
 
         form.find(".netPrice").val(netValue);
-
-        //Colocar el valor de impuesto total en detail_tax_total
-        form.find(".detail_tax_total").val(taxValue);
 
         //Colocar el valor de descuento en detail_discount_total
         form.find(".detail_discount_total").val(discountAmount);

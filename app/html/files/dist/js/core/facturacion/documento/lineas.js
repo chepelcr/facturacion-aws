@@ -187,6 +187,7 @@ function agregar_linea_activa(producto, cantidad, salePrice) {
     linea.find(".saleCode").val(codigo_venta);
     linea.find(".quantity-det").val(cantidad);
     linea.find(".detail_total_value").val(salePrice);
+    linea.find(".detail_baseAmount").val(producto.baseAmount);
 
     if (documentTypeCode == "09") {
         //Si el objeto producto tiene la propiedad customsPart

@@ -126,11 +126,23 @@ function activar_porcentajes_producto(select) {
         //Recorrer los option de .taxRates y escondelos
         const taxRates = taxLine.find(".taxRates option");
 
+        let taxPercentage = null;
+
         $.each(taxRates, function (i, option) {
             if ($(option).val() != "") {
                 $(option).prop("hidden", false);
+
+                if (option.selected == true) {
+                    taxPercentage = $(option).data("percentage");
+                }
             }
         });
+
+        if (taxPercentage != null) {
+            taxLine.find(".taxPercentage").val(taxPercentage);
+        } else {
+            taxLine.find(".taxPercentage").val(0);
+        }
     } else {
         //taxLine.find(".taxRates").attr("disabled", true);
         taxLine.find(".taxRates").val("");
@@ -146,11 +158,11 @@ function activar_porcentajes_producto(select) {
                 $(option).prop("hidden", true);
             }
         });
+
+        taxLine.find(".taxPercentage").val("");
     }
 
     validateTaxLines(form_activo);
-
-    taxLine.find(".taxPercentage").val("");
     calcular_valor_producto(form_activo);
 }
 
@@ -277,14 +289,14 @@ function agregar_impuestos_producto(impuestos) {
     }
 
     if (taxIva != null) {
-        if(!hasTaxes) {
+        if (!hasTaxes) {
             taxPercentage += colocar_impuesto(taxLine, taxIva);
         } else {
             taxLine = agregar_impuesto_producto(true);
             taxPercentage += colocar_impuesto(taxLine, taxIva);
         }
     }
-    
+
     validateTaxLines(form_activo);
 
     return taxPercentage;
@@ -388,6 +400,9 @@ function calcular_impuestos_producto(subtotal, isBiller = false) {
     let impuestoTotal = 0;
     let totalAmountLine = subtotal;
 
+    let otherTaxes = 0;
+    let iva = 0;
+
     const form = $("#" + form_activo);
 
     let ivaTax = null;
@@ -398,31 +413,100 @@ function calcular_impuestos_producto(subtotal, isBiller = false) {
     //Obtener todas las lineas de impuestos
     const taxLines = taxesTable.find(".taxLine");
 
+    let baseAmount = form.find(".base_imponible").val();
+
+    if(isNaN(baseAmount)) {
+        baseAmount = 0;
+        
+        form.find(".base_imponible").val(0);
+    } else {
+        //Validar si la base imponible tiene un 0 por delante
+        if(baseAmount.toString().charAt(0) == "0") {
+            baseAmount = baseAmount.toString().substring(1);
+        }
+
+        baseAmount = parseFloat(baseAmount);
+    }
+
+    //Validar si alguna de las lineas de impuesto tiene el codigo 07
+    let hasIvaCE =
+        taxLines.find(".taxTypes option:selected").filter(function () {
+            return $(this).data("code") == "07";
+        }).length > 0;
+
+    if(!hasIvaCE){
+        baseAmount = 0;
+        form.find(".base_imponible").val(0);
+    }
+
     //Recorrer todas las lineas de impuestos
     taxLines.each(function (index, taxLine) {
         const taxTypeCode = $(taxLine).find(".taxTypes option:selected").data("code");
 
         if (taxTypeCode != "01" && taxTypeCode != "07" && taxTypeCode != "08") {
-            impuestoTotal += calcular_impuesto_producto(taxLine, subtotal, isBiller);
-            totalAmountLine += impuestoTotal;
+            if(hasIvaCE) {
+                otherTaxes += calcular_impuesto_producto(taxLine, baseAmount, isBiller);
+            } else {
+                otherTaxes += calcular_impuesto_producto(taxLine, subtotal, isBiller);
+            }
         } else {
             ivaTax = taxLine;
         }
     });
 
-    if (ivaTax != null) {
-        impuestoTotal += calcular_impuesto_producto(ivaTax, totalAmountLine, isBiller);
+    if (otherTaxes > 0) {
+        //Mostrar la columna de other taxes
+        form.find(".col-other-taxes").show();
+
+        //Colocar el valor en otrosImpuestosVL
+        form.find(".other_taxes").val(formato_moneda(otherTaxes, 5));
+
+        totalAmountLine += otherTaxes;
+    } else {
+        form.find(".col-other-taxes").hide();
     }
 
+    if (ivaTax != null) {
+        //Si el tipo es 07, mostrar la columna de base imponible (col-base-imponible)
+        if (hasIvaCE) {
+            //Obtener el valor de la base imponible en el campo .base_imponible
+            iva = calcular_impuesto_producto(ivaTax, baseAmount, isBiller);
+        } else {
+            iva = calcular_impuesto_producto(ivaTax, totalAmountLine, isBiller);
+        }
 
-    if (isBiller) {
-        //Colocar el valor en el campo detail_discount_total
-        form.find(".detail_tax_total").val(formato_moneda(impuestoTotal, 2));
+        if (isBiller) {
+            //Colocar el valor en el campo detail_discount_total
+            form.find(".detail_tax_total").val(formato_moneda(iva, 5));
+        } else {
+            form.find(".taxValue").val(formato_moneda(iva, 5));
+        }
+
+        //col-iva
+        form.find(".col-iva").show();
     } else {
+        //Colocar 0 en la base imponible
+        form.find(".baseAmount").val(0);
+
+        if (isBiller) {
+            form.find(".detail_tax_total").val(0);
+        } else {
+            form.find(".taxValue").val(0);
+        }
+
+        //col-iva
+        form.find(".col-iva").hide();
+    }
+
+    impuestoTotal = new Decimal(iva).plus(otherTaxes).toDecimalPlaces(5).toNumber();
+
+    if(isNaN(impuestoTotal)) {
+        impuestoTotal = 0;
+    }
+
+    if (!isBiller) {
         //Colocar el impuesto total en el campo .ivNetoVL
         form.find(".ivNetoVL").val(formato_moneda(impuestoTotal, 5));
-
-        form.find(".taxValue").val(formato_moneda(impuestoTotal, 5));
     }
 
     return impuestoTotal;
@@ -474,6 +558,8 @@ function contar_porcentaje_impuesto(form_activo, type = "all") {
     let ivaTaxPercentage = 0;
 
     let otherTaxesPercentage = 0;
+    let ivaTaxType;
+
     //Obtener la tabla de impuestos
     const taxesTable = form.find(".taxesTable");
 
@@ -495,13 +581,17 @@ function contar_porcentaje_impuesto(form_activo, type = "all") {
 
         if (taxType == "01" || taxType == "07" || taxType == "08") {
             ivaTaxPercentage += parseFloat(taxPercentage);
+            ivaTaxType = taxType;
         } else {
             otherTaxesPercentage += parseFloat(taxPercentage);
         }
     });
 
     if (type == "iva") {
-        return ivaTaxPercentage;
+        return {
+            taxPercentage: ivaTaxPercentage,
+            taxType: ivaTaxType,
+        };
     } else if (type == "other") {
         return otherTaxesPercentage;
     } else {
@@ -520,6 +610,7 @@ function validateTaxLines(form_activo) {
     const taxLines = taxesTable.find(".taxLine");
 
     let hasIva = false;
+    let hasIvaCE = false;
 
     //Recorrer todas las lineas de impuestos
     taxLines.each(function (index, taxLine) {
@@ -559,7 +650,7 @@ function validateTaxLines(form_activo) {
             const taxCode = $(taxLine).find(".taxTypes option:selected").data("code");
 
             //Si el taxCode es '01' o '07', validar que el taxRate no este vacio
-            if (taxCode == "01" || taxCode == "07" || taxCode == "08") {
+            if (taxCode == "01" || taxCode == "07") {
                 //Desabilitar el campo de porcentaje
                 $(taxLine).find(".taxPercentage").attr("disabled", true);
                 $(taxLine).find(".taxPercentage").attr("readonly", true);
@@ -598,6 +689,12 @@ function validateTaxLines(form_activo) {
                     }
 
                     $(taxLine).find(".taxPercentage").removeClass("border-danger");
+
+                    if (taxCode == "07") {
+                        form.find(".col-base-imponible").show();
+
+                        hasIvaCE = true;
+                    }
                 }
             } else {
                 $(taxLine).find(".taxRates").removeClass("border-danger");
@@ -621,6 +718,20 @@ function validateTaxLines(form_activo) {
             }
         }
     });
+
+    if(!hasIvaCE) {
+        form.find(".col-base-imponible").hide();
+    } else {
+        const baseAmount = form.find(".base_imponible").val();
+
+        if(baseAmount == "" || baseAmount == 0 || isNaN(baseAmount)) {
+            form.find(".base_imponible").addClass("border-danger");
+
+            validLines = false;
+        } else {
+            form.find(".base_imponible").removeClass("border-danger");
+        }
+    }
 
     return validLines;
 }

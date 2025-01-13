@@ -340,8 +340,21 @@ function calcular_impuestos(linea_detalle, subtotal, moneda) {
 
     //Obtener todas las lineas de impuestos
     const lineas_impuestos = taxesTable.find(".taxLine");
+    const baseAmount = linea_detalle.find(".base_imponible").val();
 
     let ivaTax = 0;
+
+    //Validar si alguna de las lineas de impuesto tiene el codigo 07
+    let hasIvaCE =
+        lineas_impuestos.find(".taxTypes option:selected").filter(function () {
+            return $(this).data("code") == "07";
+        }).length > 0;
+
+    if (!hasIvaCE) {
+        linea_detalle.find(".base_imponible").val(0);
+    }
+
+    let ivaLine = null;
 
     //Recorrer todas las lineas de impuestos
     lineas_impuestos.each(function (index, taxLine) {
@@ -355,26 +368,37 @@ function calcular_impuestos(linea_detalle, subtotal, moneda) {
         //Si el taxCode no es '01' o '07', sumar el impuesto a la variable subtotal
 
         if (taxCode != "01" && taxCode != "07" && taxCode != "08") {
-            taxValue = calcular_impuesto(taxLine, subtotal);
+            if (hasIvaCE) {
+                taxValue = calcular_impuesto(taxLine, baseAmount);
+            } else {
+                taxValue = calcular_impuesto(taxLine, subtotal);
+            }
             totalAmountLine += taxValue;
             otherTaxes += taxValue;
         } else {
-            //Validar si es tipo de impuesto '01' o '07'
-            if (taxCode == "01" || taxCode == "07") {
-                //Obtener el porcentaje del tarRate
-                const taxPercentage = $(taxLine).find(".taxRates option:selected").data("percentage");
+            ivaLine = taxLine;
+        }
+    });
 
-                //Colocar el porcentaje en el campo .taxPercentage
-                $(taxLine).find(".taxPercentage").val(taxPercentage);
-            }
+    if (ivaLine != null) {
+        const taxCode = $(ivaLine).find(".taxTypes option:selected").data("code");
 
-            taxValue = calcular_impuesto(taxLine, totalAmountLine);
-            ivaTax = taxValue;
+        //Validar si es tipo de impuesto '01' o '07'
+        if (taxCode == "01" || taxCode == "07") {
+            //Obtener el porcentaje del tarRate
+            const taxPercentage = $(ivaLine).find(".taxRates option:selected").data("percentage");
+
+            //Colocar el porcentaje en el campo .taxPercentage
+            $(ivaLine).find(".taxPercentage").val(taxPercentage);
         }
 
-        //Sumar el impuesto a la variable impuestoTotal
-        //impuestoTotal += taxValue;
-    });
+        //Si el tipo es de IVA Calculo especial, se usa la base imponible del detalle para el calculo del impuesto.
+        if (taxCode == "07") {
+            ivaTax = calcular_impuesto(ivaLine, baseAmount);
+        } else {
+            ivaTax = calcular_impuesto(ivaLine, totalAmountLine);
+        }
+    }
 
     let totalTaxes = ivaTax + otherTaxes;
 
@@ -393,33 +417,9 @@ function calcular_impuestos(linea_detalle, subtotal, moneda) {
 
         //Mostrar la columna de otros impuestos .col-otros-impuestos y de base imponible .col-base-imponible
         linea_detalle.find(".col-otros-impuestos").attr("hidden", false);
-
-        if (ivaTax > 0) {
-            //Colocar el valor de totalAmountLine en el campo .baseImponible
-            linea_detalle.find(".baseImponible").val(totalAmountLine);
-
-            totalAmountLine = formato_moneda(totalAmountLine, 2, moneda);
-            linea_detalle.find(".baseImponibleVL").val(totalAmountLine);
-            //linea_detalle.find(".col-base-imponible").attr("hidden", false);
-        } else {
-            //linea_detalle.find(".col-base-imponible").attr("hidden", true);
-
-            linea_detalle.find(".baseImponible").val("");
-
-            linea_detalle.find(".baseImponibleVL").val("");
-        }
     } else {
         //Ocultar la columna de otros impuestos .col-otros-impuestos y de base imponible .col-base-imponible
         linea_detalle.find(".col-otros-impuestos").attr("hidden", true);
-
-        //linea_detalle.find(".col-base-imponible").attr("hidden", true);
-
-        //Vaciar los campos .baseImponible y .otrosImpuestos
-        linea_detalle.find(".baseImponible").val("");
-        linea_detalle.find(".otrosImpuestos").val("");
-
-        linea_detalle.find(".baseImponibleVL").val("");
-        linea_detalle.find(".otrosImpuestosVL").val("");
     }
 
     if (ivaTax > 0) {
@@ -623,6 +623,29 @@ function validar_impuestos_detalle(linea_activa, forAdd = false) {
 
     let lineNumber = 0;
 
+    //Validar si alguna de las lineas de impuesto tiene el codigo 07
+    let hasIvaCE =
+        taxLines.find(".taxTypes option:selected").filter(function () {
+            return $(this).data("code") == "07";
+        }).length > 0;
+
+    if(hasIvaCE) {
+        linea_activa.find(".col-base-imponible").show();
+
+        const baseAmount = linea_activa.find(".base_imponible").val();
+
+        if(baseAmount == "" || baseAmount == 0 || isNaN(baseAmount)) {
+            validLines = false;
+
+            linea_activa.find(".base_imponible").addClass("border-danger");
+        } else {
+            linea_activa.find(".base_imponible").removeClass("border-danger");
+        }
+    } else {
+        linea_activa.find(".base_imponible").val(0);
+        linea_activa.find(".col-base-imponible").hide()
+    }
+
     //Recorrer todas las lineas de impuestos
     taxLines.each(function (index, taxLine) {
         colocar_nombre_impuesto($(taxLine), lineNumber);
@@ -640,7 +663,7 @@ function validar_impuestos_detalle(linea_activa, forAdd = false) {
                 //Eliminar el borde rojo de los campos
                 $(taxLine).find(".taxTypes").removeClass("border-danger");
 
-                if(forAdd){
+                if (forAdd) {
                     validLines = false;
                 }
             } else {
@@ -732,7 +755,7 @@ function validar_impuestos_detalle(linea_activa, forAdd = false) {
 
                     //Validar si el impuesto seleccionado es igual al sugerido
                     const taxPercentage = $(taxLine).find(".taxPercentage").val();
-                    
+
                     if (taxPercentage != suggestedTax) {
                         $(taxLine).find(".taxRates").addClass("border-warning");
                     } else {
@@ -839,6 +862,12 @@ function validar_impuestos_iva(taxesTable, taxLine) {
         return true;
     }
 
+    if (taxCode == "07") {
+        linea_activa.find(".col-base-imponible").show();
+    } else {
+        linea_activa.find(".col-base-imponible").hide();
+    }
+
     return false;
 }
 
@@ -923,13 +952,12 @@ function validar_exoneracion(taxLine) {
         taxLine.find(".excemption_percentage").val(taxPercentage);
     }
 
-    if(validExcemption){
+    if (validExcemption) {
         //Activar el boton de finalizar detalle
         taxLine.parents(".detail").find(".btn-fin-det").attr("disabled", false);
     } else {
         //Desactivar el boton de finalizar detalle
-        taxLine.parents(".detail").find(".btn-fin-det").attr("disabled", true
-        );
+        taxLine.parents(".detail").find(".btn-fin-det").attr("disabled", true);
     }
 
     return validExcemption;
@@ -959,6 +987,7 @@ $(document).ready(function () {
     $(document).on("change", ".detailTaxType", function () {
         //Eliminar el porcentaje de impuesto
         $(this).parents(".taxLine").find(".taxPercentage").val("");
+
         const taxLine = $(this).parents(".taxLine");
         const taxesTable = $(this).parents(".taxesTable");
 
@@ -967,6 +996,9 @@ $(document).ready(function () {
         if (!selectedIva) {
             validar_impuestos_detalle($(this).parents(".detail"));
         }
+
+        calcular($(this).parents(".detail"));
+        calcular_valor_producto(elemento_activo, true);
     });
 
     //Cuando el usuario da click en btn-elm-excemption

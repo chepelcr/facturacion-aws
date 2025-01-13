@@ -156,7 +156,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
             });
         } else if (key == "residence") {
             let see = false;
-            
+
             if (estado == "ver") {
                 see = true;
             }
@@ -211,7 +211,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
             activeForm.find(".tradeName").val(objeto.businessName);
         }
     }
-    
+
     if (modulo_activo == "empresa" && submodulo_activo == "productos") {
         activeForm.find(".salePrice").val(objeto.salePrice);
         calcular_con_precio_venta(nombre_form);
@@ -649,9 +649,26 @@ function validarDataForm(formulario) {
         }
     });
 
-    if (modulo_activo == empresa && submodulo_activo == productos) {
+    if (modulo_activo == "empresa" && submodulo_activo == "productos") {
         dataValida = validateDiscountLines(formulario);
         dataValida = validateTaxLines(formulario);
+
+        const customsPart = $("#" + formulario).find(".customsPart");
+
+        //Si la partida arancelaria no está vacia y no tiene 12 digitos
+        if (customsPart.val() != "" && customsPart.val().length != 12) {
+            //Colocar un borde rojo al input
+            customsPart.addClass("border-danger");
+            dataValida = false;
+        } else {
+            //Si está vacia, eliminar el borde rojo
+            if (customsPart.val() == "") {
+                customsPart.removeClass("border-danger");
+            } else {
+                customsPart.removeClass("border-danger");
+                dataValida = false;
+            }
+        }
     }
 
     return dataValida;

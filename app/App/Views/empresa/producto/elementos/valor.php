@@ -60,10 +60,42 @@
                 </div>
             </div>
 
-            <!-- Impuesto -->
-            <div class="col-md-3">
+            <!-- Base imponible -->
+            <div class="col-md-3 col-base-imponible">
                 <div class="form-group">
-                    <label for="impuesto" class="ivois-label">Impuestos</label>
+                    <label for="baseImponible" class="ivois-label">Base imponible</label>
+                    <div class="input-group input-group-sm" data-toggle="tooltip" title="Base imponible">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                        </div>
+                        <!--<input class="form-control baseImponibleVL" disabled readonly>-->
+
+                        <?php if (!isset($isDetail)) : ?>
+                            <input value="0" class="base_imponible form-control baseAmount" type="text" name="baseAmount">
+                        <?php else : ?>
+                            <input value="0" class="detail_baseAmount form-control base_imponible calcular" type="text" name="details[0][baseAmount]">
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Otros impuestos -->
+            <div class="col-md-3 col-other-taxes">
+                <div class="form-group">
+                    <label for="otrosImpuestos" class="ivois-label">Otros impuestos</label>
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                        </div>
+                        <input type="text" class="form-control other_taxes" placeholder="Otros impuestos" disabled readonly data-toggle="tooltip" title="Otros impuestos">
+                    </div>
+                </div>
+            </div>
+
+            <!-- IVA -->
+            <div class="col-md-3 col-iva">
+                <div class="form-group">
+                    <label for="impuesto" class="ivois-label">IVA</label>
                     <div class="input-group input-group-sm">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
@@ -79,7 +111,7 @@
             </div>
 
             <!-- Valor total con impuestos -->
-            <div class="col-md-3">
+            <div class="col-md-3 col-total">
                 <div class="form-group">
                     <label for="valor_total_impuestos" class="ivois-label">Precio total de venta</label>
                     <div class="input-group input-group-sm">

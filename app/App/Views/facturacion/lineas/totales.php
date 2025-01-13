@@ -75,6 +75,19 @@
                 </div>
             </div>
 
+            <!-- Base imponible
+            <div class="col-md-3 col-base-imponible">
+                <div class="form-group">
+                    <label for="baseImponible" class="ivois-label">Base imponible</label>
+                    <div class="input-group input-group-sm" data-toggle="tooltip" title="Base imponible">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                        </div>
+                        <input value="0" class="detail_baseAmount baseAmount" type="text" name="details[0][baseAmount]">
+                    </div>
+                </div>
+            </div> -->
+
             <!-- Otros impuestos -->
             <div class="col-md-4 col-otros-impuestos" hidden>
                 <div class="form-group">
@@ -89,21 +102,7 @@
                 </div>
             </div>
 
-            <!-- Base imponible -->
-            <div class="col-md-4" hidden>
-                <div class="form-group">
-                    <label for="baseImponible" class="ivois-label">Base imponible</label>
-                    <div class="input-group input-group-sm" data-toggle="tooltip" title="Base imponible">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
-                        </div>
-                        <input class="form-control form-control-sm baseImponibleVL" value="0" disabled readonly>
-                        <input value="0" class="baseImponible inp-fct" type="hidden">
-                    </div>
-                </div>
-            </div>
-
-            <!-- I,V,A -->
+            <!-- I.V.A -->
             <div class="col-md-4 col-iva">
                 <div class="form-group">
                     <label for="iva" class="ivois-label">Impuesto al valor agregado</label>
