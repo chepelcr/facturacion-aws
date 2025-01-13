@@ -214,6 +214,11 @@ function llenarObjeto(nombre_form, objeto, estado) {
 
     if (modulo_activo == "empresa" && submodulo_activo == "productos") {
         activeForm.find(".salePrice").val(objeto.salePrice);
+
+        if (objeto.baseAmount != null && objeto.baseAmount != undefined && objeto.baseAmount > 0) {
+            activeForm.find(".base_imponible").val(objeto.baseAmount);
+        }
+
         calcular_con_precio_venta(nombre_form);
     }
 

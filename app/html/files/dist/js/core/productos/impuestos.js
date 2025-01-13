@@ -421,7 +421,7 @@ function calcular_impuestos_producto(subtotal, isBiller = false) {
         form.find(".base_imponible").val(0);
     } else {
         //Validar si la base imponible tiene un 0 por delante
-        if(baseAmount.toString().charAt(0) == "0") {
+        if(baseAmount.toString().charAt(0) == "0" && baseAmount != '0') {
             baseAmount = baseAmount.toString().substring(1);
         }
 

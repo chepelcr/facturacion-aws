@@ -48,6 +48,7 @@ enum ProductsEnum: string {
     case TaxIvaFound = "033";
     case TaxRateFound = "034";
     case TaxRateRequired = "035";
+    case CustomsPartLength = "036";
 
     public function getName(): string {
         return match($this) {
@@ -87,6 +88,7 @@ enum ProductsEnum: string {
             self::TaxIvaFound => "Solo se permite un impuesto IVA",
             self::TaxRateFound => "La tarifa de impuesto no es requerida",
             self::TaxRateRequired => "La tarifa de impuesto es requerida",
+            self::CustomsPartLength => "La longitud de la parte arancelaria debe ser de 12 dígitos",
             default => "No definido",
         };
     }

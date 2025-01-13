@@ -200,8 +200,11 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
 
     baseAmount = new Decimal(baseAmount);
 
-    if (ivatTaxType != null && !ivatTaxType == "07") {
+    let hasIvaCE = ivatTaxType != null && ivatTaxType == "07";
+
+    if (!hasIvaCE) {
         form.find(".base_imponible").val(0);
+        baseAmount = 0;
     }
 
     let otherTaxPercentage = contar_porcentaje_impuesto(elemento, "other");
@@ -209,21 +212,33 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
     salePrice = new Decimal(salePrice);
 
     if (ivaTaxPercentage > 0) {
-        ivaTaxPercentage = new Decimal(ivaTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
+        if (!hasIvaCE) {
+            ivaTaxPercentage = new Decimal(ivaTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
 
-        if (ivatTaxType != null && ivatTaxType != "07") {
             taxValue += salePrice.minus(salePrice.dividedBy(ivaTaxPercentage)).toDecimalPlaces(5).toNumber();
+
+            console.log("Usando precio de venta");
         } else {
-            taxValue += baseAmount.minus(baseAmount.dividedBy(ivaTaxPercentage)).toDecimalPlaces(5).toNumber();
+            ivaTaxPercentage = new Decimal(ivaTaxPercentage).dividedBy(100).toDecimalPlaces(5).toNumber();
+
+            taxValue += baseAmount.times(ivaTaxPercentage).toDecimalPlaces(5).toNumber();
+
+            console.log("Usando base imponible");
         }
 
-        //Colocar el valor de impuesto total en detail_tax_total
-        form.find(".detail_tax_total").val(taxValue);
+        console.log("Valor de impuesto: " + taxValue);
+
+        if (isBiller) {
+            //Colocar el valor de impuesto total en detail_tax_total
+            form.find(".detail_tax_total").val(taxValue);
+        }
 
         //col-iva
         form.find(".col-iva").show();
     } else {
-        form.find(".detail_tax_total").val(0);
+        if(isBiller) {
+            form.find(".detail_tax_total").val(0);
+        }
 
         //col-iva
         form.find(".col-iva").hide();
@@ -231,20 +246,22 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
 
     let subtotal = new Decimal(salePrice).minus(taxValue).toDecimalPlaces(5).toNumber();
 
+    console.log("Subtotal: " + subtotal);
+
     if (otherTaxPercentage > 0) {
         subtotal = new Decimal(subtotal);
 
         form.find(".col-other-taxes").show();
 
-        otherTaxPercentage = new Decimal(otherTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
-
         console.log("Porcentaje de impuesto total: " + otherTaxPercentage);
 
         let otherTaxValue;
 
-        if (ivatTaxType != null && ivatTaxType == "07") {
-            otherTaxValue = baseAmount.minus(baseAmount.dividedBy(otherTaxPercentage)).toDecimalPlaces(5).toNumber();
+        if (hasIvaCE) {
+            otherTaxPercentage = new Decimal(otherTaxPercentage).dividedBy(100).toDecimalPlaces(5).toNumber();
+            otherTaxValue = baseAmount.times(otherTaxPercentage).toDecimalPlaces(5).toNumber();
         } else {
+            otherTaxPercentage = new Decimal(otherTaxPercentage).dividedBy(100).plus(1).toDecimalPlaces(5).toNumber();
             otherTaxValue = subtotal.minus(subtotal.dividedBy(otherTaxPercentage)).toDecimalPlaces(5).toNumber();
         }
 
