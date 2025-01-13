@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  CodePipelineNameParam:
+    Type: String
+    Description: CodePipeline Name Parameter
+    Default: ivois-biller-frontend-codepipeline
+
+  CodePipelineServiceRoleParam:
+    Type: String
+    Description: CodePipeline Service Role Parameter
+    Default: arn:aws:iam::205784505678:role/service-role/ivois-dev-web-codepipeline-role
+
+  CodePipelineS3BucketParam:
+    Type: String
+    Description: CodePipeline S3 Bucket Name Parameter
+    Default: ivois-codepipeline-us-east-1-bucket-s3
+
+  GitHubConnectionParam:
+    Type: String
+    Description: GitHub Connection Parameter
+    Default: arn:aws:codestar-connections:us-east-1:205784505678:connection/8a5b162f-3afe-4815-a60e-82c0bcae0507
+
+  GitHubRepositoryParam:
+    Type: String
+    Description: GitHub Full Repository Parameter
+    Default: chepelcr/facturacion
+
+  CodeBuildProjectNameParam:
+    Type: String
+    Description: CodeBuild Project Name Parameter
+    Default: Ivois-Biller-FrontEnd-CodeBuild
+
+  CodeBuildDescriptionParam:
+    Type: String
+    Description: CodeBuild Project Name Parameter
+    Default: Ivois Biller FrontEnd CodeBuild
+
+  CodeBuildServiceRoleParam:
+    Type: String
+    Description: CodeBuild Service Role Parameter
+    Default: arn:aws:iam::205784505678:role/service-role/codebuild-ivois-dev-web-codebuild-service-role
+
+  CodeBuildImageRepoNameParam:
+    Type: String
+    Description: CodeBuild Image Repository Name Parameter
+    Default: biller-frontend-ecr
+
+  EcsClusterNameParam:
+    Type: String
+    Description: ECS Cluster Name Parameter
+    Default: IvoisDevCluster
+
+  EcsServiceNameParam:
+    Type: String
+    Description: ECS Service Name Parameter
+    Default: Ivois-FrontEnd-SVC
+
+Resources:
+  CodeBuild:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Ref CodeBuildProjectNameParam
+      Description: !Ref CodeBuildDescriptionParam
+      ServiceRole: !Ref CodeBuildServiceRoleParam
+      Artifacts:
+        Type: CODEPIPELINE
+      Cache:
+        Type: NO_CACHE
+      Environment:
+        Type: ARM_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/amazonlinux2-aarch64-standard:3.0
+        PrivilegedMode: true
+        EnvironmentVariables:
+          - Name: AWS_DEFAULT_REGION
+            Type: PLAINTEXT
+            Value: !Ref "AWS::Region"
+          - Name: AWS_ACCOUNT_ID
+            Type: PLAINTEXT
+            Value: !Ref "AWS::AccountId"
+          - Name: IMAGE_REPO_NAME
+            Type: PLAINTEXT
+            Value: !Ref CodeBuildImageRepoNameParam
+          - Name: IMAGE_TAG
+            Type: PLAINTEXT
+            Value: latest
+          - Name: ECS_CLUSTER_NAME
+            Type: PLAINTEXT
+            Value: !Ref EcsClusterNameParam
+          - Name: ECS_SERVICE_NAME
+            Type: PLAINTEXT
+            Value: !Ref EcsServiceNameParam
+      Source:
+        GitCloneDepth: 1
+        Type: CODEPIPELINE
+        BuildSpec: buildspec.yml
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: /codebuild/ivois/dev
+          Status: ENABLED
+          StreamName: biller-frontend
+        S3Logs:
+          EncryptionDisabled: false
+          Status: DISABLED
+
+  CodePipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Ref CodePipelineNameParam
+      RoleArn: !Ref CodePipelineServiceRoleParam
+      ArtifactStore:
+        Location: !Ref CodePipelineS3BucketParam
+        Type: S3
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              Namespace: SourceVariables
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Provider: CodeStarSourceConnection
+                Version: '1'
+              Configuration:
+                BranchName: stag
+                ConnectionArn: !Ref GitHubConnectionParam
+                FullRepositoryId: !Ref GitHubRepositoryParam
+                OutputArtifactFormat: CODE_ZIP
+              InputArtifacts: [ ]
+              OutputArtifacts:
+                - Name: SourceArtifact
+              Region: !Ref "AWS::Region"
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - Name: Build
+              Namespace: BuildVariables
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              Configuration:
+                ProjectName: !Ref CodeBuildProjectNameParam
+              InputArtifacts:
+                - Name: SourceArtifact
+              OutputArtifacts:
+                - Name: BuildArtifact
+              Region: !Ref "AWS::Region"
+              RunOrder: 1
+
