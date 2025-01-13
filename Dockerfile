@@ -3,7 +3,7 @@ FROM php:8.1-apache
 
 
 #Copiar las credenciales de AWS
-COPY ./.aws /.aws
+#COPY ./.aws /.aws
 
 # Establece el directorio de trabajo
 WORKDIR /var/www
