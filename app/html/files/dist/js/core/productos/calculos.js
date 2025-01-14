@@ -39,26 +39,6 @@ $(document).ready(function () {
         calcular_valor_producto(form_activo);
     }); //Fin de cambiar el baseAmount
 
-    //Cuando cambia el netValue
-    $(document).on("change keyup", ".base_imponible", function () {
-        //Validar si el netValue es un numero
-        if (isNaN($(this).val()) || $(this).val() == "") {
-            $(this).val(0);
-        }
-
-        //Si el baseAmount tiene un 0 a la izquierda, quitarlo
-        if ($(this).val() != 0) {
-            let baseAmount = $(this).val();
-
-            if (baseAmount.charAt(0) == "0") {
-                baseAmount = baseAmount.substring(1);
-                $(this).val(baseAmount);
-            }
-        }
-
-        calcular_valor_producto(form_activo);
-    }); //Fin de cambiar el netValue
-
     //Cuando cambia el precio de venta
     $(document).on("change keyup", ".totalValue", function () {
         //Validar si el salePrice es un numero

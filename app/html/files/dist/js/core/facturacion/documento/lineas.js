@@ -658,6 +658,31 @@ $(document).ready(function () {
         calcular_valor_producto(elemento_activo, true);
     });
 
+    $(document).on("keyup change", ".detail_baseAmount", function () {
+        //Validar si el netValue es un numero
+        if (isNaN($(this).val()) || $(this).val() == "") {
+            $(this).val(0);
+        }
+
+        //Si el baseAmount tiene un 0 a la izquierda, quitarlo
+        if ($(this).val() != 0) {
+            let baseAmount = $(this).val();
+
+            if (baseAmount.charAt(0) == "0") {
+                baseAmount = baseAmount.substring(1);
+                $(this).val(baseAmount);
+            }
+        }
+
+        setActiveLine($(this).parents(".detail"));
+
+        calcular_valor_producto(elemento_activo, true);
+
+        calcular(linea_activa);
+
+        validarLineaDetalle(linea_activa, $(this));
+    });
+
     //Cuando cambia el valor de .quantity
     $(document).on("keyup change", ".quantity-det", function () {
         //Obtener la linea activa

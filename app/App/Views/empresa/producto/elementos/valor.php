@@ -73,7 +73,7 @@
                         <?php if (!isset($isDetail)) : ?>
                             <input value="0" class="base_imponible inp form-control baseAmount" type="text" name="baseAmount">
                         <?php else : ?>
-                            <input value="0" class="detail_baseAmount form-control validar_linea base_imponible inp-fct calcular" type="text" name="details[0][baseAmount]">
+                            <input value="0" class="detail_baseAmount form-control base_imponible inp-fct" type="text" name="details[0][baseAmount]">
                         <?php endif; ?>
                     </div>
                 </div>
