@@ -661,17 +661,17 @@ function validarDataForm(formulario) {
         const customsPart = $("#" + formulario).find(".customsPart");
 
         //Si la partida arancelaria no está vacia y no tiene 12 digitos
-        if (customsPart.val() != "" && customsPart.val().length != 12) {
-            //Colocar un borde rojo al input
-            customsPart.addClass("border-danger");
-            dataValida = false;
-        } else {
-            //Si está vacia, eliminar el borde rojo
-            if (customsPart.val() == "") {
-                customsPart.removeClass("border-danger");
+        if (customsPart.val() != "") {
+            const customsPartValue = customsPart.val();
+
+            if (customsPartValue.length != 12) {
+                customsPart.addClass("border-danger");
+                dataValida = false;
+            } else if (!customsPartValue.match(/^[0-9]+$/)) {
+                customsPart.addClass("border-danger");
+                dataValida = false;
             } else {
                 customsPart.removeClass("border-danger");
-                dataValida = false;
             }
         }
     }
