@@ -74,6 +74,9 @@
                             <input value="0" class="base_imponible inp form-control baseAmount" type="text" name="baseAmount">
                         <?php else : ?>
                             <input value="0" class="detail_baseAmount form-control base_imponible inp-fct" type="text" name="details[0][baseAmount]">
+
+                            <!-- originalBaseAmount -->
+                            <input value="0" class="originalBaseAmount" type="hidden">
                         <?php endif; ?>
                     </div>
                 </div>

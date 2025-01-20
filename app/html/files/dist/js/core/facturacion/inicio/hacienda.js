@@ -168,7 +168,7 @@ function guardar_documento() {
                     });
                 } else {
                     const clave = response.consecutiveNumber;
-                    var mensaje = "El documento " + clave + " ha sido enviado al Ministerio de Hacienda";
+                    const mensaje = "El documento " + clave + " ha sido enviado al Ministerio de Hacienda";
 
                     Swal.fire({
                         title: "Documento generado",

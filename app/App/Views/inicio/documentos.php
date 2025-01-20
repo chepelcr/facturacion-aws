@@ -10,6 +10,7 @@
             </div>
             
             <div class="col-md-12" id="listado_documentos">
+                
             </div>
 
             <div class="col-md-12 contenedor_facturas" id="contenedor_facturas">
@@ -47,4 +48,6 @@ echo view('facturacion/modal/productos');
 echo view('facturacion/receptores/modal/busqueda');
 
 echo view('facturacion/modal/notificar');
+
+echo view('facturacion/modal/subir_documentos');
 ?>

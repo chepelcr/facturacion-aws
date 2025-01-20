@@ -119,7 +119,7 @@ function calcular_valor_producto(elemento = "", isBiller = false) {
 
     let netValue = 0;
 
-    if (isBiller == true) {
+    if (isBiller) {
         netValue = form.find(".netPrice").val();
     } else {
         netValue = form.find(".netValue").val();
@@ -140,18 +140,34 @@ function calcular_valor_producto(elemento = "", isBiller = false) {
 
     const total = new Decimal(subtotal).plus(impuestoTotal).toDecimalPlaces(2).toNumber();
 
-    if (isBiller == true) {
+    if (isBiller) {
         //Colocar el total en el campo .detail_total_value
         form.find(".detail_total_value").val(total);
     } else {
         //Colocar el total en el campo .totalValue
         form.find(".totalValue").val(total);
-    }
 
-    if (isBiller == false) {
         //Calcular el valor unitario
         calcular_valor_unitario(elemento);
     }
+}
+
+/**
+ * Colocar el precio de venta original de acuerdo al tipo de cambio del documento
+ * 
+ * @param {*} form Formulario donde se realizara el ajuste
+ * @param {number} netValue Valor neto del producto
+ */
+function setOriginalSalePrice(form, netValue) {
+    const tipoCambio = tipoCambioDocumento;
+
+    if (tipoCambio != 1) {
+        //Calcular el precio original (netPrice * tipoCambio)
+        netValue = new Decimal(netValue).times(tipoCambio).toDecimalPlaces(5).toNumber();
+    }
+
+    //Colocar el precio original en el campo .originalSalePrice
+    form.find(".originalSalePrice").val(netValue);
 }
 
 function calcular_con_precio_venta(elemento, isBiller = false) {
@@ -178,13 +194,17 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
     //Usar el baseAmount
     let baseAmount = form.find(".base_imponible").val();
 
-    baseAmount = new Decimal(baseAmount);
-
     let hasIvaCE = ivatTaxType != null && ivatTaxType == "07";
 
     if (!hasIvaCE) {
         form.find(".base_imponible").val(0);
         baseAmount = 0;
+    } else {
+        if (isNaN(baseAmount) || baseAmount == "") {
+            baseAmount = 0;
+        }
+
+        baseAmount = new Decimal(baseAmount);
     }
 
     let otherTaxPercentage = contar_porcentaje_impuesto(elemento, "other");
@@ -216,7 +236,7 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
         //col-iva
         form.find(".col-iva").show();
     } else {
-        if(isBiller) {
+        if (isBiller) {
             form.find(".detail_tax_total").val(0);
         }
 
@@ -291,15 +311,9 @@ function calcular_con_precio_venta(elemento, isBiller = false) {
         //Calcular el valor unitario
         calcular_valor_unitario(elemento);
     } else {
-        const tipoCambio = tipoCambioDocumento;
-
-        if (tipoCambio != 1) {
-            netValue = netValue / tipoCambio;
-        } else {
-            form.find(".originalSalePrice").val(netValue);
-        }
-
         form.find(".netPrice").val(netValue);
+
+        setOriginalSalePrice(form, netValue);
 
         //Colocar el valor de descuento en detail_discount_total
         form.find(".detail_discount_total").val(discountAmount);

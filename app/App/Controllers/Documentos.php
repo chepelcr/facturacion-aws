@@ -400,4 +400,32 @@ class Documentos extends BaseController {
             return json_encode($data);
         }
     } //Fin de la funcion descargar_reporte
+
+    /**
+     * Recibir un documento electrónico en la plataforma (En formato XML)
+     */
+    public function subir_documento() {
+        if (is_login()) {
+            //Obtener los bytes del archivo subido
+            $xml = file_get_contents($_FILES['documento']['tmp_name']);
+
+            $contentType = $_FILES['documento']['type'];
+
+            $data = $this->documentosService->subirDocumento($xml, $contentType);
+
+            if(isset($data->error)) {
+                return $this->error($data);
+            } else {
+                return json_encode($data);
+            }
+        } else {
+            $data = array(
+                'error' => 'No ha iniciado sesión',
+                'estado' => 'error',
+                'status' => 505
+            );
+
+            return $this->error($data);
+        }
+    }
 }//Fin de la clase

@@ -144,7 +144,11 @@ abstract class Model {
 
     /**Obtener el error generado en el modelo */
     public function getError() {
-        return json_decode(json_encode($this->error));
+        if(empty($this->error)){
+            return false;
+        } else {
+            return json_decode(json_encode($this->error));
+        }
     }
 
     /**Actualizar un registro en la base de datos */
@@ -346,7 +350,7 @@ abstract class Model {
     } //Fin de la funcion
 
     /**Agrupar los resultados de la bae de datos */
-    public function OrderBy($nombreCampo) {
+    public function orderBy($nombreCampo) {
         $this->order = $nombreCampo;
     } //Fin de la funcion
 

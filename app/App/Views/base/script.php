@@ -116,6 +116,9 @@ if (is_login()) {
     <!-- Facturacion | Inicio | Hacienda -->
     <?= getScript('core/facturacion/inicio/hacienda') ?>
 
+    <!-- Facturacion | Incio | Importar -->
+    <?= getScript('core/facturacion/inicio/importar') ?>
+
     <!-- Facturacion | Documento | Acciones -->
     <?= getScript('core/facturacion/documento/acciones') ?>
 
@@ -142,6 +145,8 @@ if (is_login()) {
 
     <!-- Facturacion | Lineas | Impuestos -->
     <?= getScript('core/facturacion/lineas/impuestos') ?>
+
+
 
     <!-- Core | Seguridad | Contrasenia -->
     <?= getScript('core/seguridad/contrasenia') ?>

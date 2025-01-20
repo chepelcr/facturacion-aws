@@ -107,4 +107,10 @@ class DocumentsApi extends IvoisApi {
 
         return $this->makeGetRequestUrl($url);
     }
+
+    public function uploadDocument($data) {
+        $url = "/upload-document";
+
+        return $this->makePostRequest($data, $url);
+    }
 }

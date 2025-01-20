@@ -111,6 +111,8 @@ function agregar_linea_activa(producto, cantidad, salePrice) {
 
     contar_lineas();
 
+    const tipoCambio = tipoCambioDocumento;
+
     //Si solo hay una linea
     if (lineas_activas == 1) {
         linea = activeDocument.find(".detail");
@@ -140,6 +142,21 @@ function agregar_linea_activa(producto, cantidad, salePrice) {
 
     //Colocar la linea activa
     setActiveLine(linea);
+
+    let baseAmount = 0;
+
+    if(!isNaN(producto.baseAmount)) {
+        baseAmount = producto.baseAmount;
+    }
+
+    if (tipoCambio != 1) {
+        //Calcular el precio original (salePrice/tipoCambio)
+        salePrice = new Decimal(salePrice).dividedBy(tipoCambio).toDecimalPlaces(5).toNumber();
+
+        baseAmount = new Decimal(baseAmount).dividedBy(tipoCambio).toDecimalPlaces(5).toNumber();
+    }
+
+    setOriginalBaseAmount(linea, baseAmount);
 
     if (producto.codes != null && producto.codes.length > 0) {
         console.log(producto.codes);
@@ -187,7 +204,9 @@ function agregar_linea_activa(producto, cantidad, salePrice) {
     linea.find(".saleCode").val(codigo_venta);
     linea.find(".quantity-det").val(cantidad);
     linea.find(".detail_total_value").val(salePrice);
-    linea.find(".detail_baseAmount").val(producto.baseAmount);
+
+    linea.find(".detail_baseAmount").val(baseAmount);
+
 
     if (documentTypeCode == "09") {
         //Si el objeto producto tiene la propiedad customsPart
@@ -649,6 +668,21 @@ function validarLineaDetalle(linea, changedElement = null) {
     return validLine;
 }
 
+/**
+ * Calcular el monto de la base imponible sin conversión en moneda extranjera
+ * @param {*} linea Linea de detalle en la que se va a aplicar el cambio
+ * @param {number} baseAmount Base imponible en moneda del documento
+ */
+function setOriginalBaseAmount(linea, baseAmount) {
+    const tipoCambio = tipoCambioDocumento;
+
+    if(tipoCambio != 1) {
+        baseAmount = new Decimal(baseAmount).times(tipoCambio).toDecimalPlaces(5).toNumber();
+    }
+
+    linea.find(".originalBaseAmount").val(baseAmount);
+}
+
 $(document).ready(function () {
     $(document).on("keyup change", ".calcular", function () {
         setActiveLine($(this).parents(".detail"));
@@ -675,6 +709,8 @@ $(document).ready(function () {
         }
 
         setActiveLine($(this).parents(".detail"));
+
+        setOriginalBaseAmount(linea_activa, $(this).val());
 
         calcular_valor_producto(elemento_activo, true);
 
@@ -768,6 +804,8 @@ $(document).ready(function () {
     $(document).on("change keyup", ".netPrice", function () {
         setActiveLine($(this).parents(".detail"));
 
+        let netValue = 0;
+
         //Validar si el netValue es un numero
         if (isNaN($(this).val()) || $(this).val() == "") {
             $(this).val(0);
@@ -775,7 +813,7 @@ $(document).ready(function () {
 
         //Si el netValue tiene un 0 a la izquierda, quitarlo
         if ($(this).val() != 0) {
-            let netValue = $(this).val();
+            netValue = $(this).val();
 
             if (netValue.charAt(0) == "0") {
                 netValue = netValue.substring(1);
@@ -785,6 +823,8 @@ $(document).ready(function () {
             //Colocar 0 en el campo de .detail_total_value
             linea_activa.find(".detail_total_value").val(0);
         }
+
+        setOriginalSalePrice(form, netValue);
 
         calcular_valor_producto(elemento_activo, true);
 

@@ -6,6 +6,7 @@ function selectTipoCambio() {
 
   //Obtener el valor data-currencyCode del option
   let moneda = $(option).data("currencycode");
+  
   monedaDocumento = moneda;
 
   if (moneda == "CRC") {
@@ -38,7 +39,6 @@ function selectTipoCambio() {
 }
 
 function cambiarPrecioLineas(tipoCambio) {
-  let moneda = monedaDocumento;
   $("#" + factura_activa)
     .find(".detail")
     .each(function (i, item) {
@@ -49,6 +49,15 @@ function cambiarPrecioLineas(tipoCambio) {
       newPrice.toFixed(2);
 
       $(item).find(".netPrice").val(newPrice);
+
+      let originalBaseAmount = $(item).find(".originalBaseAmount").val();
+
+      let newBaseAmount = originalBaseAmount / tipoCambio;
+
+      newBaseAmount = parseFloat(newBaseAmount);
+      newBaseAmount.toFixed(2);
+
+      $(item).find(".base_imponible").val(newBaseAmount);
 
       calcular($(item));
     });

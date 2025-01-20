@@ -532,6 +532,12 @@ class DocumentosService {
         }
     }
 
+    /**
+     * Generar un reporte de los documentos
+     *
+     * @param array $documentos Documentos a generar el reporte
+     * @return string Retorna el reporte en formato zip
+     */
     public function getReporteZip($documentos) {
         $claves = array();
 
@@ -544,5 +550,30 @@ class DocumentosService {
         }
 
         return $reporte->generar_reporte_documentos($claves, getSegment(3));
+    }
+
+    /**
+     * Subir un documento a la API de IVois
+     *
+     * @param array $data Datos de los documentos
+     * @return object Respuesta de la API
+     */
+    public function subirDocumento($xml, $contentType) {
+
+        //var_dump($xml);
+
+        //Codificar el xml en un string base64
+        $xml = base64_encode($xml);
+
+        $document = array(
+                'data' => $xml,
+                'contentType' => $contentType
+        );
+
+        //var_dump($xml);
+
+        $documentsApi = $this->documentsApi;
+
+        return $documentsApi->uploadDocument($document);
     }
 }

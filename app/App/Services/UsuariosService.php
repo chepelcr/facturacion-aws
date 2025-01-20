@@ -586,6 +586,8 @@ class UsuariosService extends BaseService {
         $contraseniaModel = new ContraseniaModel();
         $contrasenia = $contraseniaModel->contrasenia($usuario->id_usuario);
 
+        $contraseniaModel = new ContraseniaModel();
+
         if ($contrasenia) {
             $data = array(
                 'contrasenia' => encriptar_texto($pass),
@@ -596,8 +598,8 @@ class UsuariosService extends BaseService {
                 'fecha_desbloqueo' => null,
             );
 
-            $contraseniaModel = new ContraseniaModel();
-            $id = $contraseniaModel->update($data, $contrasenia->id_contrasenia);
+            
+            $contraseniaModel->update($data, $contrasenia->id_contrasenia);
         } //Fin de validacion de contrasenia
 
         else {
@@ -608,11 +610,11 @@ class UsuariosService extends BaseService {
                 'estado' => 1
             );
 
-            $contraseniaModel = new ContraseniaModel();
-            $id = $contraseniaModel->insert($data);
+            $contraseniaModel->insert($data);
         } //Fin de validacion de contrasenia
 
-        if ($id != 0) {
+
+        if (!is_array($contraseniaModel->getError())){
             $correos = array(
                 $usuario->nombre => $usuario->correo,
                 //'RECEPTOR DE PRUEBA' => 'chepelcr@outlook.com',
