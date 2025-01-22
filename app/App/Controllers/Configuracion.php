@@ -55,7 +55,7 @@ class Configuracion extends BaseController {
                         'taxpayer' => $taxpayersService->getEmpresaData()
                     );
 
-                    return view('seguridad/configuracion/empresa', $formData);
+                    return view('configuracion/empresa', $formData);
                 } else {
                     $script = cargar("cargar_listado('configuracion', 'empresa', 'Configuración', 'Empresa', ' " . baseUrl("configuracion/empresa/listado") . "');");
 
@@ -97,7 +97,7 @@ class Configuracion extends BaseController {
 
                         return $this->error($data);
                     } else {
-                        return view('seguridad/configuracion/facturacion', $configuraciones);
+                        return view('configuracion/facturacion', $configuraciones);
                     }
                 } else {
                     $script = cargar("cargar_listado('configuracion', 'documentos', 'Configuración', 'Documentos', ' " . baseUrl("configuracion/documentos/listado") . "');");
@@ -123,7 +123,7 @@ class Configuracion extends BaseController {
                 }
             }
         } else {
-            header(self::LOCATION . baseUrl('login'));
+            redirect(baseUrl('login'));
         }
     } //Fin del metodo para entrar a la configuracion del modulo de facturacion
 
@@ -135,45 +135,37 @@ class Configuracion extends BaseController {
             if ($objeto == 'hacienda' && validar_permiso('configuracion', 'documentos', 'modificar')) {
                 $autenticationService = new AutenticacionService();
 
+                if (isset($_FILES['certificate'])) {
+                    $pin = $data['certificate']['pin'];
+
+                    $certificate = file_get_contents($_FILES['certificate']['tmp_name']);
+                    $contentType = $_FILES['certificate']['type'];
+
+                    $data['certificate'] = array(
+                        'data' => base64_encode($certificate),
+                        'pin' => $pin,
+                        'contentType' => $contentType,
+                        'name' => $_FILES['certificate']['name']
+                    );
+                }
+
                 $response = $autenticationService->actualizarConfiguracionesPorIdContribuyente(getTaxpayerId(), $data);
-
-                if (isset($response->error)) {
-                    $error = array(
-                        'error' => $response->error,
-                        'status' => $response->status
-                    );
-
-                    return $this->error($error);
-                } else {
-                    return json_encode($response);
-                }
-            } elseif ($objeto == 'llave_criptográfica' && validar_permiso('configuracion', 'documentos', 'modificar')) {
-                if (isset($_FILES['file_content'])) {
-
-                    $data['file_content'] = $_FILES['file_content'];
-                }
-
-                $autenticationService = new AutenticacionService();
-
-                $response = $autenticationService->validarLlaveCriptografica(getTaxpayerId(), $data);
-
-                if (isset($response->error)) {
-                    $error = array(
-                        'error' => $response->error,
-                        'status' => $response->status
-                    );
-
-                    return $this->error($error);
-                } else {
-                    return json_encode($response);
-                }
             } else {
-                $error = $this->object_error(500, 'No se ha enviado la información correcta para actualizar la configuración.');
+                $response = $this->object_error(500, 'No se ha enviado la información correcta para actualizar la configuración.');
+            } //Fin de la validacion de permisos
+
+            if (isset($response->error)) {
+                $error = array(
+                    'error' => $response->error,
+                    'status' => $response->status
+                );
 
                 return $this->error($error);
-            } //Fin de la validacion de permisos
+            } else {
+                return json_encode($response);
+            }
         } else {
-            header(self::LOCATION . baseUrl('login'));
+            redirect(baseUrl('login'));
         } //Fin de la validacion de login
     } //Fin del metodo para actualizar la configuracion de la empresa
 } //Fin de la clase

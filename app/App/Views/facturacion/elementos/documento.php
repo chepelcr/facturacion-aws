@@ -13,12 +13,6 @@
                 <?= $documentVersion->description ?>
             </option>
         </select>
-
-        <!-- Branch -->
-        <input type="text" class="branchNumber" name="branchNumber" value="<?= getEnt('ivois.api.branch.number') ?>">
-
-        <!-- Terminal -->
-        <input type="text" class="terminalNumber" name="terminalNumber" value="<?= getEnt('ivois.api.branch.terminal.number') ?>">
     </div>
 
     <div class="row">

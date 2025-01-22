@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Api\BranchesApi;
 use App\Librerias\Hacienda;
 
 use App\Api\CustomersApi;
@@ -35,12 +36,19 @@ class DocumentosService {
     private $locationsApi;
 
     /**
+     * Api de sucursales
+     */
+    private $branchesApi;
+
+    /**
      * Constructor
      */
     public function __construct() {
         $this->dataServiceApi = new DataServiceApi();
-        $this->documentsApi = new DocumentsApi(getTaxpayerId());
         $this->locationsApi = new LocationsApi();
+
+        $this->documentsApi = new DocumentsApi(getTaxpayerId());
+        $this->branchesApi = new BranchesApi(getTaxpayerId());
     }
 
     /**
@@ -351,6 +359,7 @@ class DocumentosService {
 
         $dataServiceApi = $this->dataServiceApi;
         $locationsApi = $this->locationsApi;
+        $branchesApi = $this->branchesApi;
 
         $countries = $locationsApi->get_countries();
 
@@ -363,6 +372,7 @@ class DocumentosService {
         $documentVersions = $dataServiceApi->getDocumentVersionsByCountry(getCountryCode());
         $paymentTypes = $dataServiceApi->getPaymentTypesByCountry(getCountryCode());
         $saleConditions = $dataServiceApi->getSaleConditionsByCountry(getCountryCode());
+        $branches = $branchesApi->getBranchesByStatus(1);
 
         if ((is_array($documentVersions) && empty($documentVersions)) || isset($documentVersions->error)) {
             if (isset($documentVersions->error)) {
@@ -420,6 +430,7 @@ class DocumentosService {
         $modalCierreDocumento = array(
             'numero_documento' => $numero_documento,
             'paymentTypes' => $paymentTypes,
+            'branches' => $branches
         );
 
         $data_referencias = array(
@@ -553,8 +564,6 @@ class DocumentosService {
      */
     public function subirDocumento($xml, $contentType) {
 
-        //var_dump($xml);
-
         //Codificar el xml en un string base64
         $xml = base64_encode($xml);
 
@@ -562,8 +571,6 @@ class DocumentosService {
                 'data' => $xml,
                 'contentType' => $contentType
         );
-
-        //var_dump($xml);
 
         $documentsApi = $this->documentsApi;
 

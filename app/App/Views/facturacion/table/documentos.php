@@ -34,28 +34,21 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <?php
-                                        if ($documento->atvValidation->sendDate != null) {
-                                            if ($documento->atvValidation->validationStatus == '1') {
-                                                //Mostrar circulo verde
-                                                echo '<i class="fas fa-check-circle text-success" title="Validado" data-toggle="tooltip"></i>';
-                                                //Mostrar etiqueta oculta
-                                                echo '<span class="d-none">Validado</span>';
-                                            } elseif ($documento->atvValidation->validationStatus == '3') {
-                                                //Mostrar circulo rojo
-                                                echo '<i class="fas fa-times-circle text-danger" title="Rechazado" data-toggle="tooltip"></i>';
-                                                //Mostrar etiqueta oculta
-                                                echo '<span class="d-none">Rechazado</span>';
-                                            } else {
-                                                //Mostrar circulo amarillo
-                                                echo '<i class="fas fa-exclamation-circle text-warning" title="En proceso" data-toggle="tooltip"></i>';
-                                                //Mostrar etiqueta oculta
-                                                echo '<span class="d-none">En proceso</span>';
-                                            }
-                                        } else {
+                                        if ($documento->atvValidation->validationStatus == '1') {
+                                            //Mostrar circulo verde
+                                            echo '<i class="fas fa-check-circle text-success" title="Validado" data-toggle="tooltip"></i>';
+                                            //Mostrar etiqueta oculta
+                                            echo '<span class="d-none">Validado</span>';
+                                        } elseif ($documento->atvValidation->validationStatus == '3') {
                                             //Mostrar circulo rojo
-                                            echo '<i class="fas fa-exclamation-circle text-danger" title="Sin enviar" data-toggle="tooltip"></i>';
-                                            //Poner etiqueta oculta
-                                            echo '<span class="d-none">Sin enviar</span>';
+                                            echo '<i class="fas fa-times-circle text-danger" title="Rechazado" data-toggle="tooltip"></i>';
+                                            //Mostrar etiqueta oculta
+                                            echo '<span class="d-none">Rechazado</span>';
+                                        } else {
+                                            //Mostrar circulo amarillo
+                                            echo '<i class="fas fa-exclamation-circle text-warning" title="En proceso" data-toggle="tooltip"></i>';
+                                            //Mostrar etiqueta oculta
+                                            echo '<span class="d-none">En proceso</span>';
                                         }
                                         ?>
                                     </div>
@@ -209,7 +202,7 @@
                         <div class="col-md-3">
                             <div class="input-group">
                                 <label class="text-left pr-1">Fecha de inicio:</label>
-                                <input class="form-control form-control-sm" id="startDate" type="date" name="startDate" value="<?= $startDate ?? "" ?>" onchange="asignar_fecha(this)" max="<?= $fecha_hoy?>">
+                                <input class="form-control form-control-sm" id="startDate" type="date" name="startDate" value="<?= $startDate ?? "" ?>" onchange="asignar_fecha(this)" max="<?= $fecha_hoy ?>">
                             </div>
                         </div>
 
@@ -217,7 +210,7 @@
                         <div class="col-md-3">
                             <div class="input-group">
                                 <label class="text-left pr-1">Fecha de fin:</label>
-                                <input class="form-control form-control-sm" id="endDate" type="date" name="endDate" value="<?= $endDate ?? "" ?>" max="<?= $fecha_hoy?>">
+                                <input class="form-control form-control-sm" id="endDate" type="date" name="endDate" value="<?= $endDate ?? "" ?>" max="<?= $fecha_hoy ?>">
                             </div>
                         </div>
 

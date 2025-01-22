@@ -37,6 +37,62 @@ function validar_documento() {
     return valido;
 }
 
+/**
+ * Agregar las terminales al select de terminal desde el valor data-terminals del option seleccionado
+ *
+ * @param {*} branchesSelect Select con la sucursal seleccionada
+ */
+function selectTerminals(branchesSelect) {
+    const selectedOption = $(branchesSelect).find("option:selected");
+    const value = selectedOption.val();
+
+    const terminalsSelect = $("#" + factura_activa).find(".terminals");
+
+    //Eliminar las terminales del select de terminal
+    terminalsSelect.empty();
+
+    //Validar si el valor no es ""
+    if (value != "") {
+        //Obtener el valor del data-terminals del option seleccionado
+        let terminals = selectedOption.data("terminals");
+
+        //Validar si el valor no es ""
+        if (terminals.length >= 1) {
+            if (terminals.length > 1) {
+                terminalsSelect.append("<option selected value=''>Seleccionar terminal</option>");
+            }
+
+            //Agregar las terminales al select de terminal
+            terminals.forEach(function (terminal) {
+                if (terminals.length == 1) {
+                    terminalsSelect.append("<option value=''>Seleccionar terminal</option>");
+
+                    //Agregar el option al select de terminal
+                    terminalsSelect.append("<option selected value='" + terminal.number + "'>" + terminal.name + "</option>");
+                } else {
+                    //Agregar el option al select de terminal
+                    terminalsSelect.append("<option value='" + terminal.number + "'>" + terminal.name + "</option>");
+                }
+            });
+
+            //Quitar el disabled del select
+            terminalsSelect.removeAttr("disabled");
+        } else {
+            //Agregar un option indicando que la sucursal no tiene terminales
+            terminalsSelect.append("<option value=''>No hay terminales</option>");
+
+            //Agregar el disabled al select
+            terminalsSelect.attr("disabled", true);
+        }
+    } else {
+        //Agregar un option de seleccionar
+        terminalsSelect.append("<option value=''>Seleccionar</option>");
+
+        //Agregar el disabled al select
+        terminalsSelect.attr("disabled", true);
+    }
+}
+
 /**Eliminar el documento activo en la pantalla */
 function cancelar_documento() {
     //Cerrar el modal de cierre de factura
@@ -50,7 +106,9 @@ function cancelar_documento() {
         $("#" + factura_activa).empty();
 
         //Eliminar el boton de la factura activa del #nav-facturacion (.col-btn-fct-" + id_factura_activa)
-        $("#nav-facturacion").find(".col-btn-fct-" + id_factura_activa).remove();
+        $("#nav-facturacion")
+            .find(".col-btn-fct-" + id_factura_activa)
+            .remove();
 
         //Eliminar el contenedor de la factura activa
         $("#" + factura_activa).remove();
@@ -69,7 +127,9 @@ function ver_factura(id_factura) {
         mensajeAutomatico("Atencion", "No existe factura con ese ID", "info");
 
         //Eliminar el boton de la factura activa del #nav-facturacion (.col-btn-fct-" + id_factura_activa)
-        $("#nav-facturacion").find(".col-btn-fct-" + id_factura).remove();
+        $("#nav-facturacion")
+            .find(".col-btn-fct-" + id_factura)
+            .remove();
     } else {
         submodulo_activo = "facturacion";
 
@@ -219,7 +279,7 @@ function verPdf(url) {
 } //Fin de la función verPdf
 
 /**
- * 
+ *
  * @param {string} url Url del archivo a descargar
  * @param {string} fileName Nombre del archivo a descargar
  */

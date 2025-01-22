@@ -1,9 +1,7 @@
 /**Abrir o cerrar el collapse de una linea de impuesto */
 function exonerar_impuesto(boton = null) {
     if (boton != null) {
-        linea_activa = boton.closest(".detail");
-
-        var linea = $(boton).closest(".taxLine");
+        const linea = $(boton).closest(".taxLine");
 
         //Abrir o cerrar el collapse de la linea
         if (linea.find(".collapse_impuesto").hasClass("show")) {
