@@ -21,10 +21,10 @@ function obtener_provincias(countryCode = null, stateId = null, ver = false) {
         .html(html);
     activar_campo_clase("residence_districtId", true, elemento_activo);
 
-    $("#" + elemento_activo)
+    /*$("#" + elemento_activo)
         .find(".residence_neighborhoodId")
         .html(html);
-    activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
+    activar_campo_clase("residence_neighborhoodId", true, elemento_activo);*/
 
     Pace.track(function () {
         $.ajax({
@@ -86,10 +86,10 @@ function obtener_cantones(countryCode = null, stateId = null, countyId = null, v
         .html(html);
     activar_campo_clase("residence_districtId", true, elemento_activo);
 
-    $("#" + elemento_activo)
+    /*$("#" + elemento_activo)
         .find(".residence_neighborhoodId")
         .html(html);
-    activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
+    activar_campo_clase("residence_neighborhoodId", true, elemento_activo);*/
 
     data = {
         countryCode: countryCode,
@@ -144,10 +144,10 @@ function obtener_distritos(countryCode = null, stateId = null, countyId = null, 
 
     var html = crear_option("", "Seleccionar");
 
-    $("#" + elemento_activo)
+    /*$("#" + elemento_activo)
         .find(".residence_neighborhoodId")
         .html(html);
-    activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
+    activar_campo_clase("residence_neighborhoodId", true, elemento_activo);*/
 
     data = {
         countryCode: countryCode,
@@ -182,7 +182,7 @@ function obtener_distritos(countryCode = null, stateId = null, countyId = null, 
 }
 
 /**Obtener todos los barrios de un residence_districtId */
-function obtener_barrios(
+/*function obtener_barrios(
     countryCode = null,
     stateId = null,
     countyId = null,
@@ -247,7 +247,7 @@ function obtener_barrios(
             activar_campo_clase("residence_neighborhoodId", ver, elemento_activo);
         });
     });
-}
+}*/
 
 /**Llenar la ubicacion */
 function llenarUbicacion(residence, countryCode, ver = false) {
@@ -263,16 +263,16 @@ function llenarUbicacion(residence, countryCode, ver = false) {
         .html(html);
     //activar_campo_clase('residence_districtId', true, elemento_activo);
 
-    $("#" + elemento_activo)
+    /*$("#" + elemento_activo)
         .find(".residence_neighborhoodId")
         .html(html);
-    activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
+    activar_campo_clase("residence_neighborhoodId", true, elemento_activo);*/
 
     if (!validarUbicacion()) {
         let stateId = residence.stateId;
         let countyId = residence.countyId;
         let districtId = residence.districtId;
-        let neighborhoodId = residence.neighborhoodId;
+        //let neighborhoodId = residence.neighborhoodId;
 
         obtener_provincias(countryCode, stateId, ver);
 
@@ -280,7 +280,7 @@ function llenarUbicacion(residence, countryCode, ver = false) {
 
         obtener_distritos(countryCode, stateId, countyId, districtId, ver);
 
-        obtener_barrios(countryCode, stateId, countyId, districtId, neighborhoodId, ver);
+        //obtener_barrios(countryCode, stateId, countyId, districtId, neighborhoodId, ver);
     }
 
     if (residence.address != null) {
@@ -305,7 +305,7 @@ function vaciar_ubicacion() {
 
     activeElement.find(".residence_districtId").html(html);
 
-    activeElement.find(".residence_neighborhoodId").html(html);
+    //activeElement.find(".residence_neighborhoodId").html(html);
 
     desactivar_ubicaciones("agregar");
 }
@@ -316,12 +316,12 @@ function desactivar_ubicaciones(type = "agregar") {
         activar_campo_clase("residence_stateId", false, elemento_activo);
         activar_campo_clase("residence_countyId", true, elemento_activo);
         activar_campo_clase("residence_districtId", true, elemento_activo);
-        activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
+        //activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
     } else {
         activar_campo_clase("residence_stateId", true, elemento_activo);
         activar_campo_clase("residence_countyId", true, elemento_activo);
         activar_campo_clase("residence_districtId", true, elemento_activo);
-        activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
+        //activar_campo_clase("residence_neighborhoodId", true, elemento_activo);
     }
 }
 

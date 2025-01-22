@@ -54,7 +54,22 @@ class Documentos extends BaseController {
     /**Cargar documentos emitidos */
     public function emitidos() {
         if (is_login()) {
-            $script = cargar('cargar_inicio_modulo("documentos");');
+            $script = cargar('cargar_inicio_modulo("documentos",  "Documentos");');
+
+            $data = array(
+                'script' => $script,
+            );
+
+            return $this->inicio($data);
+        } else {
+            redirect(baseUrl('login'));
+        }
+    } //Fin de la funcion emitidos
+
+    /**Cargar documentos emitidos */
+    public function recibidos() {
+        if (is_login()) {
+            $script = cargar('cargar_inicio_modulo("documentos_recibidos", "Documentos");');
 
             $data = array(
                 'script' => $script,
@@ -116,7 +131,7 @@ class Documentos extends BaseController {
 
             $issuerFilter = getSegment(3);
 
-            $documentsView = $this->documentosService->cargarDocumentos($documentType, $issuerFilter, $tipoReporte, $startDate, $endDate);
+            $documentsView = $this->documentosService->cargarDocumentos($documentType, $issuerFilter, $startDate, $endDate, $tipoReporte);
 
             if (isset($documentsView->error)) {
                 return $this->error($documentsView);

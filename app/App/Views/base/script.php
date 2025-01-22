@@ -21,7 +21,7 @@
 <?= getScript('https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js', true) ?>
 
 <!-- Plugins | SweetAlert -->
-<?= getScript('https://cdn.jsdelivr.net/npm/sweetalert2@11', true) ?>
+<?= getScript('https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.all.min.js', true) ?>
 
 <!-- Plugins | Font-Awesome -->
 <?= getScript('https://kit.fontawesome.com/3e7bda16db.js', true, "anonymous") ?>

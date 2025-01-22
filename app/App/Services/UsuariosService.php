@@ -48,15 +48,12 @@ class UsuariosService extends BaseService {
 
         if ($user) {
 
-            $empresasModel = new EmpresasModel();
-            $empresa = $empresasModel->getByTaxpayerId($data['taxpayerId']);
-
             $data = array(
                 'nombre_usuario' => $data['userName'],
                 'correo' => $data['email'],
                 'telefono' => $data['personalPhone']['number'],
                 'id_rol' => $data['rolId'],
-                'id_empresa' => $empresa->id_empresa
+                'id_empresa' => $data['taxpayerId']
             );
 
             //Si se va a reinsertar, se debe actualizar el estado del usuario
@@ -153,9 +150,6 @@ class UsuariosService extends BaseService {
                 $codigosPaisesModel = new CodigosPaisesModel();
                 $pais = $codigosPaisesModel->getByIsoCode($data['nationality']);
 
-                $empresasModel = new EmpresasModel();
-                $empresa = $empresasModel->getByTaxpayerId($data['taxpayerId']);
-
                 $model = new UsuariosModel();
 
                 $data = array(
@@ -167,7 +161,7 @@ class UsuariosService extends BaseService {
                     'correo' => $data['email'],
                     'nombre_usuario' => $data['userName'],
                     'id_rol' => $data['rolId'],
-                    'id_empresa' => $empresa->id_empresa,
+                    'id_empresa' => $data['taxpayerId'],
                 );
 
                 $userData = $model->insert($data);
@@ -258,10 +252,12 @@ class UsuariosService extends BaseService {
 
         $locationsApi = $this->locationsApi;
         $countries = $locationsApi->get_countries();
+        $customerTypes = $dataServiceApi->getCustomerTypes();
 
         $datos_personales = array(
             'identificaciones' => $identificaciones,
-            'countries' => $countries
+            'countries' => $countries,
+            'customerTypes' => $customerTypes
         );
 
         $datos_contacto = array(
@@ -378,7 +374,7 @@ class UsuariosService extends BaseService {
                     'isoCode' => $data->cod_pais
                 ),
                 'rolId' => $data->id_rol,
-                'taxpayerId' => $data->ivois_id,
+                'taxpayerId' => $data->id_empresa,
                 'businessName' => $data->nombre,
                 'identification' => array(
                     'number' => $data->identificacion,

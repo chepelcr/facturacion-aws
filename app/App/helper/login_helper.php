@@ -1,6 +1,5 @@
 <?php
 
-use App\Api\LocationsApi;
 use App\Models\ContraseniaModel;
 use App\Api\TaxpayersApi;
 use App\Models\UsuariosModel;
@@ -180,13 +179,16 @@ function getPerfil() {
 			'correo' => $perfil->correo,
 		);
 
+		$taxpayersApi = new TaxpayersApi();
+		$empresa = $taxpayersApi->getTaxpayerById($perfil->id_empresa);
+
 		$datos_usuario = array(
 			'nombre_usuario' => $perfil->nombre_usuario,
 			'id_empresa' => $perfil->id_empresa,
 			'empresas' => array(
 				(object) array(
-					'id_empresa' => $perfil->id_empresa,
-					'nombre' => $perfil->nombre_empresa
+					'id_empresa' => $empresa->taxpayerId,
+					'nombre' => $empresa->businessName
 				),
 			),
 			'id_rol' => $perfil->id_rol,

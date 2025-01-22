@@ -40,7 +40,7 @@ class LocationsApi extends IvoisApi {
         $this->statesUrl = getEnt("ivois.api.countries.states.url");
         $this->countiesUrl = getEnt("ivois.api.countries.counties.url");
         $this->districtsUrl = getEnt("ivois.api.countries.districts.url");
-        $this->neighborhoodsUrl = getEnt("ivois.api.countries.neighborhoods.url");
+        //$this->neighborhoodsUrl = getEnt("ivois.api.countries.neighborhoods.url");
     }
 
     /**
@@ -48,8 +48,7 @@ class LocationsApi extends IvoisApi {
      * @param string $error Código del error
      * @return string Nombre del error
      */
-    public function getErrorName($error)
-    {
+    public function getErrorName($error) {
         $error = ApiLocationsExceptions::tryFrom($error);
 
         if ($error == null) {
@@ -118,9 +117,9 @@ class LocationsApi extends IvoisApi {
      * @param string $iso_code Código del país
      * @return array
      */
-    public function get_neighborhoods_by_district_id_and_county_id_and_state_id_and_iso_code($district_id, $county_id, $state_id, $iso_code) {
+    /*public function get_neighborhoods_by_district_id_and_county_id_and_state_id_and_iso_code($district_id, $county_id, $state_id, $iso_code) {
         $states_url = $iso_code . $this->statesUrl . $state_id . $this->countiesUrl . $county_id . $this->districtsUrl . $district_id . $this->neighborhoodsUrl;
 
         return $this->makeGetRequestUrl($states_url);
-    }
+    }*/
 }

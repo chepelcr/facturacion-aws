@@ -173,44 +173,6 @@
                 //Poner la fecha en y-m-d
                 $fecha_hoy = date('Y-m-d', strtotime($fecha_hoy));
 
-                if (!isset($startDate) && !isset($endDate)) {
-                    //Fecha_fin
-                    $endDate = $fecha_hoy;
-
-                    switch ($reportType) {
-                        case 'diarios':
-                            $startDate = $fecha_hoy;
-                            break;
-
-                        case 'semanal':
-                            $startDate = date('Y-m-d', strtotime('-7 days'));
-                            //Fecha de hoy menos 1 dia
-                            $endDate = date('Y-m-d', strtotime('-1 days', strtotime($fecha_hoy)));
-                            break;
-
-                        case 'semana_anterior':
-                            //Obtener el lunes de la semana anterior
-                            $startDate = date('Y-m-d', strtotime('last monday -7 days'));
-
-                            //Obtener el domingo de esta semana
-                            $endDate = date('Y-m-d', strtotime('last sunday'));
-                            break;
-
-                        case 'semana':
-                            //Obtener el lunes de esta semana
-                            $startDate = date('Y-m-d', strtotime('last monday'));
-                            break;
-
-                        case 'mes':
-                            $startDate = date('Y-m-01');
-                            break;
-
-                        case 'mes_anterior':
-                            $startDate = date('Y-m-01', strtotime('-1 month'));
-                            $endDate = date('Y-m-t', strtotime('-1 month'));
-                            break;
-                    }
-                }
                 ?>
                 <form id="frm_filtro_documentos">
                     <div class="row">
@@ -218,7 +180,7 @@
                         <div class="col-md-3">
                             <div class="input-group">
                                 <label class="text-left pr-1">Reporte:</label>
-                                <select class="form-control form-control-sm" onchange="cargar_documentos(this.value)" name="reportType" id="reportType">
+                                <select class="form-control form-control-sm" onchange="asignar_fechas(this.value)" name="reportType" id="reportType">
                                     <option value="all" <?php if (isset($reportType) && $reportType == 'all') echo 'selected' ?>>
                                         Todos</option>
                                     <option value="diarios" <?php if (isset($reportType) && $reportType == 'diarios') echo 'selected' ?>>
@@ -247,7 +209,7 @@
                         <div class="col-md-3">
                             <div class="input-group">
                                 <label class="text-left pr-1">Fecha de inicio:</label>
-                                <input class="form-control form-control-sm" id="startDate" type="date" name="startDate" value="<?php echo $startDate; ?>" max="<?php echo $endDate; ?>" min="<?= $startDate ?>" onchange="asignar_fecha(this)">
+                                <input class="form-control form-control-sm" id="startDate" type="date" name="startDate" value="<?= $startDate ?? "" ?>" onchange="asignar_fecha(this)" max="<?= $fecha_hoy?>">
                             </div>
                         </div>
 
@@ -255,7 +217,7 @@
                         <div class="col-md-3">
                             <div class="input-group">
                                 <label class="text-left pr-1">Fecha de fin:</label>
-                                <input class="form-control form-control-sm" id="endDate" type="date" name="endDate" value="<?= $endDate ?>" max="<?= $endDate ?>" min="<?= $startDate ?>">
+                                <input class="form-control form-control-sm" id="endDate" type="date" name="endDate" value="<?= $endDate ?? "" ?>" max="<?= $fecha_hoy?>">
                             </div>
                         </div>
 
@@ -263,11 +225,11 @@
                         <div class="col-md-2">
                             <div class="input-group">
                                 <label class="text-left pr-1">Documento:</label>
-                                <select class="form-control form-control-sm" id="documentTypeId" name="documentTypeId" onchange="cargar_documentos('busqueda')">
+                                <select class="form-control form-control-sm" id="documentTypeId" name="documentTypeId">
                                     <option value="all">Todos</option>
                                     <?php foreach ($documentTypes as $tipo_documento) :
-                                        if ($tipo_documento->documentType == 'Emisión') : ?>
-                                            <option value="<?= $tipo_documento->documentTypeId ?>" <?php if ($tipo_documento->documentTypeId == $documentTypeId) echo 'selected' ?>>
+                                        if ($tipo_documento->documentType == 'Emisión' && $tipo_documento->code != "99") : ?>
+                                            <option value="<?= $tipo_documento->code ?>" <?php if ($tipo_documento->documentTypeId == $documentTypeId) echo 'selected' ?>>
                                                 <?= $tipo_documento->description ?></option>
                                     <?php endif;
                                     endforeach; ?>

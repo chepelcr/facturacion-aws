@@ -31,9 +31,7 @@ class UsuariosModel extends Model {
 		'tipo_identificacion',
 		'codigo_telefono',
 		'nombre_pais',
-		'nombre_empresa',
-		'nombre_rol',
-		'ivois_id'
+		'nombre_rol'
 	];
 
 	protected $autoIncrement = true;

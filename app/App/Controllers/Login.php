@@ -59,7 +59,7 @@ class Login extends BaseController {
                         );
 
                         $taxpayersApi = new TaxpayersApi();
-                        $empresa = $taxpayersApi->getTaxpayerById($usuario->ivois_id);
+                        $empresa = $taxpayersApi->getTaxpayerById($usuario->id_empresa);
 
                         $data['id_empresa'] = $empresa->taxpayerId;
                         $data['empresa'] = json_encode($empresa);
@@ -84,10 +84,11 @@ class Login extends BaseController {
                         );
 
                         $taxpayersApi = new TaxpayersApi();
-                        $empresa = $taxpayersApi->getTaxpayerById($usuario->ivois_id);
+                        $empresa = $taxpayersApi->getTaxpayerById($usuario->id_empresa);
 
                         $data['id_empresa'] = $empresa->taxpayerId;
                         $data['empresa'] = json_encode($empresa);
+                        
                         $data['nombre_pagina'] = getEnt('app.name');
 
                         setDataSession($data);

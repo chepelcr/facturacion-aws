@@ -42,7 +42,7 @@ $(document).ready(function () {
                         mensajeAutomatico("Error", response.message, "error");
                     } else {
                         response = JSON.parse(response);
-                        
+
                         const clave = response.consecutiveNumber;
 
                         //Validar el tipo de objeto de respuesta
@@ -62,8 +62,8 @@ $(document).ready(function () {
                             confirmButtonColor: "#3085d6",
                         }).then((result) => {
                             //Vaciar los campos del formulario
-                            //$("#frm_subir_documento")[0].reset();
-                            //cerrar_modal("modalSubirDocumentos", cargar_documentos());
+                            $("#frm_subir_documento")[0].reset();
+                            cerrar_modal("modalSubirDocumentos", cargar_documentos());
                         });
                     }
                 },

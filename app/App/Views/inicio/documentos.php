@@ -2,15 +2,11 @@
     <div class="col-md-11">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <?= view('facturacion/elementos/nav') ?>
-                    </div>
-                </div>
+                <?= view('facturacion/elementos/nav') ?>
             </div>
-            
+
             <div class="col-md-12" id="listado_documentos">
-                
+
             </div>
 
             <div class="col-md-12 contenedor_facturas" id="contenedor_facturas">

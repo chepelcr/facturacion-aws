@@ -62,12 +62,27 @@ function crearBotonFactura(numero_documento) {
 
 /**Cargar todos los documentos de la empresa */
 function cargar_documentos(reportType = "") {
-    var direcion_url = base + "documentos/cargar_documentos/";
+    let direcion_url = base + "documentos/cargar_documentos/";
+
+    if (reportType == "busqueda") {
+        data = $("#frm_filtro_documentos").serialize();
+
+        if (submodulo_activo == "recibidos") {
+            reportType = "recibidos";
+        } else {
+            reportType = "emitidos";
+        }
+    } else {
+        data = {
+            reportType: "all",
+        };
+    }
 
     //Validar el tipo de reporte
     switch (reportType) {
         case "emitidos":
             direcion_url += "emitidos";
+            submodulo_activo = "emitidos";
 
             //Poner el titulo
             poner_titulo("Documentos", "Enviados");
@@ -77,6 +92,7 @@ function cargar_documentos(reportType = "") {
 
         case "recibidos":
             direcion_url += "recibidos";
+            submodulo_activo = "recibidos";
 
             //Poner el titulo
             poner_titulo("Documentos", "Recibidos");
@@ -96,38 +112,34 @@ function cargar_documentos(reportType = "") {
 
             //Colocar el max del campo #endDate en la fecha actual
             $("#endDate").attr("max", fecha_actual.toISOString().split("T")[0]);
-            return;
 
             break;
 
         default:
-            if (submodulo_activo == "") {
-                direcion_url += "emitidos";
+            direcion_url += "emitidos";
 
-                //Poner el titulo
-                poner_titulo("documentos", "emitidos");
+            //Poner el titulo
+            poner_titulo("Documentos", "Emitidos");
 
-                activar_modulo_boton("documentos", "emitidos");
-            }
+            activar_modulo_boton("documentos", "emitidos");
 
-            if (submodulo_activo == "emitidos") {
-                direcion_url += "emitidos";
-            }
+            reportType = "emitidos";
 
-            if (submodulo_activo == "recibidos") {
-                direcion_url += "recibidos";
-            }
             break;
     } //Fin de validacion de reporte
 
     if (reportType != "buscar") {
         const listadoDocumentos = $("#listado_documentos");
+
+        //Deshabilitar el boton de documentos
+        $(".btn-documentos").attr("disabled", true);
+
         Pace.track(function () {
             $.ajax({
                 url: direcion_url,
                 type: "GET",
                 dataType: "html",
-                data: $("#frm_filtro_documentos").serialize(),
+                data: data,
                 success: function (respuesta) {
                     desactivar_tooltips_documentos();
 
@@ -165,13 +177,28 @@ function cargar_documentos(reportType = "") {
             $(".btn-factura").attr("disabled", false);
 
             //Activar el boton de documentos
-            $(".btn-documentos").addClass("btn-warning").removeClass("btn-dark");
+            $(".btn-documentos").removeClass("btn-dark").removeClass("btn-warning");
+
+            if (reportType == "emitidos") {
+                //Agregar la clase .addClass("btn-warning") al boton btn-emitidos
+                //.addClass("btn-warning")
+                $(".btn-emitidos").addClass("btn-warning");
+
+                //Agregar la clase btn-dark al boton btn-recibidos
+                $(".btn-recibidos").addClass("btn-dark");
+            } else {
+                //Agregar la clase .addClass("btn-warning") al boton btn-recibidos
+                $(".btn-recibidos").addClass("btn-warning");
+
+                //Agregar la clase btn-dark al boton btn-emitidos
+                $(".btn-emitidos").addClass("btn-dark");
+            }
 
             //Desactivar el boton de facturas
             $(".btn-factura").addClass("btn-dark").removeClass("btn-purple");
 
             //Deshabilitar el boton de documentos
-            $(".btn-documentos").attr("disabled", true);
+            $(".btn-documentos").attr("disabled", false);
 
             //Collapse .card-opciones-documentos
             $(".card-opciones-documentos").CardWidget("collapse");
@@ -242,20 +269,6 @@ function reporte(reportType) {
             },
         });
     });
-}
-
-/**Abrir el modal para importar documentos electronicos*/
-function importar_documentos() {
-    if (modulo_activo != "documentos") {
-        cargar_inicio_modulo("documentos");
-    }
-
-    poner_titulo("documentos", "importar");
-
-    activar_modulo_boton("documentos", "importar");
-
-    //Mostrar el .modal-importar
-    $("#modal-importar").modal("show");
 }
 
 /**Contraer o expandir el card de reporte */

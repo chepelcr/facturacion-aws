@@ -72,10 +72,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
                                         if ($modulo->nombre_modulo != 'documentos') {
                                             echo view('base/modal/submodulo', $submodulo);
-                                        } else {
-                                            if ($submodulo->nombre_submodulo == 'importar') {
-                                                echo view('facturacion/modal/importar');
-                                            }
                                         }
                                     endforeach; ?>
                                 </div>

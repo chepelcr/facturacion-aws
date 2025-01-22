@@ -105,24 +105,17 @@ class DocumentosService {
         return $documentos;
     }
 
-    public function cargarDocumentos($documentTypeId, $issuerFilter, $reportType = null, $startDate = '', $endDate = '') {
+    public function cargarDocumentos($documentTypeId, $issuerFilter, $startDate, $endDate, $reportType = null) {
         $documentsApi = $this->documentsApi;
 
-        $filter = '';
-
-        /*if($documentTypeId != 'all'){
-            $filter .= 'documentType:' . $documentTypeId;
+        
+        if($issuerFilter == "recibidos") {
+            $received = true;
+        } else {
+            $received = false;
         }
 
-        //$model->documentos($tipo_documento);
-
-        if($issuerFilter == 'emitidos') {
-            $filter .= ',issuerIdNumber:' . getTaxpayerId();
-        } elseif($issuerFilter == 'recibidos') {
-            $filter .= ',receiverIdNumber:' . getTaxpayerId();
-        }*/
-
-        switch ($reportType) {
+        /*switch ($reportType) {
             case 'all':
                 $startDate = null;
                 $endDate = null;
@@ -176,9 +169,9 @@ class DocumentosService {
                 $startDate = strtotime(date('Y-m-d'));
                 $endDate = strtotime(date('Y-m-d'));
                 break;
-        }
+        }*/
 
-        $documentos = $documentsApi->getDocumentsByFilter($filter);
+        $documentos = $documentsApi->getDocumentsByFilter($received, $documentTypeId, $startDate, $endDate);
 
         if (isset($documentos->error)) {
             return $documentos;
@@ -309,7 +302,7 @@ class DocumentosService {
                     'stateName' => 'receiver[residence][stateId]',
                     'countyName' => 'receiver[residence][countyId]',
                     'districtName' => 'receiver[residence][districtId]',
-                    'neighborhoodName' => 'receiver[residence][neighborhoodId]',
+                    //'neighborhoodName' => 'receiver[residence][neighborhoodId]',
                     'addressName' => 'receiver[residence][address]',
                 ),
             ),

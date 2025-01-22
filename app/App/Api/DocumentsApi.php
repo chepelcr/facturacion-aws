@@ -87,12 +87,55 @@ class DocumentsApi extends IvoisApi {
      * @param string $filter Filtro de busqueda
      * @return array Lista de documentos electrónicos
      */
-    public function getDocumentsByFilter($filter = '') {
-        if (empty($filter)) {
-            return $this->makeGetRequestUrl('/all');
-        } else {
-            return $this->makeGetRequestUrl('/all?search=' . $filter);
+    public function getDocumentsByFilter($received, $documentType, $startDate, $endDate){
+        $url = "/all";
+        $hasFilter = false;
+
+        if ($received) {
+            $url = $url."?received=true";
+            $hasFilter = true;
         }
+
+        if($documentType != null && $documentType != "all") {
+            if ($hasFilter) {
+                $url = $url."&";
+            } else {
+                $url = $url."?";
+            }
+
+            $url = $url."documentType=$documentType";
+            $hasFilter = true;
+        }
+
+        if($startDate != null) {
+            if ($hasFilter) {
+                $url = $url."&";
+            } else {
+                $url = $url."?";
+            }
+
+            $startDate = date("Y-m-d 00:00:00",strtotime($startDate));
+
+            //$url = $url."startDate=$startDate";
+            $hasFilter = true;
+        }
+
+        if($endDate != null) {
+            if ($hasFilter) {
+                $url = $url."&";
+            } else {
+                $url = $url."?";
+            }
+
+            $endDate = date("Y-m-d 23:59:59",strtotime($endDate));
+
+            //$url = $url."endDate=$endDate";
+            $hasFilter = true;
+        }
+
+        //var_dump($url);
+
+        return $this->makeGetRequestUrl($url);
     }
 
     /**

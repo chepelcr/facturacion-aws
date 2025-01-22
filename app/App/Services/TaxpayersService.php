@@ -64,7 +64,7 @@ class TaxpayersService
         $provincias = $this->locationsApi->get_states_by_iso_code($residenceCountry);
         $cantones = $this->locationsApi->get_counties_by_state_id_and_iso_code($empresa->residence->stateId, $residenceCountry);
         $distritos = $this->locationsApi->get_districts_by_county_id_and_state_id_and_iso_code($empresa->residence->countyId, $empresa->residence->stateId, $residenceCountry);
-        $barrios = $this->locationsApi->get_neighborhoods_by_district_id_and_county_id_and_state_id_and_iso_code($empresa->residence->districtId, $empresa->residence->countyId, $empresa->residence->stateId, $residenceCountry);
+        //$barrios = $this->locationsApi->get_neighborhoods_by_district_id_and_county_id_and_state_id_and_iso_code($empresa->residence->districtId, $empresa->residence->countyId, $empresa->residence->stateId, $residenceCountry);
     
         $dataProvincias = array(
             #'cod_provincia' => $empresa->residence->stateId,
@@ -78,7 +78,7 @@ class TaxpayersService
             'districts' => $distritos,
             #'cod_barrio' => $empresa->residence->neighborhoodId,
             #'barrio' => $empresa->residence->neighborhoodName,
-            'neighborhoods' => $barrios,
+            //'neighborhoods' => $barrios,
             'residence' => $empresa->residence
             #'otras_senas'=>$empresa->residence->address
         );

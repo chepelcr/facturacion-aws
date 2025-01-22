@@ -11,13 +11,11 @@ use App\Api\LocationsApi;
  * @version 1.5
  * @author jcampos
  */
-class Ubicacion extends BaseController
-{
+class Ubicacion extends BaseController {
     private const ERROR_400 = "No se han enviado los parametros necesarios";
 
     /**Obtener todas las provincias */
-    public function provincias()
-    {
+    public function provincias() {
         if (isset($_GET['countryCode'])) {
             $countryCode = $_GET['countryCode'];
 
@@ -31,8 +29,7 @@ class Ubicacion extends BaseController
     } //Fin de la funcion provincias
 
     /**Obtener los cantones para una provincia */
-    public function cantones()
-    {
+    public function cantones() {
         if (isset($_GET['countryCode']) && isset($_GET['stateId'])) {
             $countryCode = $_GET['countryCode'];
             $stateId = $_GET['stateId'];
@@ -47,8 +44,7 @@ class Ubicacion extends BaseController
     } //Fin de la funcion
 
     /**Obtener todos los distritos para un canton */
-    public function distritos()
-    {
+    public function distritos() {
         if (isset($_GET["countryCode"]) && isset($_GET["stateId"]) && isset($_GET["countyId"])) {
             $countryCode = $_GET["countryCode"];
             $state = $_GET["stateId"];
@@ -65,7 +61,7 @@ class Ubicacion extends BaseController
     } //Fin de validacion
 
     /**Obtener todos los distritos para un canton */
-    public function barrios()
+    /*public function barrios()
     {
         if (isset($_GET["countryCode"]) && isset($_GET["stateId"]) && isset($_GET["countyId"]) && isset($_GET["districtId"])) {
             $countryCode = $_GET["countryCode"];
@@ -81,5 +77,5 @@ class Ubicacion extends BaseController
         } else {
             return $this->object_error(400, self::ERROR_400);
         }
-    } //Fin de la funcion
+    } //Fin de la funcion*/
 }//Fin de la clase

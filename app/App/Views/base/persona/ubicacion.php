@@ -14,7 +14,7 @@
 
     <div class="card-body">
         <div class="row">
-            <div class="col-md-6 ubicacion">
+            <div class="col-md-4 ubicacion">
                 <div class="form-group">
                     <label class="text-left ivois-label" for="residence[stateId]">Provincia</label>
                     <div class="input-group">
@@ -36,7 +36,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 ubicacion">
+            <div class="col-md-4 ubicacion">
                 <div class="form-group">
                     <label class="text-left ivois-label" for="residence[countyId]">Cantón</label>
                     <div class="input-group">
@@ -62,14 +62,14 @@
                 </div>
             </div>
 
-            <div class="col-md-6 ubicacion">
+            <div class="col-md-4 ubicacion">
                 <div class="form-group">
                     <label class="text-left ivois-label" for="residence[districtId]">Distrito</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <select onchange="obtener_barrios()" class="receiver form-control inp residence_districtId" name="<?= $districtName ?? "residence[districtId]" ?>" required>
+                        <select class="receiver form-control inp residence_districtId" name="<?= $districtName ?? "residence[districtId]" ?>" required>
                             <option value="">Seleccionar</option>
 
                             <!-- Si existen, recorrer districts-->
@@ -87,7 +87,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6 ubicacion">
+            <?php /*<div class="col-md-6 ubicacion">
                 <div class="form-group">
                     <label class="text-left ivois-label" for="residence[neighborhoodId]">Barrio</label>
                     <div class="input-group">
@@ -110,7 +110,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
+            </div>*/ ?>
 
             <div class="col-md-12">
                 <div class="form-group">

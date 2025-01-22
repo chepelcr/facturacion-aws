@@ -133,7 +133,7 @@ class DocumentValidations {
             );
         } else {
             //Validar si la residencia tiene un estado, canton, distrito, barrio y direccion cuando la nacionalidad es 188
-            if ($receiver['nationality'] == "188" && (!isset($receiver['residence']['stateId']) || $receiver['residence']['stateId'] == '' || !isset($receiver['residence']['countyId']) || $receiver['residence']['countyId'] == '' || !isset($receiver['residence']['districtId']) || $receiver['residence']['districtId'] == '' || !isset($receiver['residence']['neighborhoodId']) || $receiver['residence']['neighborhoodId'] == '' || !isset($receiver['residence']['address']) || $receiver['residence']['address'] == '')) {
+            if ($receiver['nationality'] == "188" && (!isset($receiver['residence']['stateId']) || $receiver['residence']['stateId'] == '' || !isset($receiver['residence']['countyId']) || $receiver['residence']['countyId'] == '' || !isset($receiver['residence']['districtId']) || $receiver['residence']['districtId'] == '' || /*!isset($receiver['residence']['neighborhoodId']) || $receiver['residence']['neighborhoodId'] == '' || */!isset($receiver['residence']['address']) || $receiver['residence']['address'] == '')) {
                 return array(
                     'message' => 'No se han ingresado todos los campos de la residencia del receptor',
                     'status' => '400',

@@ -2,14 +2,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Modas Laura</title>
+<title>
+    <?= getEnt('app.name') ?>
+</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
+
 <!-- Google Font: Source Sans Pro -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<!--Preconnect to fontawsome -->
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
 <!-- Font Awesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
@@ -24,10 +31,15 @@
 <!-- Pace Style-->
 <link rel="stylesheet" href="<?= getFile('dist/js/plugins/pace-progress/themes/center-radar.css') ?>">
 
+
 <!-- Selecc2-->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css">
+
 <!--DataTables-->
+<link rel="preconnect" href="https://cdn.datatables.net" crossorigin>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-2.0.8/sl-2.0.3/datatables.min.css">
 
 <!-- Estilo personalizado -->
