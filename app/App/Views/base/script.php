@@ -119,6 +119,9 @@ if (is_login()) {
     <!-- Facturacion | Incio | Importar -->
     <?= getScript('core/facturacion/inicio/importar') ?>
 
+    <!-- Facturacion | Incio | Aceptacion -->
+    <?= getScript('core/facturacion/inicio/aceptacion') ?>
+
     <!-- Facturacion | Documento | Acciones -->
     <?= getScript('core/facturacion/documento/acciones') ?>
 

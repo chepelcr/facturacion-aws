@@ -42,11 +42,17 @@ function validar_documento() {
  *
  * @param {*} branchesSelect Select con la sucursal seleccionada
  */
-function selectTerminals(branchesSelect) {
+function selectTerminals(branchesSelect, modulo = '') {
+    if(modulo != 'aceptacion'){
+        modulo = factura_activa;
+    } else {
+        modulo = 'modalAceptarDocumentos';
+    }
+
     const selectedOption = $(branchesSelect).find("option:selected");
     const value = selectedOption.val();
 
-    const terminalsSelect = $("#" + factura_activa).find(".terminals");
+    const terminalsSelect = $("#" + modulo).find(".terminals");
 
     //Eliminar las terminales del select de terminal
     terminalsSelect.empty();

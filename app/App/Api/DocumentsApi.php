@@ -18,7 +18,7 @@ class DocumentsApi extends IvoisApi {
      * @param string $taxpayerId Identificación del contribuyente
      */
     public function __construct($taxpayerId) {
-        parent::__construct(getEnt('ivois.api.taxpayers.url') . $taxpayerId . getEnt('ivois.api.documents.url'));//, "http://172.18.0.3:8089");
+        parent::__construct(getEnt('ivois.api.taxpayers.url') . $taxpayerId . getEnt('ivois.api.documents.url')); //, "http://172.18.0.3:8089");
     }
 
     /**
@@ -87,47 +87,47 @@ class DocumentsApi extends IvoisApi {
      * @param string $filter Filtro de busqueda
      * @return array Lista de documentos electrónicos
      */
-    public function getDocumentsByFilter($received, $documentType, $startDate, $endDate){
+    public function getDocumentsByFilter($received, $documentType, $startDate, $endDate) {
         $url = "/all";
         $hasFilter = false;
 
         if ($received) {
-            $url = $url."?received=true";
+            $url = $url . "?received=true";
             $hasFilter = true;
         }
 
-        if($documentType != null && $documentType != "all") {
+        if ($documentType != null && $documentType != "all") {
             if ($hasFilter) {
-                $url = $url."&";
+                $url = $url . "&";
             } else {
-                $url = $url."?";
+                $url = $url . "?";
             }
 
-            $url = $url."documentType=$documentType";
+            $url = $url . "documentType=$documentType";
             $hasFilter = true;
         }
 
-        if($startDate != null) {
+        if ($startDate != null) {
             if ($hasFilter) {
-                $url = $url."&";
+                $url = $url . "&";
             } else {
-                $url = $url."?";
+                $url = $url . "?";
             }
 
-            $startDate = date("Y-m-d 00:00:00",strtotime($startDate));
+            $startDate = date("Y-m-d 00:00:00", strtotime($startDate));
 
             //$url = $url."startDate=$startDate";
             $hasFilter = true;
         }
 
-        if($endDate != null) {
+        if ($endDate != null) {
             if ($hasFilter) {
-                $url = $url."&";
+                $url = $url . "&";
             } else {
-                $url = $url."?";
+                $url = $url . "?";
             }
 
-            $endDate = date("Y-m-d 23:59:59",strtotime($endDate));
+            $endDate = date("Y-m-d 23:59:59", strtotime($endDate));
 
             //$url = $url."endDate=$endDate";
             $hasFilter = true;
@@ -151,9 +151,26 @@ class DocumentsApi extends IvoisApi {
         return $this->makeGetRequestUrl($url);
     }
 
+    /**
+     * Cargar un archivo XML en la plataforma
+     */
     public function uploadDocument($data) {
         $url = "/upload-document";
 
         return $this->makePostRequest($data, $url);
+    }
+
+    /**
+     * Validar un documento electrónico
+     *
+     * @param array $data Datos del documento
+     * @param string $documentKey Clave del documento
+     * @return object Validación del documento
+     */
+    public function sendReceiverValidation($data, $documentKey) {
+        //{documentKey}/validate-document
+        $url = "/$documentKey/validate-document";
+
+        return $this->makePatchRequest($data, $url);
     }
 }

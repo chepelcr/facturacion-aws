@@ -46,4 +46,6 @@ echo view('facturacion/receptores/modal/busqueda');
 echo view('facturacion/modal/notificar');
 
 echo view('facturacion/modal/subir_documentos');
+
+echo view('facturacion/modal/aceptar_documento');
 ?>

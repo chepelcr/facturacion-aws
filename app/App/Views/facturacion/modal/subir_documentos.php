@@ -28,7 +28,7 @@
                         <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">Cancelar</button>
                     </div>
                     <div class="col-md-5">
-                        <button type="submit" class="btn btn-primary btn-block" title="Cargar documento" data-toggle="tooltip">
+                        <button type="submit" class="btn btn-primary btn-block btn-cargar" title="Cargar documento" data-toggle="tooltip">
                             <i class="fas fa-upload"></i> Cargar documento
                         </button>
                     </div>

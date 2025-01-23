@@ -1,27 +1,34 @@
-/**
- * Mostrar el modal cargar documentos electrónicos a la plataforma
- */
-function cargar_documento() {
-    $("#modalSubirDocumentos").modal("show");
+function aceptar_documento(documentKey) {
 
-    //Habilitar el btn-cargar
-    $("#modalSubirDocumentos .btn-cargar").attr("disabled", false);
-} //Fin de la funcion cargar_documento
+    //Actualizar las sucursales del modal de aceptación
+    actualizar_sucursales('aceptacion');
+
+    //Colocar la clave del documento en el campo de texto del modal de aceptación
+    $("#modalAceptarDocumentos .documentKey").val(documentKey);
+
+    //Habilitar el btn-validar
+    $("#modalAceptarDocumentos .btn-validar").attr("disabled", false);
+
+    //Abrir el modal modalAceptarDocumentos
+    $("#modalAceptarDocumentos").modal("show");
+}
 
 $(document).ready(function () {
-    //Cuando el frm_subir_documento hace submit
-    $("#frm_subir_documento").submit(function (e) {
+    //Cuando el frm_aceptar_documento hace submit
+    $("#frm_aceptar_documento").submit(function (e) {
         e.preventDefault();
 
         const formData = new FormData(this);
 
-        //Bloquear el boton .btn-cargar del modalSubirDocumentos
-        $("#modalSubirDocumentos .btn-cargar").attr("disabled", true);
+        //Bloquear el boton .btn-validar del modalAceptarDocumentos
+        $("#modalAceptarDocumentos .btn-validar").attr("disabled", true);
+
+        const key = $("#modalAceptarDocumentos .documentKey").val();
 
         Pace.track(function () {
             //Enviar el archivo
             $.ajax({
-                url: base + "documentos/subir_documento",
+                url: base + "documentos/validacion_receptor/" + key,
                 type: "POST",
                 data: formData,
                 cache: false,
@@ -35,13 +42,10 @@ $(document).ready(function () {
 
                         const clave = response.consecutiveNumber;
 
-                        //Validar el tipo de objeto de respuesta
-                        console.log(typeof(response));
-
-                        const message = "El documento " + clave + " ha sido enviado al API de IVOIS para su procesamiento";
+                        const message = "Se ha enviado la validación del documento " + clave + " al emisor";
 
                         Swal.fire({
-                            title: "Documento enviado",
+                            title: "Documento validado",
                             text: message,
                             icon: "success",
                             showConfirmButton: true,
@@ -52,8 +56,8 @@ $(document).ready(function () {
                             confirmButtonColor: "#3085d6",
                         }).then((result) => {
                             //Vaciar los campos del formulario
-                            $("#frm_subir_documento")[0].reset();
-                            cerrar_modal("modalSubirDocumentos", cargar_documentos());
+                            $("#frm_aceptar_documento")[0].reset();
+                            cerrar_modal("modalAceptarDocumentos", cargar_documentos('recibidos'));
                         });
                     }
                 },
@@ -69,13 +73,13 @@ $(document).ready(function () {
                     ) {
                         response = JSON.parse(jqXHR.responseText);
                     } else {
-                        response = { message: "Error al guardar el documento", status: "error" };
+                        response = { message: "Error al validar el documento", status: "error" };
                     }
 
                     mensaje("Error", response.message, "error");
 
-                    //Habilitar el btn-cargar
-                    $("#modalSubirDocumentos .btn-cargar").attr("disabled", false);
+                    //Habilitar el btn-validar
+                    $("#modalAceptarDocumentos .btn-validar").attr("disabled", false);
                 },
             });
         });

@@ -194,6 +194,7 @@ class DocumentosService {
 
         $dataView = array(
             'documentos' => $documentos,
+            'received' => $received,
             'reportType' => $reportType,
             'documentTypes' => $documentTypes,
             'startDate' => $startDate,
@@ -461,10 +462,10 @@ class DocumentosService {
     }
 
     /**
-     * Enviar un documento a la API de IVois
+     * Enviar un documento al API de Ivois
      * 
      * @param array $data Datos del documento
-     * @return object Respuesta de la API
+     * @return object Respuesta del API
      */
     public function guardarDocumento($data) {
         $document = DocumentValidations::validateDocumentStructure($data);
@@ -557,10 +558,10 @@ class DocumentosService {
     }
 
     /**
-     * Subir un documento a la API de IVois
+     * Subir un documento al API de Ivois
      *
      * @param array $data Datos de los documentos
-     * @return object Respuesta de la API
+     * @return object Respuesta del API
      */
     public function subirDocumento($xml, $contentType) {
 
@@ -575,5 +576,26 @@ class DocumentosService {
         $documentsApi = $this->documentsApi;
 
         return $documentsApi->uploadDocument($document);
+    }
+
+    /**
+     * Obtener las sucursales activas
+     *
+     * @return array|object Sucursales activas u objeto de error
+     */
+    public function getSucursales() {
+        return $this->branchesApi->getBranchesByStatus(1);
+    }
+
+    /**
+     * Enviar validacion de receptor al API de Ivois
+     *
+     * @param array $data Datos del receptor
+     * @return object Respuesta del API
+     */
+    public function validacionReceptor($data, $documentKey) {
+        $documentsApi = $this->documentsApi;
+
+        return $documentsApi->sendReceiverValidation($data, $documentKey);
     }
 }

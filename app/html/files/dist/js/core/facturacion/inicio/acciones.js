@@ -221,6 +221,65 @@ function cargar_documentos(reportType = "") {
     } //Fin de validacion de tipo de reporte
 }
 
+function actualizar_sucursales(modulo = "") {
+    if (modulo != "aceptacion") {
+        modulo = factura_activa;
+    } else {
+        modulo = "modalAceptarDocumentos";
+    }
+
+    const activeElement = $("#" + modulo);
+
+    const branchesSelect = activeElement.find(".branches");
+
+    const terminalsSelect = activeElement.find(".terminals");
+
+    branchesSelect.empty();
+    terminalsSelect.empty();
+    terminalsSelect.attr("disabled", true);
+
+    //Obtener las sucursales y colocarlas en el select de branches del elemento
+    $.ajax({
+        url: base + "documentos/obtener_sucursales",
+        type: "GET",
+        dataType: "json",
+        success: function (respuesta) {
+            activeElement.find(".branches").append('<option value="" selected >Seleccionar sucursal</option>');
+
+            //Recorrer las sucursales
+            respuesta.forEach((sucursal) => {
+                //Agregar la sucursal al select de sucursales
+                branchesSelect.append(
+                    "<option value='" +
+                        sucursal.number +
+                        "' data-terminals='" +
+                        JSON.stringify(sucursal.terminals) +
+                        "'>" +
+                        sucursal.name +
+                        "</option>"
+                );
+            });
+
+            if (modulo == "modalAceptarDocumentos") {
+                modulo = "aceptacion";
+            }
+
+            selectTerminals(branchesSelect, modulo);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            response = jqXHR.responseText;
+
+            if (response == null || response == "" || response == undefined || response == "undefined" || response == "null") {
+                response = { message: "Error desconocido", status: jqXHR.status };
+            } else {
+                response = JSON.parse(response);
+            }
+
+            mensajeAutomatico("Error", response.message, "error");
+        },
+    });
+}
+
 /**Descargar un reporte */
 function reporte(reportType) {
     mensajeAutomatico("Generando reporte", "Espera un momento", "info");

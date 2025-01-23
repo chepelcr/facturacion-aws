@@ -427,20 +427,71 @@ class Documentos extends BaseController {
             $contentType = $_FILES['documento']['type'];
 
             $data = $this->documentosService->subirDocumento($xml, $contentType);
-
-            if(isset($data->error)) {
-                return $this->error($data);
-            } else {
-                return json_encode($data);
-            }
         } else {
             $data = array(
                 'error' => 'No ha iniciado sesión',
                 'estado' => 'error',
                 'status' => 505
             );
+        }
 
+        if (isset($data->error)) {
             return $this->error($data);
+        } else {
+            return json_encode($data);
+        }
+    }
+
+    /**
+     * Obtener las sucursales de la facturación de un usuario
+     */
+    public function obtener_sucursales() {
+        if (is_login()) {
+            $response = $this->documentosService->getSucursales();
+        } else {
+            $response = array(
+                'error' => 'No ha iniciado sesión',
+                'estado' => 'error',
+                'status' => 505
+            );
+        }
+
+        if (isset($response->error)) {
+            return $this->error($response);
+        } else {
+            return json_encode($response);
+        }
+    }
+
+    /**
+     * Enviar la validación de un receptor al ministerio de hacienda
+     */
+    public function validacion_receptor() {
+        if (!is_login()) {
+            $response = array(
+                'error' => 'No ha iniciado sesión',
+                'estado' => 'error',
+                'status' => 505
+            );
+        } else {
+            if (getSegment(3)) {
+                $data = post();
+                $documentKey = getSegment(3);
+
+                $response = $this->documentosService->validacionReceptor($data, $documentKey);
+            } else {
+                $response = array(
+                    'error' => 'No se ha enviado un documento para validar',
+                    'estado' => 'error',
+                    'status' => 400
+                );
+            }
+        }
+
+        if (isset($response->error)) {
+            return $this->error($response);
+        } else {
+            return json_encode($response);
         }
     }
 }//Fin de la clase

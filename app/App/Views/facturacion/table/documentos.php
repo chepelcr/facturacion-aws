@@ -81,7 +81,7 @@
                                         <div class="dropdown-item p-1">
                                             <div class="row">
                                                 <?php
-                                                if ($documento->atvValidation->validationStatus == '1') {
+                                                if ($documento->atvValidation->validationStatus == '1' && !$received) {
                                                 ?>
                                                     <!-- Revalidar documento -->
                                                     <div class="col-md-6 pb-1">
@@ -97,6 +97,29 @@
                                                         </button>
                                                     </div>
 
+                                                    <?php
+                                                    if ($documento->receiverValidation->status == 0) {
+                                                        //Si el documento esta aceptado por hacienda solamente y no por el receptor
+                                                    ?>
+                                                        <!-- Subir archivo de validación del receptor -->
+                                                        <div class="col-md-12 pb-1">
+                                                            <button onclick="subirArchivoReceptor('<?= $documento->documentKey ?>')" type="button" data-toggle="tooltip" title="Subir archivo de validación del receptor" class="btn btn-success btn-subir btn-block">
+                                                                <i class="fas fa-upload"></i>
+                                                            </button>
+                                                        </div>
+                                                    <?php
+                                                    } else {
+                                                    ?>
+                                                        <!-- Ver validación del receptor -->
+                                                        <div class="col-md-12 pb-1">
+                                                            <button onclick="ver_validacion_receptor(<?= json_encode($documento->receiverValidation) ?>);" type="button" data-toggle="tooltip" title="Ver validación del receptor" class="btn btn-info btn-ver-validacion-receptor btn-block">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </div>
+                                                    <?php
+                                                    }
+                                                    ?>
+
                                                     <div class="col-md-6">
                                                         <button onclick="emitir_nota_credito('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" disabled title="Emitir nota de credito" class="btn btn-danger btn-nota-credito btn-block">
                                                             <i class="fas fa-funnel-dollar"></i>
@@ -110,7 +133,7 @@
                                                     </div>
 
                                                 <?php
-                                                } elseif ($documento->atvValidation->validationStatus == '3') {
+                                                } elseif ($documento->atvValidation->validationStatus == '3' && !$received) {
                                                 ?>
                                                     <!-- Información de validación -->
                                                     <div class="col-md-6 pb-1">
@@ -133,6 +156,39 @@
                                                         </button>
                                                     </div>
                                                 <?php
+                                                } elseif ($received && ($documento->atvValidation->validationStatus == '1' && $documento->receiverValidation->status == 0)) {
+                                                    //Si el documento esta aceptado por hacienda solamente y no por el receptor, mostrar boton de validación y de aceptacion de receptor
+                                                    //Validar documento
+                                                ?>
+                                                    <div class="col-md-6">
+                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Aceptar -->
+                                                    <div class="col-md-6">
+                                                        <button onclick="aceptar_documento('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Aceptar documento" class="btn btn-success btn-aceptar btn-block">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    </div>
+                                                <?php
+                                                } elseif ($received && ($documento->atvValidation->validationStatus == '1' && $documento->receiverValidation->status != 0)) {
+                                                    //Si el documento esta aceptado por hacienda y por el receptor, mostrar boton de aceptacion de receptor
+                                                ?>
+                                                    <div class="col-md-6">
+                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Ver validación del receptor -->
+                                                    <div class="col-md-6">
+                                                        <button onclick="ver_validacion_receptor(<?= json_encode($documento->receiverValidation) ?>);" type="button" data-toggle="tooltip" title="Ver validación del receptor" class="btn btn-info btn-ver-validacion-receptor btn-block">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                <?php
                                                 } else {
                                                 ?>
                                                     <!-- Información de validación -->
@@ -141,8 +197,7 @@
                                                             <i class="fas fa-check-circle"></i>
                                                         </button>
                                                     </div>
-                                                <?php
-                                                }
+                                                <?php }
                                                 ?>
                                             </div>
                                         </div>
