@@ -260,7 +260,7 @@ class Documentos extends BaseController {
 
             $data = $this->documentosService->crearDocumento($documentTypeId, $numero_documento);
 
-            if (isset($data['error'])) {
+            if (isset($data->error)) {
                 return $this->error($data);
             } else {
                 return $data;

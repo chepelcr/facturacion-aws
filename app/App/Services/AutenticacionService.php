@@ -39,16 +39,16 @@ class AutenticacionService
      */
     public function actualizarConfiguracionesPorIdContribuyente($idContribuyente, $configuraciones)
     {
-        if ($configuraciones['notifyProcessingDocuments'] == '1') {
-            $configuraciones['notifyProcessingDocuments'] = true;
+        if ($configuraciones['notificationSettings']['notifyProcessingDocuments'] == '1') {
+            $configuraciones['notificationSettings']['notifyProcessingDocuments'] = true;
         } else {
-            $configuraciones['notifyProcessingDocuments'] = false;
+            $configuraciones['notificationSettings']['notifyProcessingDocuments'] = false;
         }
 
-        if ($configuraciones['notifyReceivedDocuments'] == '1') {
-            $configuraciones['notifyReceivedDocuments'] = true;
+        if ($configuraciones['notificationSettings']['notifyReceivedDocuments'] == '1') {
+            $configuraciones['notificationSettings']['notifyReceivedDocuments'] = true;
         } else {
-            $configuraciones['notifyReceivedDocuments'] = false;
+            $configuraciones['notificationSettings']['notifyReceivedDocuments'] = false;
         }
 
         return $this->configurationApi->update_configurations_by_taxpayer_id($idContribuyente, $configuraciones);

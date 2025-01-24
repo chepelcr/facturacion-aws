@@ -200,6 +200,19 @@
                             </div>
                         </div>
 
+                        <!-- Correos con copia -->
+                         <div class="com-md-12">
+                            <div class="form-group">
+                                <label for="email" class="ivois-label">Correo electrónico</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control email" name="copyEmails[0]" placeholder="CC">
+                                </div>
+                            </div>
+                         </div>
+
                         <!-- Detalles del documento -->
                         <div class="col-md-12">
                             <div class="card">

@@ -135,18 +135,15 @@ class Configuracion extends BaseController {
             if ($objeto == 'hacienda' && validar_permiso('configuracion', 'documentos', 'modificar')) {
                 $autenticationService = new AutenticacionService();
 
-                if (isset($_FILES['certificate'])) {
-                    $pin = $data['certificate']['pin'];
-
-                    $certificate = file_get_contents($_FILES['certificate']['tmp_name']);
-                    $contentType = $_FILES['certificate']['type'];
-
+                if (isset($_FILES['certificate']) && $_FILES['certificate']['size'] > 0) {
                     $data['certificate'] = array(
-                        'data' => base64_encode($certificate),
-                        'pin' => $pin,
-                        'contentType' => $contentType,
+                        'data' => base64_encode(file_get_contents($_FILES['certificate']['tmp_name'])),
+                        'pin' => $data['certificate']['pin'],
+                        'contentType' => $_FILES['certificate']['type'],
                         'name' => $_FILES['certificate']['name']
                     );
+                } else {
+                    unset($data['certificate']);
                 }
 
                 $response = $autenticationService->actualizarConfiguracionesPorIdContribuyente(getTaxpayerId(), $data);

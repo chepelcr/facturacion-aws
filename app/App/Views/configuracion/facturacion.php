@@ -119,7 +119,7 @@
                                                             <i class="fa-solid fa-ban"></i>
                                                         </button>
 
-                                                        <input type="hidden" name="notifySentDocuments" class="inp_notifySentDocuments inp" value="<?= $notificationSettings->notifySentDocuments ?? "" ?>">
+                                                        <input type="hidden" name="notificationSettings[notifySentDocuments]" class="inp_notifySentDocuments inp" value="<?= $notificationSettings->notifySentDocuments ?? "" ?>">
                                                     </div>
                                                 </div>
                                             </div>
@@ -142,7 +142,7 @@
                                                             <i class="fa-solid fa-check"></i>
                                                         </button>
 
-                                                        <input type="hidden" name="notifyReceivedDocuments" class="inp_notifyReceivedDocuments inp" value="<?= (isset($notificationSettings->notifyReceivedDocuments) && $notificationSettings->notifyReceivedDocuments) ? "0" : "1" ?>">
+                                                        <input type="hidden" name="notificationSettings[notifyReceivedDocuments]" class="inp_notifyReceivedDocuments inp" value="<?= (isset($notificationSettings->notifyReceivedDocuments) && $notificationSettings->notifyReceivedDocuments) ? "0" : "1" ?>">
                                                     </div>
                                                 </div>
                                             </div>
@@ -165,7 +165,7 @@
                                                             <i class="fa-solid fa-check"></i>
                                                         </button>
 
-                                                        <input type="hidden" name="notifyProcessingDocuments" class="inp_notifyProcessingDocuments inp" value="<?= (isset($notificationSettings->notifyProcessingDocuments) && $notificationSettings->notifyProcessingDocuments) ? "0" : "1" ?>">
+                                                        <input type="hidden" name="notificationSettings[notifyProcessingDocuments]" class="inp_notifyProcessingDocuments inp" value="<?= (isset($notificationSettings->notifyProcessingDocuments) && $notificationSettings->notifyProcessingDocuments) ? "0" : "1" ?>">
                                                     </div>
                                                 </div>
                                             </div>
@@ -207,7 +207,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fa-solid fa-link"></i></span>
                                                     </div>
-                                                    <input class="form-control inp inp_callbackUrl" name="callbackUrl" type="text" required value="<?= $notificationSettings->callbackUrl ?? "" ?>" placeholder="Url de callback">
+                                                    <input class="form-control inp inp_callbackUrl" name="notificationSettings[callbackUrl]" type="text" required value="<?= $notificationSettings->callbackUrl ?? "" ?>" placeholder="Url de callback">
                                                 </div>
                                             </div>
                                         </div>
