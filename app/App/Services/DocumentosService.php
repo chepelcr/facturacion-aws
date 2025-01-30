@@ -9,8 +9,10 @@ use App\Api\CustomersApi;
 use App\Api\DataServiceApi;
 use App\Api\DocumentsApi;
 use App\Api\LocationsApi;
+use App\Api\NotificationsApi;
 use App\Api\ProductsApi;
 use App\Api\TaxpayersApi;
+use App\Api\ValidationsApi;
 use App\Librerias\Indicador;
 use App\Librerias\Reportes;
 use App\Validations\DocumentValidations;
@@ -41,6 +43,16 @@ class DocumentosService {
     private $branchesApi;
 
     /**
+     * Api de validaciones de Hacienda
+     */
+    private $validationsApi;
+
+    /**
+     * Api de notificaciones de documento
+     */
+    private $notificationsApi;
+
+    /**
      * Constructor
      */
     public function __construct() {
@@ -49,6 +61,9 @@ class DocumentosService {
 
         $this->documentsApi = new DocumentsApi(getTaxpayerId());
         $this->branchesApi = new BranchesApi(getTaxpayerId());
+
+        $this->validationsApi = new ValidationsApi(getTaxpayerId());
+        $this->notificationsApi = new NotificationsApi(getTaxpayerId());
     }
 
     /**
@@ -76,27 +91,15 @@ class DocumentosService {
      * @return array Retorna el resultado del envio
      */
     public function enviarDocumento($idDocumento, $email = null) {
-        $documentsApi = $this->documentsApi;
+        $notificationsApi = $this->notificationsApi;
 
         if ($email) {
-            $result = $documentsApi->sendDocumentNotification($idDocumento, $email);
+            $result = $notificationsApi->sendDocumentNotification($idDocumento, $email);
         } else {
-            $result = $documentsApi->resendDocumentNotification($idDocumento);
+            $result = $notificationsApi->resendDocumentNotification($idDocumento);
         }
 
-        if (!isset($result->error)) {
-            $data = array(
-                'status' => '200',
-                'mensaje' => 'Notificación enviada correctamente',
-            );
-        } else {
-            $data = array(
-                'error' => 'Error al enviar notificación',
-                'status' => '500',
-            );
-        }
-
-        return $data;
+        return $result;
     }
 
     private function filterDocumentsByDate($documents, $startDate, $endDate) {
@@ -209,9 +212,9 @@ class DocumentosService {
      * Obtener la validacion de un documento electronico
      */
     public function validarDocumento($documentKey) {
-        $documentsApi = $this->documentsApi;
+        $validationsApi = $this->validationsApi;
 
-        return $documentsApi->getDocumentValidation($documentKey);
+        return $validationsApi->getDocumentValidation($documentKey);
     }
 
     /**

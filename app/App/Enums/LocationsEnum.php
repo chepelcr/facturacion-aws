@@ -6,11 +6,11 @@ namespace App\Enums;
  * Enumeración de excepciones de la API de ubicaciones
  * 
  * @package App\Enums
- * @subpackage ApiLocationsExceptions
+ * @subpackage LocationsEnum
  * @version 1.0
  * @author jcampos
  */
-enum ApiLocationsExceptions: string {
+enum LocationsEnum: string {
 
     case SUCCESS = "000";
     case COUNTRY_FOUND = "001";

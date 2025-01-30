@@ -24,7 +24,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fa-solid fa-circle-check"></i></span>
                                     </div>
-                                    <select class="form-control form-control-sm" name="status">
+                                    <select class="form-control form-control-sm status" name="status">
                                         <option value="1" selected>Aceptado</option>
                                         <option value="2">Parcialmente aceptado</option>
                                         <option value="3">Rechazado</option>
@@ -42,13 +42,13 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fa-solid fa-comment"></i></span>
                                     </div>
-                                    <textarea class="form-control form-control-sm" name="message" rows="3" placeholder="Mensaje de aceptación"></textarea>
+                                    <textarea class="form-control form-control-sm message" name="message" rows="3" placeholder="Mensaje de aceptación"></textarea>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Sucursal -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 send-validation">
                             <div class="form-group">
                                 <label for="sucursal" class="ivois-label">Sucursal</label>
 
@@ -70,7 +70,7 @@
                         </div>
 
                         <!-- Terminal -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 send-validation">
                             <div class="form-group">
                                 <label for="terminal" class="ivois-label">Terminal</label>
 
@@ -83,16 +83,30 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Fecha de validacion -->
+                        <div class="col-md-12 watch-validation">
+                            <div class="form-group">
+                                <label for="validationDate" class="ivois-label">Fecha de validación</label>
+
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa-solid fa-calendar"></i></span>
+                                    </div>
+                                    <input type="date" class="form-control form-control-sm validationDate">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="modal-footer d-flex justify-content-around">
                     <div class="col-md-5">
-                        <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">Cerrar</button>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-5 send-validation">
                         <button type="submit" class="btn btn-primary btn-block btn-validar" title="Validar documento" data-toggle="tooltip">
-                            <i class="fa-solid fa-envelope-circle-check"></i> Enviar validación
+                            Enviar validación <i class="fa-solid fa-envelope-circle-check"></i>
                         </button>
                     </div>
                 </div>

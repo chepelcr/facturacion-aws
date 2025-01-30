@@ -2,7 +2,7 @@
 
 namespace App\Api;
 
-use App\Enums\ApiLocationsExceptions;
+use App\Enums\LocationsEnum;
 
 /**
  * Clase para consumir el API de ubicaciones de IVOIS
@@ -49,7 +49,7 @@ class LocationsApi extends IvoisApi {
      * @return string Nombre del error
      */
     public function getErrorName($error) {
-        $error = ApiLocationsExceptions::tryFrom($error);
+        $error = LocationsEnum::tryFrom($error);
 
         if ($error == null) {
             return 'Ha ocurrido un error al realizar la solicitud';

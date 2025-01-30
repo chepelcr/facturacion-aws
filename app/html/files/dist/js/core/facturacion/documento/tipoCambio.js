@@ -1,78 +1,140 @@
 function selectTipoCambio() {
-  //Obtener el option seleccionado en el select
-  var option = $("#" + factura_activa)
-    .find(".currencyCode")
-    .find("option:selected");
+    const activeDocument = $("#" + factura_activa);
 
-  //Obtener el valor data-currencyCode del option
-  let moneda = $(option).data("currencycode");
-  
-  monedaDocumento = moneda;
+    //Obtener el option seleccionado en el select
+    const option = activeDocument.find(".currencyCode").find("option:selected");
 
-  if (moneda == "CRC") {
-    $("#" + factura_activa)
-      .find(".exchangeRate")
-      .val(1);
+    //Obtener el valor data-currencyCode del option
+    const moneda = $(option).data("currencycode");
 
-    tipoCambioDocumento = 1;
+    monedaDocumento = moneda;
 
-    activar_campo_clase("exchangeRate", true, factura_activa);
-  } else if (moneda == "USD") {
-    $("#" + factura_activa)
-      .find(".exchangeRate")
-      .val(cambio_venta);
+    if (moneda == "CRC") {
+        $("#" + factura_activa)
+            .find(".exchangeRate")
+            .val(1);
 
-    tipoCambioDocumento = cambio_venta;
+        tipoCambioDocumento = 1;
 
-    activar_campo_clase("exchangeRate", true, factura_activa);
-  } else {
-    $("#" + factura_activa)
-      .find(".exchangeRate")
-      .val(1);
+        activar_campo_clase("exchangeRate", true, factura_activa);
+    } else if (moneda == "USD") {
+        $("#" + factura_activa)
+            .find(".exchangeRate")
+            .val(cambio_venta);
 
-    tipoCambioDocumento = 1;
+        tipoCambioDocumento = cambio_venta;
 
-    activar_campo_clase("exchangeRate", false, factura_activa);
-  }
+        activar_campo_clase("exchangeRate", true, factura_activa);
+    } else {
+        $("#" + factura_activa)
+            .find(".exchangeRate")
+            .val(1);
 
-  cambiarPrecioLineas(tipoCambioDocumento);
+        tipoCambioDocumento = 1;
+
+        activar_campo_clase("exchangeRate", false, factura_activa);
+    }
+
+    cambiarPrecioLineas(tipoCambioDocumento);
 }
 
 function cambiarPrecioLineas(tipoCambio) {
-  $("#" + factura_activa)
-    .find(".detail")
-    .each(function (i, item) {
-      let originalPrice = $(item).find(".originalSalePrice").val();
-      let newPrice = originalPrice / tipoCambio;
+    const activeDocument = $("#" + factura_activa);
 
-      newPrice = parseFloat(newPrice);
-      newPrice.toFixed(2);
+    activeDocument.find(".detail").each(function (i, item) {
+        let originalPrice = $(item).find(".originalSalePrice").val();
+        let newPrice = originalPrice / tipoCambio;
 
-      $(item).find(".netPrice").val(newPrice);
+        newPrice = parseFloat(newPrice);
+        newPrice.toFixed(2);
 
-      let originalBaseAmount = $(item).find(".originalBaseAmount").val();
+        $(item).find(".netPrice").val(newPrice);
 
-      let newBaseAmount = originalBaseAmount / tipoCambio;
+        let originalBaseAmount = $(item).find(".originalBaseAmount").val();
 
-      newBaseAmount = parseFloat(newBaseAmount);
-      newBaseAmount.toFixed(2);
+        let newBaseAmount = originalBaseAmount / tipoCambio;
 
-      $(item).find(".base_imponible").val(newBaseAmount);
+        newBaseAmount = parseFloat(newBaseAmount);
+        newBaseAmount.toFixed(2);
 
-      calcular($(item));
+        $(item).find(".base_imponible").val(newBaseAmount);
+
+        calcular($(item));
     });
 }
 
+/**
+ * Obtener el nombre de la moneda de acuerdo al código de moneda
+ * @param {String} currencyCode Codigo de moneda
+ * @returns Nombre de la moneda
+ */
+function getCurrencyName(currencyCode) {
+    const formatter = new Intl.NumberFormat("es", {
+        style: "currency",
+        currency: currencyCode,
+        currencyDisplay: "name",
+    });
+    let name = formatter.formatToParts(0).find((part) => part.type === "currency").value;
+
+    //Colocar la primera letra en mayuscula
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+
+    //Dejar solo la primera palabra
+    name = name.split(" ")[0];
+
+    return name;
+}
+
+/**
+ * Colocar el nombre correcto de las monedas
+ */
+function setDocumentCurrencies() {
+    const activeDocument = $("#" + factura_activa);
+    const currencyCodeSelect = activeDocument.find(".currencyCode");
+
+    let currencies = [];
+    let currencyNames = [];
+
+    //Recorrer el select de opciones y reemplazar el nombre, agregar el data-currencyCode a currencies y si se repite, elimina el option
+    currencyCodeSelect.find("option").each(function (i, option) {
+        const currencyCode = $(option).data("currencycode");
+        let currencyName = getCurrencyName(currencyCode);
+
+        if (currencies.includes(currencyCode) || currencyCode == "XXX") {
+            $(option).remove();
+        } else {
+            //Si el currencyName no esta en la lista
+            if (!currencyNames.includes(currencyName)) {
+                currencyNames.push(currencyName);
+                currencyName = currencyName + " " + currencyCode;
+
+                console.log(currencyName);
+
+                $(option).text(currencyName);
+            } else {
+                $(option).remove();
+            }
+        }
+    });
+
+    //Ordenar los options por el nombre de la moneda
+    currencyCodeSelect.html(
+        currencyCodeSelect.find("option").sort(function (a, b) {
+            return $(a).text() > $(b).text() ? 1 : -1;
+        })
+    );
+}
+
 $(document).ready(function () {
-  //Cuando cambia calcular_tipo_cambio
-  $(document).on("keyup change", ".calcular_tipo_cambio", function () {
-    let valor = $(this).val();
+    //Cuando cambia calcular_tipo_cambio
+    $(document).on("keyup change", ".calcular_tipo_cambio", function () {
+        let valor = $(this).val();
 
-    tipoCambioDocumento = valor;
+        tipoCambioDocumento = valor;
 
-    //Si el valor es diferente de 0, se debe recorrer cada una de las lineas de detalle y cambiar el salePrice por (originalPrice / valor) y calcular el total de la linea
-    if (valor != 0) {
-      cambiarPrecioLineas(valor);
-    }
-  });
+        //Si el valor es diferente de 0, se debe recorrer cada una de las lineas de detalle y cambiar el salePrice por (originalPrice / valor) y calcular el total de la linea
+        if (valor != 0) {
+            cambiarPrecioLineas(valor);
+        }
+    });
 });

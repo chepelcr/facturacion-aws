@@ -42,11 +42,11 @@ function validar_documento() {
  *
  * @param {*} branchesSelect Select con la sucursal seleccionada
  */
-function selectTerminals(branchesSelect, modulo = '') {
-    if(modulo != 'aceptacion'){
+function selectTerminals(branchesSelect, modulo = "") {
+    if (modulo != "aceptacion") {
         modulo = factura_activa;
     } else {
-        modulo = 'modalAceptarDocumentos';
+        modulo = "modalAceptarDocumentos";
     }
 
     const selectedOption = $(branchesSelect).find("option:selected");
@@ -347,3 +347,5 @@ function agregar_termino_credito(select) {
         .find(".creditTerm")
         .val(termino);
 } //Fin de la función agregar_termino_credito
+
+

@@ -1,13 +1,47 @@
 function aceptar_documento(documentKey) {
-
     //Actualizar las sucursales del modal de aceptación
-    actualizar_sucursales('aceptacion');
+    actualizar_sucursales("aceptacion");
 
     //Colocar la clave del documento en el campo de texto del modal de aceptación
     $("#modalAceptarDocumentos .documentKey").val(documentKey);
 
     //Habilitar el btn-validar
     $("#modalAceptarDocumentos .btn-validar").attr("disabled", false);
+
+    //Ocultar el campo de la watch-validation
+    $("#modalAceptarDocumentos .watch-validation").hide();
+
+    //Mostrar los campos send-validation
+    $("#modalAceptarDocumentos .send-validation").show();
+
+    //Abrir el modal modalAceptarDocumentos
+    $("#modalAceptarDocumentos").modal("show");
+}
+
+/**
+ * Ver la respuesta del receptor para un documento electrónico
+ *
+ * @param {} receiverValidationDTO Validación del receptor
+ */
+function ver_validacion_receptor(receiverValidationDTO) {
+    //Colocar el status del receptor en el campo status
+    $("#modalAceptarDocumentos .status").val(receiverValidationDTO.status);
+
+    //Colocar el message de la validacion
+    $("#modalAceptarDocumentos .message").val(receiverValidationDTO.message);
+
+    //Colocar la fecha de la validación
+    $("#modalAceptarDocumentos .validationDate").val(receiverValidationDTO.validationDate);
+
+    //Mostrar el campo de la watch-validation
+    $("#modalAceptarDocumentos .watch-validation").show();
+
+    //Ocultar los campos send-validation
+    $("#modalAceptarDocumentos .send-validation").hide();
+
+    //Colocar todos los input, select, text area en disabled, readonly
+    $("#modalAceptarDocumentos .form-control").attr("disabled", true);
+    $("#modalAceptarDocumentos .form-control").attr("readonly", true);
 
     //Abrir el modal modalAceptarDocumentos
     $("#modalAceptarDocumentos").modal("show");
@@ -57,7 +91,7 @@ $(document).ready(function () {
                         }).then((result) => {
                             //Vaciar los campos del formulario
                             $("#frm_aceptar_documento")[0].reset();
-                            cerrar_modal("modalAceptarDocumentos", cargar_documentos('recibidos'));
+                            cerrar_modal("modalAceptarDocumentos", cargar_documentos("recibidos"));
                         });
                     }
                 },

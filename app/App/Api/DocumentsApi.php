@@ -48,29 +48,6 @@ class DocumentsApi extends IvoisApi {
     }
 
     /**
-     * Reenviar notificación de un documento
-     * @param string $documentId Identificador del documento
-     * @return array Notificaciones enviadas
-     */
-    public function resendDocumentNotification($documentId) {
-        $url = "/$documentId/notifications/resend";
-
-        return $this->makeGetRequestUrl($url);
-    }
-
-    /**
-     * Enviar notificación de un documento a un correo
-     * @param string $documentId Identificador del documento
-     * @param string $email Correo electrónico
-     * @return array Notificaciones enviadas
-     */
-    public function sendDocumentNotification($documentId, $email) {
-        $url = "/$documentId/notifications/send?email=$email";
-
-        return $this->makeGetRequestUrl($url);
-    }
-
-    /**
      * Obtener un documento por clave
      * 
      * @param string $clave Clave del documento
@@ -134,19 +111,6 @@ class DocumentsApi extends IvoisApi {
         }
 
         //var_dump($url);
-
-        return $this->makeGetRequestUrl($url);
-    }
-
-    /**
-     * Obtener la validación de un documento electrónico
-     * 
-     * @param string $documentId Identificador del documento
-     * @return object Validación del documento
-     */
-    public function getDocumentValidation($documentId) {
-        ///taxpayers/{taxpayerId}/documents/{documentKey}/invoice-validation
-        $url = "/$documentId/invoice-validation";
 
         return $this->makeGetRequestUrl($url);
     }

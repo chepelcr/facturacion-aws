@@ -97,42 +97,7 @@ function enviar_hacienda(id_documento = null) {
     }
 } //Fin de la funcion para enviar el documento al ministerio de hacienda
 
-/**Validar el estado de un documento enviado al ministerio de hacienda */
-function solicitar_validacion(id = "") {
-    if (id != "") {
-        Pace.track(function () {
-            $.ajax({
-                url: base + "documentos/validar_documento/" + id,
-                method: "get",
-                dataType: "json",
-            }).done(function (response) {
-                console.log(response);
 
-                let mensaje = "";
-
-                if (response.validationStatus == 3) {
-                    response.estado = "error";
-                    mensaje = "El documento ha sido rechazado por el Ministerio de Hacienda";
-                } else if (response.validationStatus == 2) {
-                    response.estado = "warning";
-                    mensaje = "El documento esta siendo procesado por el Ministerio de Hacienda";
-                } else if (response.validationStatus == 1) {
-                    response.estado = "success";
-                    mensaje = "El documento ha sido aceptado por el Ministerio de Hacienda";
-                }
-
-                Swal.fire({
-                    title: "Atencion",
-                    text: mensaje,
-                    icon: response.estado,
-                    showConfirmButton: true,
-                    //Texto del boton de confirmacion
-                    confirmButtonText: "Aceptar",
-                });
-            });
-        });
-    }
-}
 
 /**Guardar un documento en la base de datos y enviarlo al ministerio de hacienda */
 function guardar_documento() {

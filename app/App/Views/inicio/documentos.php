@@ -48,4 +48,6 @@ echo view('facturacion/modal/notificar');
 echo view('facturacion/modal/subir_documentos');
 
 echo view('facturacion/modal/aceptar_documento');
+
+echo view('facturacion/modal/validacion_documento');
 ?>

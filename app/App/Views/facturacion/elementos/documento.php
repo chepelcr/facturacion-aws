@@ -200,19 +200,6 @@
                             </div>
                         </div>
 
-                        <!-- Correos con copia -->
-                         <div class="com-md-12">
-                            <div class="form-group">
-                                <label for="email" class="ivois-label">Correo electrónico</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    </div>
-                                    <input type="text" class="form-control email" name="copyEmails[0]" placeholder="CC">
-                                </div>
-                            </div>
-                         </div>
-
                         <!-- Detalles del documento -->
                         <div class="col-md-12">
                             <div class="card">
@@ -220,7 +207,7 @@
                                     <div class="row d-flex justify-content-between">
                                         <div class="col-md-9 align-content-center">
                                             <h3 class="card-title">
-                                                <i class="fas fa-list"></i> Detalles
+                                            <i class="fa-solid fa-basket-shopping"></i> Detalle de la venta
                                             </h3>
                                         </div>
 
@@ -295,7 +282,7 @@
                                                                 </div>
 
                                                                 <select class="form-control form-control-sm detailUnitId " disabled readonly>
-                                                                    <option >Seleccionar</option>
+                                                                    <option>Seleccionar</option>
                                                                 </select>
                                                             </div>
                                                         </div>

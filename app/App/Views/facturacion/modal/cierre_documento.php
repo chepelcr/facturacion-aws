@@ -14,6 +14,10 @@
             <!-- Contenido del modal -->
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-md-12">
+                        <?= view('facturacion/elementos/copia_correo') ?>
+                    </div>
+
                     <!-- Información de emisión -->
                     <div class="col-md-12">
                         <div class="card">

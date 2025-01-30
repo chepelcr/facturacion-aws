@@ -122,6 +122,9 @@ if (is_login()) {
     <!-- Facturacion | Incio | Aceptacion -->
     <?= getScript('core/facturacion/inicio/aceptacion') ?>
 
+    <!-- Facturacion | Incio | Validacion -->
+    <?= getScript('core/facturacion/inicio/validacion') ?>
+
     <!-- Facturacion | Documento | Acciones -->
     <?= getScript('core/facturacion/documento/acciones') ?>
 
@@ -142,6 +145,9 @@ if (is_login()) {
 
     <!-- Facturacion | Documento | Tipo de cambio -->
     <?= getScript('core/facturacion/documento/tipoCambio') ?>
+
+    <!-- Facturacion | Documento | Correo -->
+    <?= getScript('core/facturacion/documento/correo') ?>
 
     <!-- Facturacion | Lineas | Descuentos -->
     <?= getScript('core/facturacion/lineas/descuentos') ?>

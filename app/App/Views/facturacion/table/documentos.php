@@ -85,7 +85,7 @@
                                                 ?>
                                                     <!-- Revalidar documento -->
                                                     <div class="col-md-6 pb-1">
-                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                        <button onclick='ver_validacion(<?= json_encode($documento->atvValidation)?>, "<?= $documento->documentKey ?>")' type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
                                                             <i class="fas fa-check-circle"></i>
                                                         </button>
                                                     </div>
@@ -98,8 +98,8 @@
                                                     </div>
 
                                                     <?php
-                                                    if ($documento->receiverValidation->status == 0) {
-                                                        //Si el documento esta aceptado por hacienda solamente y no por el receptor
+                                                    if ($documento->receiverValidation->status == 0 || $documento->receiverValidation->status == 2) {
+                                                        //Si el documento fue aceptado por hacienda y no ha sido procesado o fue aceptado parcialmente por el receptor
                                                     ?>
                                                         <!-- Subir archivo de validación del receptor -->
                                                         <div class="col-md-12 pb-1">
@@ -137,7 +137,7 @@
                                                 ?>
                                                     <!-- Información de validación -->
                                                     <div class="col-md-6 pb-1">
-                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                        <button onclick="ver_validacion(null, '<?= $documento->documentKey ?>')"  type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
                                                             <i class="fas fa-check-circle"></i>
                                                         </button>
                                                     </div>
@@ -156,12 +156,12 @@
                                                         </button>
                                                     </div>
                                                 <?php
-                                                } elseif ($received && ($documento->atvValidation->validationStatus == '1' && $documento->receiverValidation->status == 0)) {
-                                                    //Si el documento esta aceptado por hacienda solamente y no por el receptor, mostrar boton de validación y de aceptacion de receptor
+                                                } elseif ($received && ($documento->atvValidation->validationStatus == '1' && ($documento->receiverValidation->status == 0 || $documento->receiverValidation->status == 2))) {
+                                                    //Si el documento fue aceptado por hacienda y no  ha sido procesado, o fue aceptado parcialmente, por el receptor, mostrar boton de validación y de aceptacion de receptor
                                                     //Validar documento
                                                 ?>
                                                     <div class="col-md-6">
-                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                        <button onclick='ver_validacion(<?= json_encode($documento->atvValidation)?>, "<?= $documento->documentKey ?>")'  type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
                                                             <i class="fas fa-check-circle"></i>
                                                         </button>
                                                     </div>
@@ -173,11 +173,11 @@
                                                         </button>
                                                     </div>
                                                 <?php
-                                                } elseif ($received && ($documento->atvValidation->validationStatus == '1' && $documento->receiverValidation->status != 0)) {
+                                                } elseif ($received && ($documento->atvValidation->validationStatus == '1' && ($documento->receiverValidation->status != 0 && $documento->receiverValidation->status != 2))) {
                                                     //Si el documento esta aceptado por hacienda y por el receptor, mostrar boton de aceptacion de receptor
                                                 ?>
                                                     <div class="col-md-6">
-                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                        <button onclick='ver_validacion(<?= json_encode($documento->atvValidation)?>, "<?= $documento->documentKey ?>")'  type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
                                                             <i class="fas fa-check-circle"></i>
                                                         </button>
                                                     </div>
@@ -193,7 +193,7 @@
                                                 ?>
                                                     <!-- Información de validación -->
                                                     <div class="col-md-12">
-                                                        <button onclick="solicitar_validacion('<?= $documento->documentKey ?>');" type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
+                                                        <button onclick="ver_validacion(null, '<?= $documento->documentKey ?>')"  type="button" data-toggle="tooltip" title="Información de validación" class="btn btn-warning btn-validar btn-block">
                                                             <i class="fas fa-check-circle"></i>
                                                         </button>
                                                     </div>

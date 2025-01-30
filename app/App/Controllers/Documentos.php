@@ -87,7 +87,9 @@ class Documentos extends BaseController {
         return $this->documentosService->obtenerIndicadores($indicador);
     } //Fin de la funcion indicadores
 
-    /**Enviar un document por correo electronico */
+    /**
+     * Enviar un documento por correo electrónico
+     */
     public function enviar_documento() {
         if (is_login()) {
             if (getSegment(3)) {
@@ -104,7 +106,7 @@ class Documentos extends BaseController {
                 );
             }
 
-            if (isset($data['error'])) {
+            if (isset($data->error)) {
                 return $this->error($data);
             } else {
                 return json_encode($data);

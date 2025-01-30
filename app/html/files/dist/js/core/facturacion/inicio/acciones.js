@@ -19,12 +19,19 @@ function agregar_documento(tipoDocumento = "") {
             //Agregar el card de facturacion al la pagina
             $("#contenedor_facturas").append(data);
 
-            boton = crearBotonFactura(cantidad_documentos);
+            let boton = crearBotonFactura(cantidad_documentos);
 
             //Agregar el boton de la factura al la pagina
             $("#nav-facturacion").append(boton);
 
+            //Ver el documento electronico
             ver_factura(cantidad_documentos);
+
+            //Collapse el card-correos de la factura_activa
+            $("#" + factura_activa + " card-correos").CardWidget("collapse");
+
+            //Colocar los nombres de las monedas
+            setDocumentCurrencies();
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
             response = jqXHR.responseText;
