@@ -79,7 +79,7 @@ class LocationsApi extends IvoisApi {
      */
     public function get_states_by_iso_code($iso_code) {
 
-        $states_url = $iso_code . $this->statesUrl;
+        $states_url = "$iso_code$this->statesUrl";
 
         return $this->makeGetRequestUrl($states_url);
     }
@@ -91,7 +91,7 @@ class LocationsApi extends IvoisApi {
      * @return array
      */
     public function get_counties_by_state_id_and_iso_code($state_id, $iso_code) {
-        $states_url = $iso_code . $this->statesUrl . $state_id . $this->countiesUrl;
+        $states_url = "$iso_code$this->statesUrl/$state_id$this->countiesUrl";
 
         return $this->makeGetRequestUrl($states_url);
     }
@@ -104,7 +104,7 @@ class LocationsApi extends IvoisApi {
      * @return array
      */
     public function get_districts_by_county_id_and_state_id_and_iso_code($county_id, $state_id, $iso_code) {
-        $states_url = $iso_code . $this->statesUrl . $state_id . $this->countiesUrl . $county_id . $this->districtsUrl;
+        $states_url = "$iso_code$this->statesUrl/$state_id$this->countiesUrl/$county_id$this->districtsUrl";
 
         return $this->makeGetRequestUrl($states_url);
     }

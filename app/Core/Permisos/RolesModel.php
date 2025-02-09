@@ -31,13 +31,13 @@ class RolesModel extends Model
 		} else {
 			$rol = $this->getById($id);
 
+			//var_dump($rol);
+
 			$permisosModel = new PermisosModel();
 
 			$rol->modulos = (object) $permisosModel->modulos($id);
 
 			return $rol;
 		}
-
-		return null;
 	}
 }

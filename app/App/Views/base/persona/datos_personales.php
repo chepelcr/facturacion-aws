@@ -15,7 +15,7 @@
             <!-- Tipo de cliente -->
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="tipo_cliente" class="ivois-label">Tipo de cliente</label>
+                    <label for="tipo_cliente" class="ivois-label">Tipo de  <?= isset($isProvider) ? 'proveedor' : 'cliente' ?></label>
                     <div class="row input-group">
                         <?php foreach ($customerTypes as $customerTypeDTO) : ?>
                             <div class="col-md-6 form-group">

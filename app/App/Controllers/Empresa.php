@@ -8,6 +8,7 @@ namespace App\Controllers;
 
 use App\Services\ClientesService;
 use App\Services\ProductosService;
+use App\Services\ProveedoresService;
 
 /**
  * Clase para manejar el modulo de empresa
@@ -21,7 +22,7 @@ class Empresa extends BaseController {
 
 	protected $nombreModulo = 'empresa';
 
-	protected $objetos = ['productos', 'clientes'];
+	protected $objetos = ['productos', 'clientes', 'proveedores'];
 
 	protected $validationFields = array(
 		'productos' => [
@@ -56,6 +57,9 @@ class Empresa extends BaseController {
 		}
 	} //Fin de la función index
 
+	/**
+	 * Clientes
+	 */
 	public function clientes() {
 		if (is_login()) {
 			if (validar_permiso('empresa', 'clientes', 'consultar')) {
@@ -63,6 +67,39 @@ class Empresa extends BaseController {
 					$clientesService = new ClientesService();
 
 					$clientesView = $clientesService->getCustomersListView($_GET);
+
+					if (isset($clientesView->error)) {
+						return $this->error($clientesView);
+					} else {
+						return $clientesView;
+					}
+				} else {
+					$data = array(
+						'script' => cargar('cargar_listado("empresa", "clientes", "Administracion", "Clientes", "' . baseUrl('empresa/clientes/listado') . '");')
+					);
+
+					return $this->inicio($data);
+				}
+			} else {
+				$error = $this->object_error(500, 'No tiene permisos para consultar clientes.');
+
+				return $this->error($error);
+			}
+		} else {
+			redirect(baseUrl('login'));
+		}
+	} //Fin de la función para mostrar el listado de clientes
+
+	/**
+	 * Proveedores
+	 */
+	public function proveedores() {
+		if (is_login()) {
+			if (validar_permiso('empresa', 'clientes', 'consultar')) {
+				if (getSegment(3) == 'listado') {
+					$clientesService = new ProveedoresService();
+
+					$clientesView = $clientesService->getProvidersListView($_GET);
 
 					if (isset($clientesView->error)) {
 						return $this->error($clientesView);

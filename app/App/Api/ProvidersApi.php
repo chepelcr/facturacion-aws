@@ -2,30 +2,30 @@
 
 namespace App\Api;
 
-use App\Enums\CustomersEnum;
+use App\Enums\ProvidersEnum;
 
 /**
  * Clase para consumir el API de clientes de IVOIS
  * @author jcampos
  * @version 1.0
  * @package App\Api
- * @subpackage CustomersApi
+ * @subpackage ProvidersApi
  */
-class CustomersApi extends IvoisApi {
+class ProvidersApi extends IvoisApi {
 
     /**
      * Constructor de la clase que recibe el id del contribuyente
      * @param $taxpayerId Identificador del contribuyente
      */
     public function __construct($taxpayerId) {
-        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.customers.url")); //, "http://172.0.0.0:8085");
+        parent::__construct(getEnt("ivois.api.taxpayers.url") . $taxpayerId . getEnt("ivois.api.providers.url")); //, "http://172.0.0.0:8085");
     }
 
     /**
      * Obtiene el nombre del error para el modulo de clientes
      */
     public function getErrorName($error) {
-        $error = CustomersEnum::tryFrom($error);
+        $error = ProvidersEnum::tryFrom($error);
 
         if ($error == null) {
             return 'Ha ocurrido un error al realizar la solicitud';
@@ -39,7 +39,7 @@ class CustomersApi extends IvoisApi {
      * @param $id Identificador del cliente
      * @return object Cliente
      */
-    public function getCustomerById($id) {
+    public function getProviderById($id) {
         $url = "/$id";
         return $this->makeGetRequestUrl($url);
     }
@@ -49,7 +49,7 @@ class CustomersApi extends IvoisApi {
      * @param $search Filtro de busqueda
      * @return array Lista de clientes
      */
-    public function getCustomers($search = "") {
+    public function getProviders($search = "") {
         $url = "/all";
 
         if($search != null && $search != "") {
@@ -65,7 +65,7 @@ class CustomersApi extends IvoisApi {
      * @param $data Datos a actualizar
      * @return object Cliente actualizado
      */
-    public function changeCustomerStatus($id, $data) {
+    public function changeProviderStatus($id, $data) {
         $url = "/$id";
         return $this->makePatchRequest($data, $url);
     }
@@ -77,19 +77,7 @@ class CustomersApi extends IvoisApi {
      * @param $data Datos del cliente
      * @return object Cliente almacenado
      */
-    public function saveCustomer($data) {
+    public function saveProvider($data) {
         return $this->makePostRequest($data);
-    }
-
-    /**
-     * Obtener un cliente por su nacionalidad y número de identificación
-     * @param $nationality Nacionalidad del cliente
-     * @param $idNumber Número de identificación del cliente
-     * @return object Cliente
-     */
-    public function getCustomerByNationalityAndIdNumber($nationality, $idNumber) {
-        $url = "/exists?nationality=$nationality&idNumber=$idNumber";
-
-        return $this->makeGetRequestUrl($url);
     }
 }

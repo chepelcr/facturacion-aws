@@ -206,7 +206,7 @@ function llenarObjeto(nombre_form, objeto, estado) {
         }
     });
 
-    if (modulo_activo == "empresa" && submodulo_activo == "clientes") {
+    if (modulo_activo == "empresa" && (submodulo_activo == "clientes" || submodulo_activo == "proveedores")) {
         if (objeto.tradeName == null) {
             activeForm.find(".tradeName").val(objeto.businessName);
         }
@@ -247,7 +247,7 @@ function activar_campos_formulario(nombre_form, estado = "ver", status = 1) {
     if (modulo == "empresa" && submodulo == "productos") {
         campos_cabys(estado, nombre_form);
         activarUnidadComercial(estado, nombre_form);
-    } else if (modulo == "empresa" && submodulo == "clientes") {
+    } else if (modulo == "empresa" && (submodulo == "clientes" || submodulo == "proveedores" )) {
         activar_campos_cedula(estado, nombre_form);
     } else if (modulo == "seguridad" && submodulo == "usuarios") {
         activar_campos_cedula(estado, nombre_form);

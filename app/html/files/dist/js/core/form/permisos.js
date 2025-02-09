@@ -57,7 +57,7 @@ function llenar_permisos(modulos, elemento = '') {
 }//Fin de llenar los permisos de un rol
 
 /**Activar un permiso */
-function activar_permiso(nombre_permiso, estado = true, elemento = '', accion = '') {
+function activar_permiso(nombre_permiso, estado, elemento = '', accion = '') {
     var check = null;
     var boton = null;
 
@@ -79,19 +79,14 @@ function activar_permiso(nombre_permiso, estado = true, elemento = '', accion = 
     }//Fin del else
 
     //Marcar o desmarcar el checkbox
-    check.prop('checked', estado);
+    check.prop('checked', true);
 
-    //Si el estado es true
-    if (estado) {
-        //Poner valor true al checkbox
-        check.val(estado);
-    }//Fin del if estado
+    let value = 0;
 
-    //Si el estado es false
-    else {
-        //Poner valor false al checkbox
-        check.val('');
-    }//Fin del else estado
+    if(estado) value = 1;
+    
+    //Poner valor true al checkbox
+    check.val(value);
 
     if (estado) {
         //Activar el boton
@@ -114,9 +109,7 @@ function activar_permiso(nombre_permiso, estado = true, elemento = '', accion = 
                 boton.addClass('btn-success');
                 break;
         }//Fin del switch
-    }//Fin del if estado
-
-    else {
+    } else {
         //Desactivar el boton
         boton.addClass('btn-secondary');
 

@@ -21,7 +21,6 @@ class ProductosService extends BaseService {
         $productosApi = new ProductsApi(getTaxpayerId());
 
         if ($id == 'all') {
-
             if (isset($filters['search'])) {
                 $data = $productosApi->getProductsBySearchFilter($filters['search']);
             } elseif (isset($filters['status']) && $filters['status'] != 'all') {
@@ -33,7 +32,7 @@ class ProductosService extends BaseService {
 
             return $data;
         } else {
-            return (object) $productosApi->getProductById($id);
+            return $productosApi->getProductById($id);
         }
     }
 

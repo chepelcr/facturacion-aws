@@ -11,6 +11,7 @@ use App\Api\DocumentsApi;
 use App\Api\LocationsApi;
 use App\Api\NotificationsApi;
 use App\Api\ProductsApi;
+use App\Api\ProvidersApi;
 use App\Api\TaxpayersApi;
 use App\Api\ValidationsApi;
 use App\Librerias\Indicador;
@@ -237,15 +238,26 @@ class DocumentosService {
      */
     public function getCustomers($documentTypeCode) {
         $customersApi = new CustomersApi(getTaxpayerId());
+        $countryCode = getCountryCode();
+
+        $search = "status:1";
 
         //Si el código del tipo de document es 01 o 08 se obtienen solo los clientes nacionales
         if ($documentTypeCode == '01' || $documentTypeCode == '08') {
-            $clientes = $customersApi->getNationalCustomersByTaxpayerId();
+            $search = "$search,nationality:$countryCode";
+
+            if($documentTypeCode == "08") {
+                $providersApi = new ProvidersApi(getTaxpayerId());
+                $clientes = $providersApi->getProviders($search);
+            } else {
+                $clientes = $customersApi->getCustomers($search);
+            }
         } elseif ($documentTypeCode == '09') {
             //Si es  09 se obtienen solo los clientes extranjeros
-            $clientes = $customersApi->getForeignCustomersByTaxpayerId();
+            $search = "$search,nationality!$countryCode";
+            $clientes = $customersApi->getCustomers($search);
         } else {
-            $clientes = $customersApi->getCustomersByTaxpayerId();
+            $clientes = $customersApi->getCustomers($search);
         }
 
         if (isset($clientes->error)) {

@@ -247,9 +247,7 @@ class Seguridad extends BaseController {
                         $data = $rolesService->update($id, $data);
 
                         if (!isset($data['error'])) {
-                            return json_encode(array(
-                                'success' => 'Se ha actualizado el rol correctamente',
-                            ));
+                            return json_encode($data);
                         } else {
                             return $this->error($data);
                         }

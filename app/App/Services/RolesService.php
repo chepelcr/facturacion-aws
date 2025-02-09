@@ -21,10 +21,13 @@ class RolesService extends BaseService {
 
             return $model->getAll();
         } else {
-            $model->obtener($id);
+            return $model->obtener($id);
         }
     }
 
+    /**
+     * Crear un rol en la base de datos
+     */
     public function create($data) {
         $model = new RolesModel();
 
@@ -73,15 +76,15 @@ class RolesService extends BaseService {
                 }
             } //Fin del ciclo
 
-            return json_encode(array(
+            return array(
                 'success' => 'El rol se ha registrado correctamente',
-            ));
+            );
         } //Fin de validacion de id
 
         else {
-            return json_encode(array(
+            return array(
                 'error' => 'No se pudo guardar el rol.',
-            ));
+            );
         }
     }
 
@@ -121,83 +124,52 @@ class RolesService extends BaseService {
         return $data;
     }
 
+    /**
+     * Actualizar un rol en la base de datos
+     */
     public function update($id, $data, $reinsert = false) {
+        $permisos = $data['permisos'];
+        unset($data['permisos']);
+
         $model = new RolesModel();
+        $rol = $model->update($data, $id);
 
-        if ($model->update($data, $id)) {
-            $submodulosModel = new SubmodulosAccionesModel();
+        if (is_object($rol)) {
+            $model = new PermisosModel();
 
-            $modulos = $submodulosModel->modulos();
+            foreach ($permisos as $permiso => $estado) {
+                $permiso = explode('_', $permiso);
 
-            //Recorrer modulos
-            foreach ($modulos as $modulo) {
-                $id_modulo = $modulo->id_modulo;
-                $nombreModulo = $modulo->nombreModulo;
+                $data = array(
+                    'id_rol' => $rol->id_rol,
+                    'id_modulo' => $permiso[0],
+                    'id_submodulo' => $permiso[1],
+                    'id_accion' => $permiso[2],
+                    'estado' => $estado
+                );
 
-                $submodulos = $modulo->submodulos;
+                $model = new PermisosModel();
 
-                //Recorrer submodulos
-                foreach ($submodulos as $submodulo) {
-                    $id_submodulo = $submodulo->id_submodulo;
-                    $nombre_submodulo = $submodulo->nombre_submodulo;
+                $id_permiso = $model->get_permiso($rol->id_rol, $permiso[0], $permiso[1], $permiso[2]);
+                $model = new PermisosModel();
 
-                    $acciones = $submodulo->acciones;
-
-                    //Recorrer acciones
-                    foreach ($acciones as $accion) {
-                        $id_accion = $accion->id_accion;
-                        $nombre_accion = $accion->nombre_accion;
-
-                        $model = new PermisosModel();
-
-                        $id_permiso = $model->get_permiso($id, $id_modulo, $id_submodulo, $id_accion);
-
-                        $model = new PermisosModel();
-
-                        if ($data['permiso_' . $nombreModulo . '_' . $nombre_submodulo . '_' . $nombre_accion]) {
-                            $data = array(
-                                'estado' => 1
-                            );
-
-                            if (!$id_permiso) {
-                                $data = array(
-                                    'id_rol' => $id,
-                                    'id_modulo' => $modulo->id_modulo,
-                                    'id_submodulo' => $submodulo->id_submodulo,
-                                    'id_accion' => $accion->id_accion,
-                                    'estado' => 1
-                                );
-
-                                $model->insert($data);
-                            } else
-                                $model->update($data, $id_permiso);
-                        } else {
-                            if (!$id_permiso) {
-                                $data = array(
-                                    'id_rol' => $id,
-                                    'id_modulo' => $modulo->id_modulo,
-                                    'id_submodulo' => $submodulo->id_submodulo,
-                                    'id_accion' => $accion->id_accion,
-                                    'estado' => 0
-                                );
-
-                                $model->insert($data);
-                            } else
-                                $model->update(array('estado' => 0), $id_permiso);
-                        }
-                    }
+                if (!$id_permiso) {
+                    $model->insert($data);
+                } else {
+                    $model->update($data, $id_permiso);
                 }
             }
 
-            return json_encode(array(
-                'message' => 'Rol actualizado correctamente',
+            return array(
+                'success' => 'Rol actualizado correctamente',
                 'status' => 200
-            ));
-        } else
-            return json_encode(array(
+            );
+        } else {
+            return array(
                 'error' => 'No se pudo actualizar el rol',
                 'status' => 500
-            ));
+            );
+        }
     }
 
     /**

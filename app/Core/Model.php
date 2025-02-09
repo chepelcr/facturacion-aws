@@ -144,7 +144,7 @@ abstract class Model {
 
     /**Obtener el error generado en el modelo */
     public function getError() {
-        if(empty($this->error)){
+        if (empty($this->error)) {
             return false;
         } else {
             return json_decode(json_encode($this->error));
@@ -805,13 +805,15 @@ abstract class Model {
     } //Fin de la funcion obtener
 
     /**Eliminar un registro de la base de datos */
-    public function delete($id) {
+    public function delete($id = null) {
         $db = $this->query();
 
         try {
             //Si la base de datos no es nula
             if ($db != null) {
-                $this->where($this->primaryKey, $id);
+                if ($id != null) {
+                    $this->where($this->primaryKey, $id);
+                }
 
                 $sql = $this->crearQuery('DELETE');
 

@@ -96,11 +96,13 @@ function validar_identificacion(identificacion = "") {
     if (!formato && identificacion != "") {
         switch (modulo_activo) {
             case "seguridad":
-                if (submodulo_activo == "usuarios") validar(identificacion, "usuario");
+                if (submodulo_activo == "usuarios") {
+                    validar(identificacion, "usuario");
+                }
                 break;
 
             case "empresa":
-                if (submodulo_activo == "clientes") {
+                if (submodulo_activo == "clientes" || submodulo_activo == "proveedores") {
                     $("#" + form_activo)
                         .find(".identificacion")
                         .val(identificacion);

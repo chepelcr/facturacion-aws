@@ -2,15 +2,18 @@
 
 namespace App\Services;
 
-use App\Api\CustomersApi;
+use App\Api\ProvidersApi;
 use App\Api\DataServiceApi;
 use App\Api\LocationsApi;
 
-class ClientesService extends BaseService {
+/**
+ * Servicio de proveedores
+ */
+class ProveedoresService extends BaseService {
 
     /**
-     * Crear un cliente
-     * @param array $data Datos del cliente
+     * Crear un proveedor
+     * @param array $data Datos del proveedor
      */
     public function create($data) {
         $identification = $data['identification']['number'];
@@ -18,62 +21,62 @@ class ClientesService extends BaseService {
 
         $data['identification']['number'] = $identification;
 
-        $customersApi = new CustomersApi(getTaxpayerId());
+        $providersApi = new ProvidersApi(getTaxpayerId());
 
-        return $customersApi->saveCustomer($data);
+        return $providersApi->saveProvider($data);
     }
 
     /**
-     * Obtiene los datos de los clientes
+     * Obtiene los datos de los proveedores
      */
     public function getData($id = 'all', $filters = array()) {
-        $customersApi = new CustomersApi(getTaxpayerId());
+        $providersApi = new ProvidersApi(getTaxpayerId());
 
         if ($id == 'all') {
             if (isset($filters['search'])) {
-                return $customersApi->getCustomers($filters['search']);
+                return $providersApi->getProviders($filters['search']);
             } elseif (isset($filters['status']) && $filters['status'] != 'all') {
                 $search = 'status:' . $filters['status'];
-                return $customersApi->getCustomers($search);
+                return $providersApi->getProviders($search);
             } else {
-                return $customersApi->getCustomers();
+                return $providersApi->getProviders();
             }
         } else {
-            return $customersApi->getCustomerById($id);
+            return $providersApi->getProviderById($id);
         }
     }
 
     /**
-     * Cambiar el estado de un cliente
+     * Cambiar el estado de un proveedor
      */
     public function changeStatus($id, $data) {
-        $customersApi = new CustomersApi(getTaxpayerId());
+        $providersApi = new ProvidersApi(getTaxpayerId());
 
-        return $customersApi->changeCustomerStatus($id, $data);
+        return $providersApi->changeProviderStatus($id, $data);
     }
 
     /**
-     * Actualizar un cliente
+     * Actualizar un proveedor
      */
     public function update($id, $data, $reinsert = false) {
-        $customersApi = new CustomersApi(getTaxpayerId());
+        $providersApi = new ProvidersApi(getTaxpayerId());
 
         $identification = $data['identification']['number'];
         $identification = desformatear_cedula($identification);
 
         $data['identification']['number'] = $identification;
 
-        return $customersApi->update($id, $data, $reinsert);
+        return $providersApi->update($id, $data, $reinsert);
     }
 
     /**
-     * Obtiene la vista de los clientes
+     * Obtiene la vista de los proveedores
      */
-    public function getCustomersListView($filters = array()) {
-        $clientes = $this->getData('all', $filters);
+    public function getProvidersListView($filters = array()) {
+        $proveedores = $this->getData('all', $filters);
 
-        if (isset($clientes->error)) {
-            return $clientes;
+        if (isset($proveedores->error)) {
+            return $proveedores;
         }
 
         if (isset($filters['status'])) {
@@ -86,10 +89,10 @@ class ClientesService extends BaseService {
 
         $data_tabla = array(
             'nombreTable' => $tableName,
-            'nombre_tabla' => 'listado_empresa_clientes',
+            'nombre_tabla' => 'listado_empresa_proveedores',
 
             'dataTable' => array(
-                'clientes' => $clientes,
+                'clientes' => $proveedores,
             ),
             'status' => $estado,
         );
@@ -111,7 +114,8 @@ class ClientesService extends BaseService {
         $datos_personales = array(
             'identificaciones' => $identificaciones,
             'countries' => $countries,
-            'customerTypes' => $customerTypes
+            'customerTypes' => $customerTypes,
+            'isProvider' => true
         );
 
         $nombreForm = 'empresa/cliente/form';
@@ -127,7 +131,7 @@ class ClientesService extends BaseService {
                 'datos_contacto' => $datos_contacto
             ),
             'nombreForm' => $nombreForm,
-            'nombre_form' => 'frm_empresa_clientes'
+            'nombre_form' => 'frm_empresa_proveedores'
         );
 
         $data = array(
@@ -139,17 +143,17 @@ class ClientesService extends BaseService {
     }
 
     /**
-     * Validar si ya existe un cliente en la plataforma
+     * Validar si ya existe un proveedor en la plataforma
      */
     public function validarExistencia($data) {
-        $customersApi = new CustomersApi(getTaxpayerId());
+        $providersApi = new ProvidersApi(getTaxpayerId());
 
         $idNumber = $data['idNumber'];
         $countryCode = $data['nationality'];
 
         $search = "idNumber:$idNumber,nationality:$countryCode";
 
-        $data = $customersApi->getCustomers($search);
+        $data = $providersApi->getProviders($search);
 
         if (isset($data->error)) {
             $data = array(

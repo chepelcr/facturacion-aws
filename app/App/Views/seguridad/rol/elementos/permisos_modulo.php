@@ -96,7 +96,6 @@
                             <!-- Recorrer los permisos del modulo y mostrar checkbox-->
                             <?php
                             foreach ($submodulo->acciones as $permiso):
-                                $nom_permiso = $permiso->nombre_accion;
                             ?>
 
                                 <!--Agregar un boton -->
@@ -110,7 +109,7 @@
                                 <div class="form-group form-check" hidden>
                                     <input type="checkbox" class="form-check-input inp inp-chk"
                                         id="<?= 'permiso_' . $modulo->nombre_modulo . '_' . $submodulo->nombre_submodulo . '_' . $permiso->nombre_accion; ?>"
-                                        name="<?= 'permiso_' . $modulo->nombre_modulo . '_' . $submodulo->nombre_submodulo . '_' . $permiso->nombre_accion; ?>">
+                                        name="<?= 'permisos[' . $modulo->id_modulo . '_' . $submodulo->id_submodulo . '_' . $permiso->id_accion; ?>]" value="0">
                                 </div>
 
                             <?php
