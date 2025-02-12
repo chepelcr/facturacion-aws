@@ -70,10 +70,14 @@ class DocumentosService {
     /**
      * Obtener la informacion de los clientes
      */
-    public function buscarCliente($idCliente) {
-        $customersApi = new CustomersApi(getTaxpayerId());
-
-        return $customersApi->getCustomerById($idCliente);
+    public function buscarCliente($idCliente, $isProvider = false) {
+        if ($isProvider) {
+            $providersApi = new ProvidersApi(getTaxpayerId());
+            return $providersApi->getProviderById($idCliente);
+        } else {
+            $customersApi = new CustomersApi(getTaxpayerId());
+            return $customersApi->getCustomerById($idCliente);
+        }
     }
 
     public function recibirRespuestaHacienda($documentKey, $respuesta) {
@@ -120,8 +124,8 @@ class DocumentosService {
     public function cargarDocumentos($documentTypeId, $issuerFilter, $startDate, $endDate, $reportType = null) {
         $documentsApi = $this->documentsApi;
 
-        
-        if($issuerFilter == "recibidos") {
+
+        if ($issuerFilter == "recibidos") {
             $received = true;
         } else {
             $received = false;
@@ -241,14 +245,17 @@ class DocumentosService {
         $countryCode = getCountryCode();
 
         $search = "status:1";
+        $isProvider = false;
 
         //Si el código del tipo de document es 01 o 08 se obtienen solo los clientes nacionales
         if ($documentTypeCode == '01' || $documentTypeCode == '08') {
             $search = "$search,nationality:$countryCode";
 
-            if($documentTypeCode == "08") {
+            if ($documentTypeCode == "08") {
                 $providersApi = new ProvidersApi(getTaxpayerId());
                 $clientes = $providersApi->getProviders($search);
+
+                $isProvider = true;
             } else {
                 $clientes = $customersApi->getCustomers($search);
             }
@@ -265,6 +272,7 @@ class DocumentosService {
         } else {
             $dataView = array(
                 'clientes' => $clientes,
+                'isProvider' => $isProvider
             );
 
             return view('facturacion/table/clientes', $dataView);
@@ -281,9 +289,15 @@ class DocumentosService {
         $locationsApi = $this->locationsApi;
         $dataServiceApi = $this->dataServiceApi;
 
+        $isProvider = false;
+
         //Si el documento es de tipo 01 o 08 solo se obtienen los paises con serviceStatus = 1, si es 09 se obtienen los paises con serviceStatus = 2 o si es otro tipo de documento se obtienen todos los paises
         if ($documentTypeCode == '01' || $documentTypeCode == '08') {
             $countries = $locationsApi->get_countries(1);
+
+            if($documentTypeCode == '08') {
+                $isProvider = true;
+            }
         } elseif ($documentTypeCode == '09') {
             $countries = $locationsApi->get_countries(2);
         } else {
@@ -314,6 +328,7 @@ class DocumentosService {
                     'identificationNumberName' => 'receiver[identification][number]',
                     'businessNameName' => 'receiver[businessName]',
                     'tradeNameName' => 'receiver[tradeName]',
+                    'isProvider' => $isProvider
                 ),
                 'datos_contacto' => array(
                     'countries' => $phoneCountries,
@@ -539,13 +554,13 @@ class DocumentosService {
             'tiendas' => $tiendasModel->obtener('activos'),
         );
 
-        if($documentTypeCode == '01') {
+        if ($documentTypeCode == '01') {
             return array(
                 'numerosProveedor' => $numerosProveedorModel->getAll(),
                 'dataTiendas' => $dataTiendas,
                 'documentTypeCode' => $documentTypeCode,
             );
-        } elseif($documentTypeCode == '03') {
+        } elseif ($documentTypeCode == '03') {
             return array(
                 'documentTypeCode' => $documentTypeCode,
             );
@@ -584,8 +599,8 @@ class DocumentosService {
         $xml = base64_encode($xml);
 
         $document = array(
-                'data' => $xml,
-                'contentType' => $contentType
+            'data' => $xml,
+            'contentType' => $contentType
         );
 
         $documentsApi = $this->documentsApi;

@@ -18,6 +18,12 @@ class ClientesService extends BaseService {
 
         $data['identification']['number'] = $identification;
 
+        $personalPhone = $data['personalPhone'];
+
+        if(!isset($personalPhone["phoneNumber"]) || $personalPhone["phoneNumber"] == "") {
+            unset($data['personalPhone']);
+        }
+
         $customersApi = new CustomersApi(getTaxpayerId());
 
         return $customersApi->saveCustomer($data);
@@ -62,6 +68,12 @@ class ClientesService extends BaseService {
         $identification = desformatear_cedula($identification);
 
         $data['identification']['number'] = $identification;
+
+        $personalPhone = $data['personalPhone'];
+
+        if(!isset($personalPhone["phoneNumber"]) || $personalPhone["phoneNumber"] == "") {
+            unset($data['personalPhone']);
+        }
 
         return $customersApi->update($id, $data, $reinsert);
     }

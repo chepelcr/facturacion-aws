@@ -347,5 +347,3 @@ function agregar_termino_credito(select) {
         .find(".creditTerm")
         .val(termino);
 } //Fin de la función agregar_termino_credito
-
-

@@ -21,6 +21,12 @@ class ProveedoresService extends BaseService {
 
         $data['identification']['number'] = $identification;
 
+        $personalPhone = $data['personalPhone'];
+
+        if (!isset($personalPhone["phoneNumber"]) || $personalPhone["phoneNumber"] == "") {
+            unset($data['personalPhone']);
+        }
+
         $providersApi = new ProvidersApi(getTaxpayerId());
 
         return $providersApi->saveProvider($data);
@@ -65,6 +71,12 @@ class ProveedoresService extends BaseService {
         $identification = desformatear_cedula($identification);
 
         $data['identification']['number'] = $identification;
+
+        $personalPhone = $data['personalPhone'];
+
+        if (!isset($personalPhone["phoneNumber"]) || $personalPhone["phoneNumber"] == "") {
+            unset($data['personalPhone']);
+        }
 
         return $providersApi->update($id, $data, $reinsert);
     }

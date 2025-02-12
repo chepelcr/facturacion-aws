@@ -15,7 +15,7 @@
             <!-- Tipo de cliente -->
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="tipo_cliente" class="ivois-label">Tipo de  <?= isset($isProvider) ? 'proveedor' : 'cliente' ?></label>
+                    <label for="tipo_cliente" class="ivois-label">Tipo de  <?= isset($isProvider) && $isProvider ? 'proveedor' : 'cliente' ?></label>
                     <div class="row input-group">
                         <?php foreach ($customerTypes as $customerTypeDTO) : ?>
                             <div class="col-md-6 form-group">
@@ -122,7 +122,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <input type="text" class="receiver form-control inp tradeName" name="<?= $tradeNameName ?? "tradeName" ?>" placeholder="Nombre de la empresa" value="<?= $tradeName!= null ? $tradeName : "" ?>" required max="100">
+                        <input type="text" class="receiver form-control inp tradeName" name="<?= $tradeNameName ?? "tradeName" ?>" placeholder="Nombre de la empresa" value="<?= $tradeName!= null ? $tradeName : "" ?>" max="100">
                     </div>
                 </div>
             </div>

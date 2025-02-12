@@ -1,94 +1,97 @@
 /**Obtener un cliente de la base de datos */
-function obtener_cliente(identificacion = "") {
+function obtener_cliente(customerId, provider = null) {
     elemento_activo = "modal-receptor-" + id_factura_activa;
     form_activo = elemento_activo;
 
     const activeDocument = $("#" + factura_activa);
 
-    if (identificacion && identificacion != "") {
-        Pace.track(function () {
-            //Solicitar el cliente por ajax
-            $.ajax({
-                url: base + "documentos/buscar_cliente/" + identificacion,
-                type: "GET",
-                dataType: "json",
-            })
-                .done(function (data) {
-                    if (!data.error) {
-                        llenarObjeto(elemento_activo, data, "ver");
+    let url = base;
 
-                        //Colocar el nombre del cliente en el input .nombre-cliente de la factura activa
-                        activeDocument.find(".nombre-cliente").val(data.businessName);
-
-                        //Si el nombre del cliente es igual a Walmart y es una factura (tipo_documento = "01")
-                        if (
-                            data.identification.number == "3102007223" &&
-                            activeDocument.find(".documentTypeCode").val() == "01"
-                        ) {
-                            //Mostrar el boton de walmart
-                            $(".col-walmart").show();
-
-                            //Si el .contenedor-walmart no tiene un .modal-walmart
-                            if (!activeDocument.find(".contenedor-walmart").find(".modal-walmart").length) {
-                                //Solicitar el modal de walmart
-                                $.ajax({
-                                    url: base + "documentos/get_walmart",
-                                    type: "GET",
-                                    dataType: "html",
-                                }).done(function (data) {
-                                    //Agregar el modal de walmart al documento activo
-                                    activeDocument.find(".contenedor-walmart").empty().append(data);
-                                });
-                            }
-                        } else {
-                            //Ocultar el boton de walmart
-                            $(".col-walmart").hide();
-
-                            //Eliminar el modal de walmart del documento activo
-                            activeDocument.find(".contenedor-walmart").empty();
-                        }
-
-                        //Ocultar el boton de guardar del modal de cliente
-                        $(".btt-grd-clt").hide();
-
-                        //Ocultar el boton de editar del modal de cliente
-                        $(".btt-edt-clt").show();
-
-                        //Ocultar el boton de guardar cambios del modal de cliente
-                        $(".btt-grd-clt-cambios").hide();
-
-                        //Mostrar el boton de aceptar cliente
-                        $(".btt-aceptar-clt").show();
-
-                        //Mostrar el boton de seleccionar otro
-                        $(".btt-sct-clt").show();
-
-                        //Mostrar el boton de agregar cliente
-                        $(".btt-add-clt").hide();
-
-                        abrir_receptor();
-
-                        //Mostrar el card de clientes
-                        //$("#modal-receptor-" + id_factura_activa).modal("show");
-
-                        //cerrar_clientes();
-                    } else {
-                        notificacion(data.error, "", "error");
-                    }
-                })
-                .fail(function (jqXHR, status, error) {
-                    response = jqXHR.responseText;
-
-                    if (response != null && response != "") {
-                        response = JSON.parse(response);
-                    } else {
-                        response = { error: "Error al obtener el cliente" };
-                    }
-
-                    notificacion(response.error, "", "error");
-                });
-        });
+    if (provider!= null) {
+        url = url + "documentos/buscar_cliente/" + customerId + "?isProvider=true";
+    } else {
+        url = url + "documentos/buscar_cliente/" + customerId;
     }
+
+    Pace.track(function () {
+        //Solicitar el cliente por ajax
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+        })
+            .done(function (data) {
+                if (!data.error) {
+                    llenarObjeto(elemento_activo, data, "editar");
+
+                    //Colocar el nombre del cliente en el input .nombre-cliente de la factura activa
+                    activeDocument.find(".nombre-cliente").val(data.businessName);
+
+                    //Si el nombre del cliente es igual a Walmart y es una factura (tipo_documento = "01")
+                    if (data.identification.number == "3102007223" && activeDocument.find(".documentTypeCode").val() == "01") {
+                        //Mostrar el boton de walmart
+                        $(".col-walmart").show();
+
+                        //Si el .contenedor-walmart no tiene un .modal-walmart
+                        if (!activeDocument.find(".contenedor-walmart").find(".modal-walmart").length) {
+                            //Solicitar el modal de walmart
+                            $.ajax({
+                                url: base + "documentos/get_walmart",
+                                type: "GET",
+                                dataType: "html",
+                            }).done(function (data) {
+                                //Agregar el modal de walmart al documento activo
+                                activeDocument.find(".contenedor-walmart").empty().append(data);
+                            });
+                        }
+                    } else {
+                        //Ocultar el boton de walmart
+                        $(".col-walmart").hide();
+
+                        //Eliminar el modal de walmart del documento activo
+                        activeDocument.find(".contenedor-walmart").empty();
+                    }
+
+                    //Ocultar el boton de guardar del modal de cliente
+                    $(".btt-grd-clt").hide();
+
+                    //Ocultar el boton de editar del modal de cliente
+                    $(".btt-edt-clt").show();
+
+                    //Ocultar el boton de guardar cambios del modal de cliente
+                    $(".btt-grd-clt-cambios").hide();
+
+                    //Mostrar el boton de aceptar cliente
+                    $(".btt-aceptar-clt").show();
+
+                    //Mostrar el boton de seleccionar otro
+                    $(".btt-sct-clt").show();
+
+                    //Mostrar el boton de agregar cliente
+                    $(".btt-add-clt").hide();
+
+                    abrir_receptor();
+
+                    //Mostrar el card de clientes
+                    //$("#modal-receptor-" + id_factura_activa).modal("show");
+
+                    //cerrar_clientes();
+                } else {
+                    notificacion(data.error, "", "error");
+                }
+            })
+            .fail(function (jqXHR, status, error) {
+                response = jqXHR.responseText;
+
+                if (response != null && response != "") {
+                    response = JSON.parse(response);
+                } else {
+                    response = { error: "Error al obtener el cliente" };
+                }
+
+                notificacion(response.error, "", "error");
+            });
+    });
 }
 
 /**Validar la identificacion de un formulario */
@@ -119,6 +122,8 @@ function validar_identificacion(identificacion = "") {
 
 /**Editar el cliente del documento activo */
 function editar_cliente() {
+    estado_form = "editar";
+
     //Mostrar el boton de guardar del modal de cliente
     $(".btt-grd-clt").show();
 
@@ -141,12 +146,12 @@ function editar_cliente() {
 
     activar_campos_cedula("editar", elemento_activo);
 
+    isOtherLocation(elemento_activo);
+
     //Collapse todos los card del elemento activo
     $("#" + form_activo)
         .find(".card")
         .CardWidget("expand");
-
-    estado_form = "editar";
 }
 
 /** Ver el modal del cliente del documento activo*/
@@ -171,11 +176,6 @@ function abrir_receptor() {
 
     form_activo = elemento_activo;
 
-    //Collapse todos los card del elemento activo
-    $("#" + form_activo)
-        .find(".card")
-        .CardWidget("collapse");
-
     //Cerrar el modal de clientes
     cerrar_clientes();
 
@@ -189,26 +189,38 @@ function cerrar_clientes() {
 function validarCliente() {
     const activeDocument = $("#" + factura_activa);
 
-    var clienteValido = validarDataForm(form_activo);
+    const documentTypeCode = activeDocument.find(".documentTypeCode").val();
+
+    let purchaseInvoice = false;
+
+    console.log(documentTypeCode);
+
+    if(documentTypeCode == "08") {
+        purchaseInvoice = true;
+    }
+
+    console.log(purchaseInvoice);
+
+    const clienteValido = validarDataForm(form_activo, purchaseInvoice);
 
     //Si el cliente es valido, cerrar el modal .modal-clientes
     if (clienteValido) {
         $(".modal-receptor").modal("hide");
 
-        let businessName = $("#" + form_activo)
+        const businessName = $("#" + form_activo)
             .find(".businessName")
             .val();
 
         //Colocar el nombre del cliente en el input .nombre-cliente de la factura activa
         activeDocument.find(".nombre-cliente").val(businessName);
 
-        elemento_activo = "";
-        form_activo = "";
-
         //Elininar los bordes rojos de los campos del cliente
         $("#" + form_activo)
             .find(".reveiver")
             .removeClass("border-danger");
+
+        elemento_activo = "";
+        form_activo = "";
     } else {
         notificacion("Debe llenar todos los campos obligatorios del cliente", "", "error");
     }

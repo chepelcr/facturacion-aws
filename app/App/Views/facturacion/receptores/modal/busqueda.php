@@ -7,7 +7,7 @@
             <div class="modal-header bg-dark">
                 <h5 class="modal-title">
                     <i class="fas fa-user"></i>
-                    Clientes
+                    Receptores
                 </h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>

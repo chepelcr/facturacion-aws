@@ -13,12 +13,23 @@
                 <td><?= $cliente->businessName ?></td>
                 <td>
                     <div class="btn-group">
-                        <!-- Seleccionar -->
-                        <button data-toggle="tooltip" title="Seleccionar cliente"
-                            onclick="obtener_cliente('<?= $cliente->id ?>')" class="btn btn-secondary"
-                            type="button">
-                            <i class="fas fa-check"></i>
-                        </button>
+                        <?php if (!$isProvider) {
+                        ?>
+                            <!-- Seleccionar  cliente-->
+                            <button data-toggle="tooltip" title="Seleccionar cliente"
+                                onclick="obtener_cliente('<?= $cliente->id ?>')" class="btn btn-secondary" type="button">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        <?php } else {
+                        ?>
+                            <!-- Seleccionar proveedor -->
+                            <button data-toggle="tooltip" title="Seleccionar proveedor"
+                                onclick="obtener_cliente('<?= $cliente->id ?>', true)" class="btn btn-secondary" type="button">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </td>
                 <!--Fin de las opciones-->

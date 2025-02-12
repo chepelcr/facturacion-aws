@@ -42,7 +42,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="fas fa-phone"></i></span>
                                 </div>
-                                <input class="receiver form-control inp personalPhone_number" name="<?= $personalPhoneNumberName ?? "personalPhone[number]" ?>" type="text" required max="8"
+                                <input class="receiver form-control inp personalPhone_number" name="<?= $personalPhoneNumberName ?? "personalPhone[number]" ?>" type="text" max="8"
                                     value="<?php if (isset($personalPhone)) {
                                                 echo $personalPhone->number;
                                             } ?>" placeholder="Teléfono personal">

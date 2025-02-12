@@ -21,7 +21,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <select onchange="obtener_cantones()" class="receiver form-control inp residence_stateId" name="<?= $stateName ?? "residence[stateId]" ?>" required>
+                        <select onchange="obtener_cantones()" class="receiver form-control inp residence_stateId" name="<?= $stateName ?? "residence[stateId]" ?>">
                             <option value="">Seleccionar</option>
                             <?php foreach ($states as $state): ?>
                                 <option value="<?= $state->stateId ?>"
@@ -43,7 +43,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <select onchange="obtener_distritos()" class="receiver form-control inp residence_countyId" name="<?= $countyName ?? "residence[countyId]" ?>" required>
+                        <select onchange="obtener_distritos()" class="receiver form-control inp residence_countyId" name="<?= $countyName ?? "residence[countyId]" ?>">
                             <option value="">Seleccionar</option>
 
                             <!-- Si existen, recorrer cantones-->
@@ -69,7 +69,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <select class="receiver form-control inp residence_districtId" name="<?= $districtName ?? "residence[districtId]" ?>" required>
+                        <select class="receiver form-control inp residence_districtId" name="<?= $districtName ?? "residence[districtId]" ?>" onchange="isOtherLocation()">
                             <option value="">Seleccionar</option>
 
                             <!-- Si existen, recorrer districts-->
@@ -119,7 +119,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-id-card"></i></span>
                         </div>
-                        <textarea class="receiver form-control inp residence_address" name="<?= $addressName ?? "residence[address]" ?>" cols="30" rows="3" required
+                        <textarea class="receiver form-control inp residence_address" name="<?= $addressName ?? "residence[address]" ?>" cols="30" rows="3"
                             placeholder="Direccion Completa"><?= $residence->address ?? '' ?></textarea>
                     </div>
                 </div>

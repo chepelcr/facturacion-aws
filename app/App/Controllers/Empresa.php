@@ -199,7 +199,17 @@ class Empresa extends BaseController {
 
 						$result = $clientesService->update($id, $data, $reinsert);
 						$objeto = 'cliente';
-					}
+					} elseif( $objeto == 'proveedores') {
+						$proveedoresService = new ProveedoresService();
+
+						$result = $proveedoresService->update($id, $data, $reinsert);
+						$objeto = 'proveedor';
+					}/* elseif( $objeto == 'sucursales' ) {
+						$sucursalesService = new SucursalesService();
+
+						$result = $sucursalesService->update($id, $data, $reinsert);
+						$objeto = 'sucursal';
+					}*/
 
 					if (!isset($result->error)) {
 

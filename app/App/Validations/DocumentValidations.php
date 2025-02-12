@@ -133,7 +133,7 @@ class DocumentValidations {
             );
         } else {
             //Validar si la residencia tiene un estado, canton, distrito, barrio y direccion cuando la nacionalidad es 188
-            if ($receiver['nationality'] == "188" && (!isset($receiver['residence']['stateId']) || $receiver['residence']['stateId'] == '' || !isset($receiver['residence']['countyId']) || $receiver['residence']['countyId'] == '' || !isset($receiver['residence']['districtId']) || $receiver['residence']['districtId'] == '' || /*!isset($receiver['residence']['neighborhoodId']) || $receiver['residence']['neighborhoodId'] == '' || */!isset($receiver['residence']['address']) || $receiver['residence']['address'] == '')) {
+            if (($receiver['nationality'] == "188" && (isset($receiver['residence']['stateId']) && $receiver['residence']['stateId'] != '')) && ((!isset($receiver['residence']['countyId']) || $receiver['residence']['countyId'] == '') || (!isset($receiver['residence']['districtId']) || $receiver['residence']['districtId'] == ''))) {
                 return array(
                     'message' => 'No se han ingresado todos los campos de la residencia del receptor',
                     'status' => '400',
@@ -142,13 +142,13 @@ class DocumentValidations {
             }
 
             //Validar la direccion de la residencia
-            if (!isset($receiver['residence']['address']) || $receiver['residence']['address'] == '') {
+            /*if (!isset($receiver['residence']['address']) || $receiver['residence']['address'] == '') {
                 return array(
                     'message' => 'No se ha ingresado la direccion de la residencia del receptor',
                     'status' => '400',
                     'error' => "Bad Request",
                 );
-            }
+            }*/
         }
 
         //Validar si el receptor tiene un telefono personal y los campos del telefono estan vacios
@@ -161,11 +161,7 @@ class DocumentValidations {
         } else {
             //Validar si el telefono personal tiene un codigo de pais y numero
             if (!isset($receiver['personalPhone']['countryCode']) || $receiver['personalPhone']['countryCode'] == '' || !isset($receiver['personalPhone']['number']) || $receiver['personalPhone']['number'] == '') {
-                return array(
-                    'message' => 'No se han ingresado todos los campos del telefono personal del receptor',
-                    'status' => '400',
-                    'error' => "Bad Request",
-                );
+                unset($receiver['personalPhone']);
             }
         }
 
@@ -196,6 +192,44 @@ class DocumentValidations {
             } elseif ($document['receiver'] == null) {
                 unset($document['receiver']);
             }
+        }
+
+        //Validar branchNumber
+        if (!isset($document['branchNumber']) || $document['branchNumber'] == '') {
+            return array(
+                'message' => 'No se ha ingresado el numero de sucursal',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        }
+
+        //Validar terminalNumber
+        if (!isset($document['terminalNumber']) || $document['terminalNumber'] == '') {
+            return array(
+                'message' => 'No se ha ingresado el numero de terminal',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        }
+
+        //Validar que los correos en copyEmails sean validos
+        if (isset($document['copyEmails']) && !empty($document['copyEmails'])) {
+            //Si solo hay uno y esta vacio
+            if (count($document['copyEmails']) == 1 && $document['copyEmails'][0] == '') {
+                unset($document['copyEmails']);
+            } else {
+                foreach ($document['copyEmails'] as $copyEmail) {
+                    if (!filter_var($copyEmail, FILTER_VALIDATE_EMAIL)) {
+                        return array(
+                            'message' => 'El correo electronico de la copia no tiene un formato valido',
+                            'status' => '400',
+                            'error' => "Bad Request",
+                        );
+                    }
+                }
+            }
+        } else {
+            unset($document['copyEmails']);
         }
 
         //Si el tipo de documento no es una nota de credito o debito, se debe agregar al menos un pago

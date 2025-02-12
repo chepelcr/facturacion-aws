@@ -277,7 +277,10 @@ class Documentos extends BaseController {
         if (is_login()) {
             if (getSegment(3)) {
                 $customerId = getSegment(3);
-                $data = $this->documentosService->buscarCliente($customerId);
+
+                $isProvider = get('isProvider');
+
+                $data = $this->documentosService->buscarCliente($customerId, $isProvider);
             } else {
                 $data = (object) array(
                     'error' => 'No se encontro el cliente',

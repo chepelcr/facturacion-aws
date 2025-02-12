@@ -134,6 +134,20 @@ function llenarObjeto(nombre_form, objeto, estado) {
         eliminarCodigosProducto();
     }
 
+    const formInputsAndSelectAndTextArea = activeForm.find("input, select, textarea");
+
+    $.each(formInputsAndSelectAndTextArea, function (i, input) {
+        //Validar que el input no tenga la clase ivois-radio
+        if (!$(input).hasClass("ivois-radio")) {
+            $(input).val("");
+        }
+
+        //Validar que el input no tenga la clase ivois-radio
+        if ($(input).hasClass("ivois-radio")) {
+            $(input).prop("checked", false);
+        }
+    });
+
     $.each(objeto, function (key, valor) {
         if (key == "identification") {
             activar_campos_cedula("agregar-todos", nombre_form);
@@ -247,7 +261,7 @@ function activar_campos_formulario(nombre_form, estado = "ver", status = 1) {
     if (modulo == "empresa" && submodulo == "productos") {
         campos_cabys(estado, nombre_form);
         activarUnidadComercial(estado, nombre_form);
-    } else if (modulo == "empresa" && (submodulo == "clientes" || submodulo == "proveedores" )) {
+    } else if (modulo == "empresa" && (submodulo == "clientes" || submodulo == "proveedores")) {
         activar_campos_cedula(estado, nombre_form);
     } else if (modulo == "seguridad" && submodulo == "usuarios") {
         activar_campos_cedula(estado, nombre_form);
@@ -637,7 +651,7 @@ function enviar_formulario() {
     } //Fin del if !elemento
 }
 
-function validarDataForm(formulario) {
+function validarDataForm(formulario, purchaseInvoice = null) {
     var dataValida = true;
 
     //Obtener los inputs del formulario, select, textarea, etc
@@ -654,25 +668,50 @@ function validarDataForm(formulario) {
         }
     });
 
-    if (modulo_activo == "empresa" && submodulo_activo == "productos") {
-        dataValida = validateDiscountLines(formulario);
-        dataValida = validateTaxLines(formulario);
+    if (modulo_activo == "empresa") {
+        if (submodulo_activo == "productos") {
+            const validDiscounts = validateDiscountLines(formulario);
 
-        const customsPart = $("#" + formulario).find(".customsPart");
-
-        //Si la partida arancelaria no está vacia y no tiene 12 digitos
-        if (customsPart.val() != "") {
-            const customsPartValue = customsPart.val();
-
-            if (customsPartValue.length != 12) {
-                customsPart.addClass("border-danger");
+            if (!validDiscounts) {
                 dataValida = false;
-            } else if (!customsPartValue.match(/^[0-9]+$/)) {
-                customsPart.addClass("border-danger");
-                dataValida = false;
-            } else {
-                customsPart.removeClass("border-danger");
             }
+
+            const validTaxes = validateTaxesLines(formulario);
+
+            if (!validTaxes) {
+                dataValida = false;
+            }
+
+            const customsPart = $("#" + formulario).find(".customsPart");
+
+            //Si la partida arancelaria no está vacia y no tiene 12 digitos
+            if (customsPart.val() != "") {
+                const customsPartValue = customsPart.val();
+
+                if (customsPartValue.length != 12) {
+                    customsPart.addClass("border-danger");
+                    dataValida = false;
+                } else if (!customsPartValue.match(/^[0-9]+$/)) {
+                    customsPart.addClass("border-danger");
+                    dataValida = false;
+                } else {
+                    customsPart.removeClass("border-danger");
+                }
+            }
+        } else if (submodulo_activo == "clientes" || submodulo_activo == "proveedores") {
+            const validLocation = isOtherLocation(formulario);
+
+            if (!validLocation) {
+                dataValida = false;
+            }
+        }
+    }
+
+    if (modulo_activo == "documentos" && submodulo_activo == "facturacion") {
+        const validLocation = isOtherLocation(formulario, purchaseInvoice);
+
+        if (!validLocation) {
+            dataValida = false;
         }
     }
 
