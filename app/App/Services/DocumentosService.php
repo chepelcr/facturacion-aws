@@ -131,23 +131,23 @@ class DocumentosService {
             $received = false;
         }
 
-        /*switch ($reportType) {
-            case 'all':
-                $startDate = null;
-                $endDate = null;
-                break;
+        //$search = "";
 
-                //Documentos que se hayan emitidos desde hace 7 dias
+        switch ($reportType) {
             case 'semanal':
                 //Hace 7 dias
                 $startDate = strtotime('-7 days');
                 $endDate = strtotime(date('Y-m-d'));
+
+                //$search = "saleDate:$startDate~$endDate";
 
                 break;
 
             case 'semana_anterior':
                 $startDate = strtotime('last monday', strtotime('last week'));
                 $endDate = strtotime('last sunday', strtotime('last week'));
+
+                //$search = "saleDate:$startDate~$endDate";
 
                 break;
 
@@ -162,6 +162,8 @@ class DocumentosService {
                 }
 
                 $endDate = strtotime(date('Y-m-d'));
+
+                //$search = "saleDate:$startDate~$endDate";
                 break;
 
                 //Obtener los documentos del mes actual
@@ -169,33 +171,47 @@ class DocumentosService {
                 $startDate = strtotime(date('Y-m-01'));
                 $endDate = strtotime(date('Y-m-t'));
 
+                //$search = "saleDate:$startDate~$endDate";
+
                 break;
 
             case 'mes_anterior':
                 $startDate = strtotime('first day of last month');
                 $endDate = strtotime('last day of last month');
+
+                //$search = "saleDate:$startDate~$endDate";
                 break;
 
             case 'busqueda':
                 $startDate = strtotime($startDate);
                 $endDate = strtotime($endDate);
+
+
                 break;
 
             default:
                 $startDate = strtotime(date('Y-m-d'));
                 $endDate = strtotime(date('Y-m-d'));
-                break;
-        }*/
 
-        $documentos = $documentsApi->getDocumentsByFilter($received, $documentTypeId, $startDate, $endDate);
+                $reportType = "diarios";
+                break;
+        }
+
+        //Colocar las fechas en formato yyyy-mm-dd
+        $startDate = date('Y-m-d', $startDate);
+        $endDate = date('Y-m-d', $endDate);
+
+        $search = "saleDate:$startDate~$endDate";
+
+        $documentos = $documentsApi->getDocumentsByFilter($received, $documentTypeId, $search); //, $startDate, $endDate);
 
         if (isset($documentos->error)) {
             return $documentos;
         }
 
-        if ($startDate && $endDate) {
+        /*if ($startDate && $endDate) {
             $documentos = $this->filterDocumentsByDate($documentos, $startDate, $endDate);
-        }
+        }*/
 
         $dataServiceApi = $this->dataServiceApi;
         $documentTypes = $dataServiceApi->getDocumentTypesByCountry(getCountryCode());
@@ -295,7 +311,7 @@ class DocumentosService {
         if ($documentTypeCode == '01' || $documentTypeCode == '08') {
             $countries = $locationsApi->get_countries(1);
 
-            if($documentTypeCode == '08') {
+            if ($documentTypeCode == '08') {
                 $isProvider = true;
             }
         } elseif ($documentTypeCode == '09') {

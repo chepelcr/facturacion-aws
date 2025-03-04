@@ -3,8 +3,7 @@
 use Core\Config\Header;
 
 /**Retornar la direccion web de la aplicacion */
-function baseUrl($ext = false)
-{
+function baseUrl($ext = false) {
     if ($ext) {
         return getEnt('app.config.host') . $ext;
     }
@@ -13,8 +12,7 @@ function baseUrl($ext = false)
 } //Fin de la funcion
 
 /**Obtener un segmento de la url */
-function getSegment($num = 0)
-{
+function getSegment($num = 0) {
     /**Direccion de solicitud */
     $requestUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -43,7 +41,20 @@ function getSegment($num = 0)
 }
 
 /**Redireccionar a una direccion web */
-function redirect($url)
-{
+function redirect($url) {
     Header::redirect($url);
+}
+
+/**
+ * Colocar los headers de la respuesta
+ * 
+ * @param array $curlHeaders
+ * @return void
+ */
+function setHeadersToResponse($curlHeaders) {
+    $headers = [];
+    foreach ($curlHeaders as $key => $value) {
+        $headers[] = $key . ': ' . $value;
+    }
+    Header::setHeaders($headers);
 }

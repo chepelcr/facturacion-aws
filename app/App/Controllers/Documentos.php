@@ -126,7 +126,7 @@ class Documentos extends BaseController {
                 $endDate = $_GET['endDate'];
             } else {
                 $tipoReporte = 'all';
-                $documentType = 'all';
+                $documentType = '01';
                 $startDate = null;
                 $endDate = null;
             }

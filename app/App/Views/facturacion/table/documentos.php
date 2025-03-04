@@ -229,24 +229,24 @@
                             <div class="input-group">
                                 <label class="text-left pr-1">Reporte:</label>
                                 <select class="form-control form-control-sm" onchange="asignar_fechas(this.value)" name="reportType" id="reportType">
-                                    <option value="all" <?php if (isset($reportType) && $reportType == 'all') echo 'selected' ?>>
+                                    <option value="all" <?= isset($reportType) && $reportType == 'all' ?? 'selected' ?>>
                                         Todos</option>
-                                    <option value="diarios" <?php if (isset($reportType) && $reportType == 'diarios') echo 'selected' ?>>
+                                    <option value="diarios" <?= isset($reportType) && $reportType == 'diarios' ?? 'selected'?>>
                                         Diario
                                     </option>
-                                    <option value="semanal" <?php if (isset($reportType) && $reportType == 'semanal') echo 'selected' ?>>
+                                    <option value="semanal" <?= isset($reportType) && $reportType == 'semanal' ?? 'selected'?>>
                                         Ultima semana
                                     </option>
-                                    <option value="semana" <?php if (isset($reportType) && $reportType == 'semana') echo 'selected' ?>>Esta
+                                    <option value="semana" <?= isset($reportType) && $reportType == 'semana' ?? 'selected'?>>Esta
                                         semana
                                     </option>
-                                    <option value="mes" <?php if (isset($reportType) && $reportType == 'mes') echo 'selected' ?>>
+                                    <option value="mes" <?= isset($reportType) && $reportType == 'mes' ?? 'selected'?>>
                                         Este mes</option>
-                                    <option value="semana_anterior" <?php if (isset($reportType) && $reportType == 'semana_anterior') echo 'selected' ?>>
+                                    <option value="semana_anterior" <?= isset($reportType) && $reportType == 'semana_anterior' ?? 'selected'?>>
                                         Semana anterior</option>
-                                    <option value="mes_anterior" <?php if (isset($reportType) && $reportType == 'mes_anterior') echo 'selected' ?>>
+                                    <option value="mes_anterior" <?= isset($reportType) && $reportType == 'mes_anterior' ?? 'selected'?>>
                                         Mes anterior</option>
-                                    <option value="buscar" <?php if (isset($reportType) && $reportType == 'buscar') echo 'selected' ?>>
+                                    <option value="buscar" <?= isset($reportType) && $reportType == 'buscar' ?? 'selected'?>>
                                         Busqueda
                                     </option>
                                 </select>
@@ -274,10 +274,10 @@
                             <div class="input-group">
                                 <label class="text-left pr-1">Documento:</label>
                                 <select class="form-control form-control-sm" id="documentTypeId" name="documentTypeId">
-                                    <option value="all">Todos</option>
+                                    <option value="01,08,09">Facturas</option>
                                     <?php foreach ($documentTypes as $tipo_documento) :
                                         if ($tipo_documento->documentType == 'Emisión' && $tipo_documento->code != "99") : ?>
-                                            <option value="<?= $tipo_documento->code ?>" <?php if ($tipo_documento->documentTypeId == $documentTypeId) echo 'selected' ?>>
+                                            <option value="<?= $tipo_documento->code ?>" <?= $tipo_documento->documentTypeId == $documentTypeId ?? 'selected'?>>
                                                 <?= $tipo_documento->description ?></option>
                                     <?php endif;
                                     endforeach; ?>

@@ -16,4 +16,14 @@ class Header
     {
         header('Location:' . $url);
     } //Fin de la funcion para redireccionar
+
+    /**
+     * Setear los headers de curl indicados
+     */
+    public static function setHeaders($headers)
+    {
+        foreach ($headers as $key => $value) {
+            header("$key: $value");
+        }
+    }
 } //Fin de la clase

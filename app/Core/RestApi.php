@@ -45,6 +45,10 @@ abstract class RestApi {
         $this->headers["Authorization"] = "Bearer " . $token;
     }
 
+    public function setApiKey($apiKey) {
+        $this->headers["x-api-key"] = $apiKey;
+    }
+
     private function constructUrl($url) {
         return $this->url . $url;
     }
@@ -69,6 +73,8 @@ abstract class RestApi {
 
     public function makeGetRequestUrl($url, $data = array()) {
         $url = $this->constructUrl($url);
+
+        //var_dump("Url: $url");
 
         $curl = curl_init();
 
@@ -98,9 +104,27 @@ abstract class RestApi {
             $response = json_decode($response, $this->isArray);
         } else {
             $response = json_decode($response, $this->isArray);
+
+            //Colocar los headers del curl en php
+            $info= curl_getinfo($curl);
+            $headers = array();
+
+            #var_dump($info);
+            
+            //return;
+
+            /*foreach ($info as $key => $value) {
+                if (strpos($key, "header_") !== false) {
+                    $headers[str_replace("header_", "", $key)] = $value;
+                }
+            }
+
+            setHeadersToResponse($headers);*/
         }
 
         curl_close($curl);
+
+        #var_dump($response);
 
         return $response;
     }
@@ -111,7 +135,7 @@ abstract class RestApi {
         $className = get_class($this);
 
         //Validar si la respuesta es un error y tiene mensaje
-        if (isset($response)) {
+        if (isset($response) && $response != null) {
 
             $response = json_decode($response, $this->isArray);
 
@@ -126,6 +150,13 @@ abstract class RestApi {
             }
 
             $response = json_encode($response);
+        } else {
+            $response = json_encode(array(
+                "error" => self::ERROR_RESPONSE,
+                "status" => "404",
+                "url" => $url,
+                "response" => $response
+            ));
         }
 
         if (curl_errno($curl)) {
