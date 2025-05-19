@@ -75,7 +75,7 @@ class DocumentsApi extends IvoisApi {
             $url = $url . "?received=false";
         }
         
-        $url = $url . "&documentTypes=$documentType&page=0&size=9999";
+        $url = $url . "&documentTypes=$documentType&page=0&size=99999";
 
         if($search != "") {
             $url = $url . "&search=$search";
@@ -89,6 +89,15 @@ class DocumentsApi extends IvoisApi {
      */
     public function uploadDocument($data) {
         $url = "/upload-document";
+
+        return $this->makePostRequest($data, $url);
+    }
+
+    /**
+     * Cargar un archivo XML en la plataforma
+     */
+    public function uploadDocuments($data) {
+        $url = "/upload-documents";
 
         return $this->makePostRequest($data, $url);
     }

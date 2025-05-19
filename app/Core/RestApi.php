@@ -97,6 +97,8 @@ abstract class RestApi {
 
         $response = curl_exec($curl);
 
+        //var_dump($response);
+
         $this->validateCurlResponse($curl, $response, $url);
 
         if ($this->hasError) {
@@ -104,27 +106,9 @@ abstract class RestApi {
             $response = json_decode($response, $this->isArray);
         } else {
             $response = json_decode($response, $this->isArray);
-
-            //Colocar los headers del curl en php
-            $info= curl_getinfo($curl);
-            $headers = array();
-
-            #var_dump($info);
-            
-            //return;
-
-            /*foreach ($info as $key => $value) {
-                if (strpos($key, "header_") !== false) {
-                    $headers[str_replace("header_", "", $key)] = $value;
-                }
-            }
-
-            setHeadersToResponse($headers);*/
         }
 
         curl_close($curl);
-
-        #var_dump($response);
 
         return $response;
     }

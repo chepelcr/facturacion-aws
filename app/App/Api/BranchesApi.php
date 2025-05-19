@@ -49,7 +49,7 @@ class BranchesApi extends IvoisApi {
      * @return array Lista de sucursales
      */
     public function getAllBranches() {
-        return $this->makeGetRequestUrl('/all');
+        return $this->makeGetRequestUrl('/all?page=0&size=999999');
     }
 
 
@@ -59,7 +59,7 @@ class BranchesApi extends IvoisApi {
      * @return array Lista de sucursales
      */
     public function getBranchesByStatus($status) {
-        $url = "/all?status=$status";
+        $url = "/all?page=0&size=999999&search=status:$status";
 
         return $this->makeGetRequestUrl($url);
     }

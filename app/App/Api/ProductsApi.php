@@ -48,8 +48,8 @@ class ProductsApi extends IvoisApi {
      * @param $status Estado del producto
      * @return array Lista de productos
      */
-    public function getProductsByTaxpayerId($status = 0) {
-        return $this->makeGetRequestUrl("/all?status=" . $status);
+    public function getProductsByTaxpayerId() {
+        return $this->makeGetRequestUrl("/all");
     }
 
     /**
@@ -58,7 +58,7 @@ class ProductsApi extends IvoisApi {
      * @return array Lista de productos
      */
     public function getProductsBySearchFilter($searchFilter = '') {
-        return $this->makeGetRequestUrl("/all?search=" . $searchFilter);
+        return $this->makeGetRequestUrl("/all?page=0&size=999999&search=" . $searchFilter);
     }
 
     /**

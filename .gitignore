@@ -12,3 +12,5 @@ app/vendor/*
 .aws/*
 
 *.p12
+
+app/html/firmados/

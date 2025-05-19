@@ -166,7 +166,7 @@ class DocumentosService {
                 //$search = "saleDate:$startDate~$endDate";
                 break;
 
-                //Obtener los documentos del mes actual
+            //Obtener los documentos del mes actual
             case 'mes':
                 $startDate = strtotime(date('Y-m-01'));
                 $endDate = strtotime(date('Y-m-t'));
@@ -244,7 +244,10 @@ class DocumentosService {
     public function getProductos() {
         $detailsApi = new ProductsApi(getTaxpayerId());
 
-        $productos = $detailsApi->getProductsByTaxpayerId();
+        $search = "status:1";
+        $productos = $detailsApi->getProductsBySearchFilter($search);
+
+        //$productos = $detailsApi->getProductsByTaxpayerId();
 
         $dataView = array(
             'productos' => $productos,
@@ -444,10 +447,16 @@ class DocumentosService {
         $referenceTypes = $dataServiceApi->getReferenceTypesByCountry(getCountryCode());
         $referenceCodes = $dataServiceApi->getReferenceCodesByCountry(getCountryCode());
 
+        $discountTypes = $dataServiceApi->getDiscountTypesByCountry(getCountryCode());
+
         $impuestos = array(
             'taxTypes' => $taxTypes,
             'taxRates' => $taxRates,
             'exemptions' => $exemptions,
+        );
+
+        $descuentos = array(
+            'discounts' => $discountTypes
         );
 
         $data_general = array(
@@ -468,6 +477,7 @@ class DocumentosService {
 
         $modalLinea = array(
             'data_impuesto' => $impuestos,
+            'data_descuentos' => $descuentos,
             'data_general' => $data_general,
             'data_hacienda' => $data_hacienda,
             'data_valor' => $data_valor,
@@ -643,5 +653,41 @@ class DocumentosService {
         $documentsApi = $this->documentsApi;
 
         return $documentsApi->sendReceiverValidation($data, $documentKey);
+    }
+
+    /**
+     * Se encarga de enviar los XML de los documentos de la carpeta a API de documentos
+     * 
+     * El formato de envio es el siguiente:
+     * [{
+     *  "data": $xml,
+     *  "contentType": $contentType
+     * },]
+     * 
+     * Se deben leer todos los archivos de la carpeta "firmados" que terminen en XML y ser agregado a la lista en el formato correspondiente. luego se debe hacer un post al API
+     *
+     * @return array
+     */
+    public function enviarDoumentosXml() {
+        $documentsApi = $this->documentsApi;
+
+        $carpeta = location('firmados/');
+
+        $archivos = scandir($carpeta);
+
+        $archivos_xml = array();
+
+        foreach ($archivos as $archivo) {
+            if (is_file($carpeta . $archivo) && pathinfo($carpeta . $archivo, PATHINFO_EXTENSION) == 'xml') {
+                $archivos_xml[] = array(
+                    'data' => base64_encode(file_get_contents($carpeta . $archivo)),
+                    'contentType' => 'text/xml'
+                );
+            }
+        }
+
+        //var_dump($archivos_xml);
+
+        return $documentsApi->uploadDocuments($archivos_xml);
     }
 }

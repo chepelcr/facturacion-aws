@@ -1,0 +1,1 @@
+# Cambiar el nombre del card de 'En proceso' a 'Procesados'

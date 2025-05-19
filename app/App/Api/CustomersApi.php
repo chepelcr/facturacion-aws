@@ -50,13 +50,19 @@ class CustomersApi extends IvoisApi {
      * @return array Lista de clientes
      */
     public function getCustomers($search = "") {
-        $url = "/all";
+        try {
+            $url = "/all";
 
-        if($search != null && $search != "") {
-            $url = "$url?search=$search";
+            if ($search != null && $search != "") {
+                $url = "$url?page=0&size=999999&search=$search";
+            }
+
+            return $this->makeGetRequestUrl($url);
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+
+            return null;
         }
-
-        return $this->makeGetRequestUrl($url);
     }
 
     /**

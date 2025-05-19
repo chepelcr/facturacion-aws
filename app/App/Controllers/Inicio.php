@@ -6,6 +6,8 @@
 
 namespace App\Controllers;
 
+use App\Services\DocumentosService;
+
 /**
  * Clase para manejar el modulo de inicio
  * @package App\Controllers
@@ -28,5 +30,11 @@ class Inicio extends BaseController
     public function update($id, $data, $reinsert = false) {
         $error = $this->object_error('400', 'La acción no está permitida');
         return $this->error($error);
+    }
+
+    public function migrar() {
+        $documentsService = new DocumentosService();
+
+        return json_encode($documentsService->enviarDoumentosXml());
     }
 } //Fin de la clase

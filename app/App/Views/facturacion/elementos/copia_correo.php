@@ -35,7 +35,7 @@
 
             <div class="col-md-1 addCopyEmail">
                 <!-- Boton de agregar correo -->
-                <button type="button" class="btn btn-outline-success btn-sm btn-block" data-toggle="tooltip" title="Agregar copia" onclick="agregarCorreo()">
+                <button type="button" class="btn btn-outline-success btn-sm btn-block addEmailButton" disabled data-toggle="tooltip" title="Agregar copia" onclick="agregarCorreo()">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>

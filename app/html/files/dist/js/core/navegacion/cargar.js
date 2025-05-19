@@ -15,7 +15,7 @@ function cargar_inicio_modulo(nombre_modulo, vista_modulo = "") {
     } else {
         modulo_activo = nombre_modulo;
     }
-    
+
     submodulo_activo = "";
 
     poner_titulo(vista_modulo);
@@ -125,6 +125,23 @@ function obtener_tipo_cambio(indicador = "") {
         });
     }
 } //Fin de la funcion para obtener el tipo de cambio
+
+/**
+ * Migrar los documentos electrónicos a IVOIS
+ */
+function migrar() {
+    Pace.track(function () {
+        $.ajax({
+            url: base + "inicio/migrar",
+            method: "GET",
+            dataType: "json",
+        }).done(function (response) {
+            console.log(response);
+
+            notificacion("Documentos enviados correctamente", "", "success");
+        });
+    });
+}
 
 /**
  * Abrir el modal del tipo de cambio

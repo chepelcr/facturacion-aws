@@ -53,7 +53,7 @@ class ProvidersApi extends IvoisApi {
         $url = "/all";
 
         if($search != null && $search != "") {
-            $url = "$url?search=$search";
+            $url = "$url?page=0&size=999999&search=$search";
         }
 
         return $this->makeGetRequestUrl($url);

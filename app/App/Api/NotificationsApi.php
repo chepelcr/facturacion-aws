@@ -55,7 +55,7 @@ class NotificationsApi extends IvoisApi {
      * @return array Notificaciones enviadas
      */
     public function sendDocumentNotification($documentId, $email) {
-        $url = "/$documentId/notifications/send?email=$email";
+        $url = "/$documentId/notifications/resend?copyEmails=$email";
 
         return $this->makeGetRequestUrl($url);
     }

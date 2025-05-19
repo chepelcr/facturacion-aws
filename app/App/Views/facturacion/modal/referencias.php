@@ -32,7 +32,7 @@
                             <tbody class="documentReferences">
                                 <tr class="referenceLine">
                                     <td class="col-2">
-                                        <select class="form-control form-control-sm inp-fct inp-fct-ref referenceType" name="references[0][referenceType]">
+                                        <select class="form-control form-control-sm inp-fct inp-fct-ref referenceType" name="references[0][type]">
                                             <option value="">Seleccione un tipo de documento</option>
                                             <?php
                                             foreach ($referenceTypes as $referenceType) {
@@ -43,15 +43,15 @@
                                     </td>
 
                                     <td class="col-3">
-                                        <input type="text" class="form-control form-control-sm key inp-fct inp-fct-ref" placeholder="Numero de documento" name="references[0][referenceNumber]">
+                                        <input type="text" class="form-control form-control-sm key inp-fct inp-fct-ref" placeholder="Numero de documento" name="references[0][number]">
                                     </td>
 
                                     <td class="col-1">
-                                        <input type="date" class="form-control form-control-sm date inp-fct inp-fct-ref" name="references[0][referenceDate]" max="<?php echo date('Y-m-d'); ?>">
+                                        <input type="date" class="form-control form-control-sm date inp-fct inp-fct-ref" name="references[0][date]" max="<?php echo date('Y-m-d'); ?>">
                                     </td>
 
                                     <td class="col-1">
-                                        <select class="form-control form-control-sm code inp-fct inp-fct-ref" name="references[0][referenceCode]">
+                                        <select class="form-control form-control-sm code inp-fct inp-fct-ref" name="references[0][code]">
                                             <option value="">Seleccione un código de referencia</option>
                                             <?php
                                             foreach ($referenceCodes as $referenceCode) {
@@ -62,7 +62,7 @@
                                     </td>
 
                                     <td class="col-2">
-                                        <input type="text" class="form-control reason form-control-sm inp-fct inp-fct-ref" placeholder="Motivo de la referencia" name="references[0][referenceReason]">
+                                        <input type="text" class="form-control reason form-control-sm inp-fct inp-fct-ref" placeholder="Motivo de la referencia" name="references[0][reason]">
                                     </td>
 
                                     <td class="col-1">

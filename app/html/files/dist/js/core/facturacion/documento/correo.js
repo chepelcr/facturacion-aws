@@ -18,6 +18,8 @@ function agregarCorreo() {
 
     const newEmail = lastCorreo.clone();
 
+    newEmail.find(".ccEmail").val("");
+
     //Buscar el ccEmail y colocar copyEmails[*] en el name
     //newEmail.find(".ccEmail").attr("name", "copyEmails[" + cantidadCorreos + "]");
 
@@ -60,15 +62,18 @@ function vaciarCorreo(button) {
         colCorreo.remove();
 
         addButton.remove();
+
         activeDocument.find(".email-copies").append(addButton);
 
         activeDocument.find(".addCopyEmail").show();
     } else {
         //Elminar el valor del input
         colCorreo.find(".ccEmail").val("");
+    }
 
-        //Si no hay mas de una linea, se debe ocultar el boton de eliminar
-        colCorreo.find(".delete-email").attr("disabled", true);
+    //Si solo queda una linea, desactivar el boton
+    if (activeDocument.find(".col-correo").length == 1 && activeDocument.find(".col-correo").find(".ccEmail").val() == "") {
+        activeDocument.find(".delete-email").attr("disabled", true);
     }
 
     nombrarCorreos();
@@ -86,20 +91,123 @@ function nombrarCorreos() {
             .find(".ccEmail")
             .attr("name", "copyEmails[" + index + "]");
     });
+
+    validarCorreos();
+}
+
+/**
+ * Validar si los correos de la lista son validos y no se repiten
+ *
+ * En caso que algun correo sea repetido, se debera colocar la clase border-danger
+ */
+function validarCorreos() {
+    const activeDocument = $("#" + factura_activa);
+
+    let validEmails = true;
+
+    //Obtener los correos de la lista
+    const correos = activeDocument.find(".ccEmail");
+
+    //Eliminar los bordes rojos
+    correos.removeClass("border-danger");
+
+    //Obtener los valores que no estan vacios
+    const correosValidos = correos
+        .filter(function () {
+            return $(this).val() != "";
+        })
+        .map(function () {
+            return $(this).val();
+        });
+
+    //Recorrer los correos validando que no se repitan
+    correos.each(function (index, element) {
+        const value = $(element).val();
+        //Si el correo no esta vacio
+        if (value != "") {
+            //Validar si cumple con estructura de correo
+            if (!validarCorreo(value)) {
+                //Agregar la clase border-danger
+                $(element).addClass("border-danger");
+
+                validEmails = false;
+            }
+
+            //Si el correo esta repetido
+            if (correosValidos.filter((correo) => correo == value).length > 1) {
+                //Agregar la clase border-danger
+                $(element).addClass("border-danger");
+
+                validEmails = false;
+            }
+        }
+    });
+
+    //Validar si hay mas de uno vacio
+    const correosVacios = correos.filter(function () {
+        return $(this).val() == "";
+    });
+
+    //Si hay mas de uno vacio, se colocan invalidos
+    if (correosVacios.length > 1  || (correosVacios.length == 1 && correosValidos.length > 0)) {
+        correosVacios.each(function (index, element) {
+            $(element).addClass("border-danger");
+        });
+
+        validEmails = false;
+    }
+
+    //Si los correos no son validos, desabilitar el btn-guardar-documento de la factura activa
+    if (!validEmails) {
+        activeDocument.find(".btn-guardar-documento").attr("disabled", true);
+
+        //Desactivar el boton de agregar correos
+        activeDocument.find(".addEmailButton").attr("disabled", true);
+    } else {
+        activeDocument.find(".btn-guardar-documento").attr("disabled", false);
+
+        //Activar el boton de agregar correos 
+        activeDocument.find(".addEmailButton").attr("disabled", false);
+    }
+
+    //Si solo queda un correo y está vacio, desactivar el boton de agregar
+    if (validEmails && (correos.length == 1 && correosVacios.length == 1)) {
+        activeDocument.find(".addEmailButton").attr("disabled", true);
+    }/* else {
+        activeDocument.find(".addEmailButton").attr("disabled", false);
+    }*/
+}
+
+/**
+ * Validar un correo electrónico
+ * @param {string} correo Correo electrónico a validar
+ * @returns true | false
+ */
+function validarCorreo(correo) {
+    //Expresion regular para validar correo
+    
+    const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    if (correo == "") {
+        return true;
+    } else {
+        correo = correo.toLowerCase();
+    }
+    
+    return regex.test(correo);
 }
 
 $(document).ready(function () {
     //Cuando cambia ccEmail
-    $(document).on("change", ".ccEmail", function () {
-        //Si el valor es diferente a vacio
-        if ($(this).val() != "") {
-            //Activar el boton de eliminar
-            $(this).closest(".col-correo").find(".delete-email").attr("disabled", false);
+    $(document).on("change keyup", ".ccEmail", function () {
+        //Si solo hay un correo y esta vacio, desactivar el boton de eliminar
+        if ($("#" + factura_activa).find(".col-correo").length == 1 && $(this).val() == "") {
+            $(this).closest(".col-correo").find(".delete-email").attr("disabled", true);
         } else {
-            //Si solo hay un correo, desactivar el boton de eliminar
-            if ($("#" + factura_activa).find(".col-correo").length == 1) {
-                $(this).closest(".col-correo").find(".delete-email").attr("disabled", true);
-            }
+            //Activar el boton
+            $(this).closest(".col-correo").find(".delete-email").attr("disabled", false);
         }
+
+        validarCorreos();
     });
 });

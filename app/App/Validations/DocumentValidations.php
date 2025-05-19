@@ -317,7 +317,7 @@ class DocumentValidations {
         //Recorrer los detalles del documento
         foreach ($details as $detail) {
             if ($detail['productId'] != "") {
-                if ($detail['quantity'] != "0" && $detail['description'] != "" && $detail['salePrice'] != "0") {
+                if ($detail['quantity'] != "0" && $detail['description'] != "" && $detail['netPrice'] != "0") {
                     //Recorrer los descuentos de la linea si existen y validar que existan los campos o eliminar la linea
                     if (isset($detail['discounts'])) {
                         $detail['discounts'] = ProductValidations::validateDiscounts($detail['discounts']);
@@ -398,9 +398,9 @@ class DocumentValidations {
         $newReferences = array();
 
         foreach ($references as $reference) {
-            if ($reference['referenceType'] != '' && $reference['referenceCode'] != '' && $reference['referenceNumber'] != '' && $reference['referenceReason'] != '' && $reference['referenceDate'] != '') {
+            if ($reference['type'] != '' && $reference['code'] != '' && $reference['number'] != '' && $reference['reason'] != '' && $reference['date'] != '') {
                 $newReferences[] = $reference;
-            } elseif ($reference['referenceType'] != '' && ($reference['referenceCode'] == '' || $reference['referenceNumber'] == '' || $reference['referenceReason'] == '' || $reference['referenceDate'] == '')) {
+            } elseif ($reference['type'] != '' && ($reference['code'] == '' || $reference['number'] == '' || $reference['reason'] == '' || $reference['date'] == '')) {
                 return array(
                     'message' => 'No se han ingresado todos los campos de la referencia',
                     'status' => '400',

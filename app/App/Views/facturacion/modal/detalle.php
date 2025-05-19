@@ -36,7 +36,7 @@
 
                     <!-- Descuentos -->
                     <div class="col-md-12">
-                        <?= view('facturacion/lineas/descuentos') ?>
+                        <?= view('facturacion/lineas/descuentos', $data_descuentos) ?>
                     </div>
                     <!-- /.col-md-12 -->
 

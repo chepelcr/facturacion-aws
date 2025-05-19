@@ -5,15 +5,18 @@ function obtener_contribuyente(cedula = null) {
     let nombre = "";
 
     if (cedula != "" && cedula) {
+        //Eliminar - y espacios
+        cedula = cedula.replace(/-/g, "").replace(/\s/g, "");
+
         //Si la cedula es menor a 9 digitos
         if (cedula.length < 9) {
-            mensajeAutomatico("Atencion", "La identificacion indicada es muy corta", "error");
+            //mensajeAutomatico("Atencion", "La identificacion indicada es muy corta", "error");
             return false;
         }
 
         const nationality = activeForm.find(".nationality").val();
 
-        if(nationality == ""){
+        if (nationality == "") {
             mensajeAutomatico("Atencion", "Debe seleccionar la nacionalidad", "error");
             return false;
         }
@@ -36,6 +39,48 @@ function obtener_contribuyente(cedula = null) {
 
                         //Llenar el campo de nombre
                         llenar_nombre(nombre, form_activo);
+
+                        id_type_code = response.identification.code;
+
+                        const identifications = activeForm.find(".identification_typeId option");
+
+                        if (id_type_code == "06") {
+                            //Recorrer los options con un each
+                            $.each(identifications, function (i, option) {
+                                const code = $(option).data("code");
+
+                                //Mostrar solo el option con data-code 01, 03 y 04
+                                if (code == "06" || $(option).val() == "") {
+                                    option.hidden = false;
+                                    option.selected = true;
+                                } else {
+                                    option.hidden = true;
+                                }
+                            });
+
+                            activar_campos_cedula("agregar-no-contribuyente", form_activo);
+                        } else {
+                            //Recorrer los options con un each
+                            $.each(identifications, function (i, option) {
+                                const code = $(option).data("code");
+
+                                if (customerType == 1) {
+                                    //Mostrar solo el option con data-code 01, 03 y 04
+                                    if (code == "01" || code == "03" || code == "04" || $(option).val() == "") {
+                                        option.hidden = false;
+                                    } else {
+                                        option.hidden = true;
+                                    }
+                                } else {
+                                    //Mostrar solo el option con data-code 02 y 04
+                                    if (code == "02" || code == "04" || $(option).val() == "") {
+                                        option.hidden = false;
+                                    } else {
+                                        option.hidden = true;
+                                    }
+                                }
+                            });
+                        }
                     }
                 })
                 .fail(function (xhr, textStatus, errorThrown) {
@@ -138,7 +183,7 @@ function validar_extranjero() {
         //Recorrer los options con un each
         $.each(identifications, function (i, option) {
             //Mostrar solo el option con data-code 99
-            if ($(option).data("code") != 99) {
+            if ($(option).data("code") != "05") {
                 option.hidden = true;
             } else {
                 option.hidden = false;
@@ -250,6 +295,8 @@ function vaciar_cedula() {
     //$("#" + form_activo).find(".nationality").val('');
 
     activar_campos_cedula("agregar", form_activo);
+
+    validar_extranjero()
 } //Fin de vaciar los campos relacionados con la cedula de un contribuyente
 
 /**

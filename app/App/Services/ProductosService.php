@@ -22,15 +22,13 @@ class ProductosService extends BaseService {
 
         if ($id == 'all') {
             if (isset($filters['search'])) {
-                $data = $productosApi->getProductsBySearchFilter($filters['search']);
+                $search = $filters['search'];
             } elseif (isset($filters['status']) && $filters['status'] != 'all') {
                 $search = 'status:' . $filters['status'];
-                $data = $productosApi->getProductsBySearchFilter($search);
             } else {
-                $data = $productosApi->getProductsByTaxpayerId();
+                $search = 'status:1';
             }
-
-            return $data;
+            return $productosApi->getProductsBySearchFilter($search);
         } else {
             return $productosApi->getProductById($id);
         }
@@ -99,6 +97,8 @@ class ProductosService extends BaseService {
         $taxTypes = $dataServiceApi->getTaxTypesByCountry(getCountryCode());
         $taxRates = $dataServiceApi->getTaxRatesByCountry(getCountryCode());
 
+        $discountTypes = $dataServiceApi->getDiscountTypesByCountry(getCountryCode());
+
         $nombreForm = 'empresa/producto/form';
 
         $datos_generales = array(
@@ -121,12 +121,17 @@ class ProductosService extends BaseService {
             'taxRates' => $taxRates
         );
 
+        $discounts_data = array(
+            'discounts' => $discountTypes
+        );
+
         $data_form = array(
             'dataForm' => array(
                 'datos_generales' => $datos_generales,
                 'data_codigos' => $data_codigos,
                 'productTypeData' => $productTypeData,
-                'data_impuestos' => $data_impuestos
+                'data_impuestos' => $data_impuestos,
+                'data_descuentos' => $discounts_data
             ),
             'nombreForm' => $nombreForm,
             'nombre_form' => 'frm_empresa_productos'

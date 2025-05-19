@@ -70,7 +70,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                                     </div>
-                                                    <select class="form-control currencyCode required" name="currencyCode[currencyCode]" required onchange="selectTipoCambio()">
+                                                    <select class="form-control currencyCode required" name="currencyCode[isoCode]" required onchange="selectTipoCambio()">
                                                         <?php
                                                         foreach ($countries as $moneda) :
                                                             if ($moneda->currencyCode == 'CRC' || $moneda->currencyCode == 'USD') :

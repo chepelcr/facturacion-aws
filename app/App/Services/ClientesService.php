@@ -20,7 +20,7 @@ class ClientesService extends BaseService {
 
         $personalPhone = $data['personalPhone'];
 
-        if(!isset($personalPhone["phoneNumber"]) || $personalPhone["phoneNumber"] == "") {
+        if (!isset($personalPhone["phoneNumber"]) || $personalPhone["phoneNumber"] == "") {
             unset($data['personalPhone']);
         }
 
@@ -37,13 +37,13 @@ class ClientesService extends BaseService {
 
         if ($id == 'all') {
             if (isset($filters['search'])) {
-                return $customersApi->getCustomers($filters['search']);
+                $search = $filters['search'];
             } elseif (isset($filters['status']) && $filters['status'] != 'all') {
                 $search = 'status:' . $filters['status'];
-                return $customersApi->getCustomers($search);
             } else {
-                return $customersApi->getCustomers();
+                $search = "status:1";
             }
+            return $customersApi->getCustomers($search);
         } else {
             return $customersApi->getCustomerById($id);
         }
@@ -71,7 +71,7 @@ class ClientesService extends BaseService {
 
         $personalPhone = $data['personalPhone'];
 
-        if(!isset($personalPhone["phoneNumber"]) || $personalPhone["phoneNumber"] == "") {
+        if (!isset($personalPhone["phoneNumber"]) || $personalPhone["phoneNumber"] == "") {
             unset($data['personalPhone']);
         }
 
@@ -91,7 +91,7 @@ class ClientesService extends BaseService {
         if (isset($filters['status'])) {
             $estado = $filters['status'];
         } else {
-            $estado = 'all';
+            $estado = 1;
         }
 
         $tableName = 'empresa/cliente/table';

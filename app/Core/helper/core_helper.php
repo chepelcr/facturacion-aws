@@ -36,21 +36,13 @@ function icono($icono, $alt, $class = null)
         <img src="' . getFile('dist/img/icons/' . $icono) . '" alt="' . $alt . '" class="img-fluid icn ' . $class . '">';
 }
 
-/**Obtener la localizacion de la aplicacion para almacenar archivos
- * $carpeta: nombre de la carpeta
- * @return string
+/**
+ * Obtener la ubicacion de la carpeta de la aplicacion
+ * @param string $carpeta: Ubicacion de la carpeta dentro de la carpeta de la aplicacion
  */
 function location($carpeta = '')
 {
-    if (getEnt('app.config.ambiente') == 'desarrollo') {
-        //Transformar todos los / en \\
-        $carpeta = str_replace('/', '\\', $carpeta);
+    $carpeta = str_replace('\\', '/', $carpeta);
 
-        return getEnt('app.config.location') . $carpeta;
-    } else {
-        //Transformar todos los \\ en /
-        $carpeta = str_replace('\\', '/', $carpeta);
-
-        return getEnt('app.config.location') . $carpeta;
-    }
+    return getEnt('app.config.location') . $carpeta;
 }

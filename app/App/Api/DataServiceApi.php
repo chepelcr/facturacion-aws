@@ -221,4 +221,13 @@ class DataServiceApi extends IvoisApi {
 
         return $this->makeGetRequestUrl($url);
     }
+
+    /**
+     * Obtener los tipos de descuento
+     */
+    public function getDiscountTypesByCountry($countryCode) {
+        $url = getEnt("ivois.api.countries.url") . $countryCode . getEnt("ivois.api.discounts.url");
+
+        return $this->makeGetRequestUrl($url);
+    }
 }

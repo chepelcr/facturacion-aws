@@ -164,6 +164,22 @@ function activar_campos_cedula(estado = "agregar", nombre_elemento = "") {
         $("#" + nombre_elemento)
             .find(".card-form")
             .CardWidget("expand");
+    } else if (estado == "agregar-no-contribuyente") {
+        activar_campo_clase("identification_number", false, nombre_elemento);
+
+        activar_campo_clase("businessName", true, nombre_elemento);
+        activar_campo_clase("identification_typeId", true, nombre_elemento);
+        activar_campo_clase("customerType-radio", false, nombre_elemento);
+
+        //Mostrar los campos de nombre
+        $("#" + nombre_elemento)
+            .find(".name")
+            .show();
+
+        //Mostrar los card-form
+        $("#" + nombre_elemento)
+            .find(".card-form")
+            .CardWidget("expand");
     } else if (estado == "editar" || estado == "ver" || estado == "reinsertar") {
         activar_campo_clase("identification_number", true, nombre_elemento);
 

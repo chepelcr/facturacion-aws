@@ -61,7 +61,14 @@
                                                 <i class="fas fa-align-justify"></i>
                                             </span>
                                         </div>
-                                        <input class="form-control form-control-sm inp-fct validar_linea discount_reason" type="text" name="details[0][discounts][0][reason]" placeholder="Motivo de descuento">
+                                        <select class="form-control form-control-sm taxTypes detaildiscountType" name="details[0][discounts][0][discountTypeId]">
+                                            <option value="">Seleccione un descuento</option>
+                                            <?php foreach ($discounts as $discount) : ?>
+                                                <option value="<?= $discount->discountTypeId ?>" data-code="<?= $discount->code ?>">
+                                                    <?= $discount->description ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <input hidden class="form-control form-control-sm inp-fct validar_linea discount_reason" type="text" name="details[0][discounts][0][reason]" placeholder="Motivo de descuento">
                                     </div>
                                 </div>
                             </div>

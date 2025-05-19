@@ -2,6 +2,7 @@
 
 namespace App\Api;
 
+use Core\Config\ApiConfig;
 use Core\RestApi;
 
 /**
@@ -30,6 +31,10 @@ abstract class IvoisApi extends RestApi {
         }
 
         parent::__construct($url, "application/json");
+
+        $api_key = ApiConfig::getIvoisApiKey();
+
+        $this->setApiKey($api_key);
     }
 
     /**

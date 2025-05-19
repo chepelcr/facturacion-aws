@@ -40,13 +40,14 @@ class ProveedoresService extends BaseService {
 
         if ($id == 'all') {
             if (isset($filters['search'])) {
-                return $providersApi->getProviders($filters['search']);
+                $search = $filters['search'];
             } elseif (isset($filters['status']) && $filters['status'] != 'all') {
                 $search = 'status:' . $filters['status'];
-                return $providersApi->getProviders($search);
             } else {
-                return $providersApi->getProviders();
+                $search = 'status:1';
             }
+
+            return $providersApi->getProviders($search);
         } else {
             return $providersApi->getProviderById($id);
         }
