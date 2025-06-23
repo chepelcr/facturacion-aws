@@ -7561,7 +7561,7 @@ INSERT INTO `usuarios` (`id_usuario`, `nombre`, `nombre_usuario`, `identificacio
 DROP TABLE IF EXISTS `auditorias_view`;
 
 DROP VIEW IF EXISTS `auditorias_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW `auditorias_view`  AS SELECT `a`.`id_auditoria` AS `id_auditoria`, `a`.`id_fila` AS `id_fila`, `a`.`tabla` AS `tabla`, `a`.`accion` AS `accion`, `a`.`id_usuario` AS `id_usuario`, `u`.`nombre_usuario` AS `nombre_usuario`, `a`.`created_at` AS `created_at` FROM (`auditoria` `a` join `usuarios` `u` on(`a`.`id_usuario` = `u`.`id_usuario`))  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY INVOKER VIEW `auditorias_view`  AS SELECT `a`.`id_auditoria` AS `id_auditoria`, `a`.`id_fila` AS `id_fila`, `a`.`tabla` AS `tabla`, `a`.`accion` AS `accion`, `a`.`id_usuario` AS `id_usuario`, `u`.`nombre_usuario` AS `nombre_usuario`, `a`.`created_at` AS `created_at` FROM (`auditoria` `a` join `usuarios` `u` on(`a`.`id_usuario` = `u`.`id_usuario`))  ;
 
 -- --------------------------------------------------------
 
@@ -7571,7 +7571,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW 
 DROP TABLE IF EXISTS `cantones_view`;
 
 DROP VIEW IF EXISTS `cantones_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY INVOKER VIEW `cantones_view`  AS SELECT `ubicaciones`.`cod_provincia` AS `cod_provincia`, `ubicaciones`.`cod_canton` AS `cod_canton`, `ubicaciones`.`canton` AS `canton` FROM `ubicaciones` GROUP BY `ubicaciones`.`cod_provincia`, `ubicaciones`.`cod_canton` ORDER BY `ubicaciones`.`cod_provincia` ASC, `ubicaciones`.`cod_canton` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`%` SQL SECURITY INVOKER VIEW `cantones_view`  AS SELECT `ubicaciones`.`cod_provincia` AS `cod_provincia`, `ubicaciones`.`cod_canton` AS `cod_canton`, `ubicaciones`.`canton` AS `canton` FROM `ubicaciones` GROUP BY `ubicaciones`.`cod_provincia`, `ubicaciones`.`cod_canton` ORDER BY `ubicaciones`.`cod_provincia` ASC, `ubicaciones`.`cod_canton` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -7581,7 +7581,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY INVOKER VIEW `cantone
 DROP TABLE IF EXISTS `distritos_view`;
 
 DROP VIEW IF EXISTS `distritos_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY INVOKER VIEW `distritos_view`  AS SELECT `ubicaciones`.`cod_provincia` AS `cod_provincia`, `ubicaciones`.`cod_canton` AS `cod_canton`, `ubicaciones`.`cod_distrito` AS `cod_distrito`, `ubicaciones`.`distrito` AS `distrito` FROM `ubicaciones` GROUP BY `ubicaciones`.`cod_provincia`, `ubicaciones`.`cod_canton`, `ubicaciones`.`cod_distrito` ORDER BY `ubicaciones`.`cod_provincia` ASC, `ubicaciones`.`cod_canton` ASC, `ubicaciones`.`cod_distrito` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`%` SQL SECURITY INVOKER VIEW `distritos_view`  AS SELECT `ubicaciones`.`cod_provincia` AS `cod_provincia`, `ubicaciones`.`cod_canton` AS `cod_canton`, `ubicaciones`.`cod_distrito` AS `cod_distrito`, `ubicaciones`.`distrito` AS `distrito` FROM `ubicaciones` GROUP BY `ubicaciones`.`cod_provincia`, `ubicaciones`.`cod_canton`, `ubicaciones`.`cod_distrito` ORDER BY `ubicaciones`.`cod_provincia` ASC, `ubicaciones`.`cod_canton` ASC, `ubicaciones`.`cod_distrito` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -7591,7 +7591,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY INVOKER VIEW `distrit
 DROP TABLE IF EXISTS `empresas_view`;
 
 DROP VIEW IF EXISTS `empresas_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `empresas_view`  AS SELECT `empresas`.`id_empresa` AS `id_empresa`, `empresas`.`identificacion` AS `identificacion`, `empresas`.`id_tipo_identificacion` AS `id_tipo_identificacion`, `tipos_identificaciones`.`tipo_identificacion` AS `tipo_identificacion`, `empresas`.`razon` AS `razon`, `empresas`.`razon` AS `nombre`, `empresas`.`cod_actividad` AS `cod_actividad`, `empresas`.`nombre_comercial` AS `nombre_comercial`, `empresas`.`id_ubicacion` AS `id_ubicacion`, `u`.`cod_provincia` AS `cod_provincia`, `u`.`provincia` AS `provincia`, `u`.`cod_canton` AS `cod_canton`, `u`.`canton` AS `canton`, `u`.`cod_distrito` AS `cod_distrito`, `u`.`distrito` AS `distrito`, `u`.`cod_barrio` AS `cod_barrio`, `u`.`barrio` AS `barrio`, `empresas`.`otras_senas` AS `otras_senas`, `codigos_paises`.`codigo_telefono` AS `codigo_telefono`, `empresas`.`telefono` AS `telefono`, `empresas`.`cod_pais` AS `cod_pais`, `codigos_paises`.`nombre` AS `nombre_pais`, `empresas`.`correo` AS `correo`, `empresas`.`estado` AS `estado` FROM (((`empresas` join `tipos_identificaciones` on(`tipos_identificaciones`.`id_tipo_identificacion` = `empresas`.`id_tipo_identificacion`)) join `codigos_paises` on(`codigos_paises`.`cod_pais` = `empresas`.`cod_pais`)) join `ubicaciones` `u` on(`empresas`.`id_ubicacion` = `u`.`id_ubicacion`))  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY DEFINER VIEW `empresas_view`  AS SELECT `empresas`.`id_empresa` AS `id_empresa`, `empresas`.`identificacion` AS `identificacion`, `empresas`.`id_tipo_identificacion` AS `id_tipo_identificacion`, `tipos_identificaciones`.`tipo_identificacion` AS `tipo_identificacion`, `empresas`.`razon` AS `razon`, `empresas`.`razon` AS `nombre`, `empresas`.`cod_actividad` AS `cod_actividad`, `empresas`.`nombre_comercial` AS `nombre_comercial`, `empresas`.`id_ubicacion` AS `id_ubicacion`, `u`.`cod_provincia` AS `cod_provincia`, `u`.`provincia` AS `provincia`, `u`.`cod_canton` AS `cod_canton`, `u`.`canton` AS `canton`, `u`.`cod_distrito` AS `cod_distrito`, `u`.`distrito` AS `distrito`, `u`.`cod_barrio` AS `cod_barrio`, `u`.`barrio` AS `barrio`, `empresas`.`otras_senas` AS `otras_senas`, `codigos_paises`.`codigo_telefono` AS `codigo_telefono`, `empresas`.`telefono` AS `telefono`, `empresas`.`cod_pais` AS `cod_pais`, `codigos_paises`.`nombre` AS `nombre_pais`, `empresas`.`correo` AS `correo`, `empresas`.`estado` AS `estado` FROM (((`empresas` join `tipos_identificaciones` on(`tipos_identificaciones`.`id_tipo_identificacion` = `empresas`.`id_tipo_identificacion`)) join `codigos_paises` on(`codigos_paises`.`cod_pais` = `empresas`.`cod_pais`)) join `ubicaciones` `u` on(`empresas`.`id_ubicacion` = `u`.`id_ubicacion`))  ;
 
 -- --------------------------------------------------------
 
@@ -7601,7 +7601,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `modulos_roles_view`;
 
 DROP VIEW IF EXISTS `modulos_roles_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW `modulos_roles_view`  AS SELECT `p`.`id_permiso` AS `id_permiso`, `r`.`id_rol` AS `id_rol`, `p`.`id_modulo` AS `id_modulo`, `m`.`nombre_modulo` AS `nombre_modulo`, `m`.`nombre_vista` AS `nombre_vista`, `m`.`icono` AS `icono` FROM ((`permisos_submodulos` `p` join `modulos` `m` on(`p`.`id_modulo` = `m`.`id_modulo`)) join `roles` `r` on(`p`.`id_rol` = `r`.`id_rol`)) WHERE `p`.`estado` = 1 GROUP BY `r`.`id_rol`, `p`.`id_modulo` ORDER BY `r`.`id_rol` ASC, `p`.`id_modulo` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY INVOKER VIEW `modulos_roles_view`  AS SELECT `p`.`id_permiso` AS `id_permiso`, `r`.`id_rol` AS `id_rol`, `p`.`id_modulo` AS `id_modulo`, `m`.`nombre_modulo` AS `nombre_modulo`, `m`.`nombre_vista` AS `nombre_vista`, `m`.`icono` AS `icono` FROM ((`permisos_submodulos` `p` join `modulos` `m` on(`p`.`id_modulo` = `m`.`id_modulo`)) join `roles` `r` on(`p`.`id_rol` = `r`.`id_rol`)) WHERE `p`.`estado` = 1 GROUP BY `r`.`id_rol`, `p`.`id_modulo` ORDER BY `r`.`id_rol` ASC, `p`.`id_modulo` ASC  ;
 
 
 -- --------------------------------------------------------
@@ -7612,7 +7612,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW 
 DROP TABLE IF EXISTS `submodulos_view`;
 
 DROP VIEW IF EXISTS `submodulos_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `submodulos_view`  AS SELECT `s`.`id_modulo` AS `id_modulo`, `m`.`nombre_modulo` AS `nombre_modulo`, `s`.`id_submodulo` AS `id_submodulo`, `s`.`nombre_submodulo` AS `nombre_submodulo`, `s`.`nombre_vista` AS `nombre_vista`, `s`.`icono` AS `icono`, `s`.`objeto` AS `objeto`, `s`.`url` AS `url`, `s`.`fecha_creacion` AS `fecha_creacion` FROM (`modulos_submodulos` `s` join `modulos` `m` on(`s`.`id_modulo` = `m`.`id_modulo`)) ORDER BY `m`.`nombre_modulo` ASC, `s`.`nombre_submodulo` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY DEFINER VIEW `submodulos_view`  AS SELECT `s`.`id_modulo` AS `id_modulo`, `m`.`nombre_modulo` AS `nombre_modulo`, `s`.`id_submodulo` AS `id_submodulo`, `s`.`nombre_submodulo` AS `nombre_submodulo`, `s`.`nombre_vista` AS `nombre_vista`, `s`.`icono` AS `icono`, `s`.`objeto` AS `objeto`, `s`.`url` AS `url`, `s`.`fecha_creacion` AS `fecha_creacion` FROM (`modulos_submodulos` `s` join `modulos` `m` on(`s`.`id_modulo` = `m`.`id_modulo`)) ORDER BY `m`.`nombre_modulo` ASC, `s`.`nombre_submodulo` ASC  ;
 
 
 -- --------------------------------------------------------
@@ -7623,7 +7623,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `permisos_view`;
 
 DROP VIEW IF EXISTS `permisos_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW `permisos_view`  AS SELECT `p`.`id_permiso` AS `id_permiso`, `p`.`id_rol` AS `id_rol`, `r`.`nombre_rol` AS `nombre_rol`, `p`.`id_modulo` AS `id_modulo`, `s`.`nombre_modulo` AS `nombre_modulo`, `p`.`id_submodulo` AS `id_submodulo`, `s`.`nombre_submodulo` AS `nombre_submodulo`, `s`.`objeto` AS `objeto`, `s`.`url` AS `url`, `p`.`id_accion` AS `id_accion`, `a`.`nombre_accion` AS `nombre_accion`, `a`.`icono` AS `icono`, `p`.`estado` AS `estado`, `p`.`fecha_creacion` AS `fecha_creacion`, `p`.`fecha_modificacion` AS `fecha_modificacion` FROM (((`permisos_submodulos` `p` join `submodulos_view` `s` on(`p`.`id_modulo` = `s`.`id_modulo` and `p`.`id_submodulo` = `s`.`id_submodulo`)) join `roles` `r` on(`p`.`id_rol` = `r`.`id_rol`)) join `acciones` `a` on(`p`.`id_accion` = `a`.`id_accion`)) WHERE `p`.`estado` = 1 AND `a`.`nombre_accion` <> 'eliminar' GROUP BY `p`.`id_rol`, `p`.`id_modulo`, `p`.`id_submodulo`, `p`.`id_accion` ORDER BY `p`.`id_rol` ASC, `p`.`id_modulo` ASC, `p`.`id_submodulo` ASC, `p`.`id_accion` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY INVOKER VIEW `permisos_view`  AS SELECT `p`.`id_permiso` AS `id_permiso`, `p`.`id_rol` AS `id_rol`, `r`.`nombre_rol` AS `nombre_rol`, `p`.`id_modulo` AS `id_modulo`, `s`.`nombre_modulo` AS `nombre_modulo`, `p`.`id_submodulo` AS `id_submodulo`, `s`.`nombre_submodulo` AS `nombre_submodulo`, `s`.`objeto` AS `objeto`, `s`.`url` AS `url`, `p`.`id_accion` AS `id_accion`, `a`.`nombre_accion` AS `nombre_accion`, `a`.`icono` AS `icono`, `p`.`estado` AS `estado`, `p`.`fecha_creacion` AS `fecha_creacion`, `p`.`fecha_modificacion` AS `fecha_modificacion` FROM (((`permisos_submodulos` `p` join `submodulos_view` `s` on(`p`.`id_modulo` = `s`.`id_modulo` and `p`.`id_submodulo` = `s`.`id_submodulo`)) join `roles` `r` on(`p`.`id_rol` = `r`.`id_rol`)) join `acciones` `a` on(`p`.`id_accion` = `a`.`id_accion`)) WHERE `p`.`estado` = 1 AND `a`.`nombre_accion` <> 'eliminar' GROUP BY `p`.`id_rol`, `p`.`id_modulo`, `p`.`id_submodulo`, `p`.`id_accion` ORDER BY `p`.`id_rol` ASC, `p`.`id_modulo` ASC, `p`.`id_submodulo` ASC, `p`.`id_accion` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -7633,7 +7633,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW 
 DROP TABLE IF EXISTS `provincias_view`;
 
 DROP VIEW IF EXISTS `provincias_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `provincias_view`  AS SELECT `ubicaciones`.`cod_provincia` AS `cod_provincia`, `ubicaciones`.`provincia` AS `provincia` FROM `ubicaciones` GROUP BY `ubicaciones`.`cod_provincia` ORDER BY `ubicaciones`.`cod_provincia` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY DEFINER VIEW `provincias_view`  AS SELECT `ubicaciones`.`cod_provincia` AS `cod_provincia`, `ubicaciones`.`provincia` AS `provincia` FROM `ubicaciones` GROUP BY `ubicaciones`.`cod_provincia` ORDER BY `ubicaciones`.`cod_provincia` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -7643,7 +7643,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 DROP TABLE IF EXISTS `submodulos_acciones_view`;
 
 DROP VIEW IF EXISTS `submodulos_acciones_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW `submodulos_acciones_view`  AS SELECT `s`.`id_modulo` AS `id_modulo`, `v`.`nombre_modulo` AS `nombre_modulo`, `s`.`id_submodulo` AS `id_submodulo`, `v`.`nombre_submodulo` AS `nombre_submodulo`, `s`.`id_accion` AS `id_accion`, `a`.`nombre_accion` AS `nombre_accion`, `a`.`icono` AS `icono` FROM ((`submodulos_acciones` `s` join `submodulos_view` `v` on(`s`.`id_modulo` = `v`.`id_modulo` and `s`.`id_submodulo` = `v`.`id_submodulo`)) join `acciones` `a` on(`s`.`id_accion` = `a`.`id_accion`)) ORDER BY `v`.`nombre_modulo` ASC, `v`.`nombre_submodulo` ASC, `a`.`nombre_accion` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY INVOKER VIEW `submodulos_acciones_view`  AS SELECT `s`.`id_modulo` AS `id_modulo`, `v`.`nombre_modulo` AS `nombre_modulo`, `s`.`id_submodulo` AS `id_submodulo`, `v`.`nombre_submodulo` AS `nombre_submodulo`, `s`.`id_accion` AS `id_accion`, `a`.`nombre_accion` AS `nombre_accion`, `a`.`icono` AS `icono` FROM ((`submodulos_acciones` `s` join `submodulos_view` `v` on(`s`.`id_modulo` = `v`.`id_modulo` and `s`.`id_submodulo` = `v`.`id_submodulo`)) join `acciones` `a` on(`s`.`id_accion` = `a`.`id_accion`)) ORDER BY `v`.`nombre_modulo` ASC, `v`.`nombre_submodulo` ASC, `a`.`nombre_accion` ASC  ;
 
 -- --------------------------------------------------------
 
@@ -7653,7 +7653,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW 
 DROP TABLE IF EXISTS `submodulos_roles_view`;
 
 DROP VIEW IF EXISTS `submodulos_roles_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW `submodulos_roles_view`  AS SELECT `p`.`id_permiso` AS `id_permiso`, `p`.`id_rol` AS `id_rol`, `p`.`id_modulo` AS `id_modulo`, `p`.`id_submodulo` AS `id_submodulo`, `s`.`nombre_submodulo` AS `nombre_submodulo`, `s`.`nombre_vista` AS `nombre_vista`, `s`.`icono` AS `icono`, `s`.`objeto` AS `objeto`, `s`.`url` AS `url` FROM (`permisos_submodulos` `p` join `submodulos_view` `s` on(`p`.`id_modulo` = `s`.`id_modulo` and `p`.`id_submodulo` = `s`.`id_submodulo`)) WHERE `p`.`estado` = 1 GROUP BY `p`.`id_rol`, `p`.`id_modulo`, `p`.`id_submodulo` ORDER BY `p`.`id_rol` ASC, `p`.`id_modulo` ASC, `p`.`id_submodulo` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY INVOKER VIEW `submodulos_roles_view`  AS SELECT `p`.`id_permiso` AS `id_permiso`, `p`.`id_rol` AS `id_rol`, `p`.`id_modulo` AS `id_modulo`, `p`.`id_submodulo` AS `id_submodulo`, `s`.`nombre_submodulo` AS `nombre_submodulo`, `s`.`nombre_vista` AS `nombre_vista`, `s`.`icono` AS `icono`, `s`.`objeto` AS `objeto`, `s`.`url` AS `url` FROM (`permisos_submodulos` `p` join `submodulos_view` `s` on(`p`.`id_modulo` = `s`.`id_modulo` and `p`.`id_submodulo` = `s`.`id_submodulo`)) WHERE `p`.`estado` = 1 GROUP BY `p`.`id_rol`, `p`.`id_modulo`, `p`.`id_submodulo` ORDER BY `p`.`id_rol` ASC, `p`.`id_modulo` ASC, `p`.`id_submodulo` ASC  ;
 
 
 --
@@ -7662,7 +7662,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW 
 DROP TABLE IF EXISTS `usuarios_view`;
 
 DROP VIEW IF EXISTS `usuarios_view`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY INVOKER VIEW `usuarios_view`  AS SELECT `u`.`id_usuario` AS `id_usuario`, `u`.`nombre` AS `nombre`, `u`.`nombre_usuario` AS `nombre_usuario`, `u`.`identificacion` AS `identificacion`, `u`.`id_tipo_identificacion` AS `id_tipo_identificacion`, `t`.`tipo_identificacion` AS `tipo_identificacion`, `u`.`correo` AS `correo`, `u`.`telefono` AS `telefono`, `u`.`id_rol` AS `id_rol`, `r`.`nombre_rol` AS `nombre_rol`, `u`.`id_empresa` AS `id_empresa`, `e`.`razon` AS `nombre_empresa`, `u`.`cod_pais` AS `cod_pais`, `c`.`nombre` AS `nombre_pais`, `c`.`codigo_telefono` AS `codigo_telefono`, `u`.`fecha_registro` AS `fecha_registro`, `u`.`fecha_actualizacion` AS `fecha_actualizacion`, `u`.`fecha_eliminacion` AS `fecha_eliminacion`, `u`.`estado` AS `estado` FROM ((((`usuarios` `u` join `roles` `r` on(`u`.`id_rol` = `r`.`id_rol`)) join `tipos_identificaciones` `t` on(`u`.`id_tipo_identificacion` = `t`.`id_tipo_identificacion`)) join `empresas` `e` on(`u`.`id_empresa` = `e`.`id_empresa`)) join `codigos_paises` `c` on(`u`.`cod_pais` = `c`.`cod_pais`)) ORDER BY `u`.`nombre` ASC  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`modaslaura_admin`@`localhost` SQL SECURITY INVOKER VIEW `usuarios_view`  AS SELECT `u`.`id_usuario` AS `id_usuario`, `u`.`nombre` AS `nombre`, `u`.`nombre_usuario` AS `nombre_usuario`, `u`.`identificacion` AS `identificacion`, `u`.`id_tipo_identificacion` AS `id_tipo_identificacion`, `t`.`tipo_identificacion` AS `tipo_identificacion`, `u`.`correo` AS `correo`, `u`.`telefono` AS `telefono`, `u`.`id_rol` AS `id_rol`, `r`.`nombre_rol` AS `nombre_rol`, `u`.`id_empresa` AS `id_empresa`, `e`.`razon` AS `nombre_empresa`, `u`.`cod_pais` AS `cod_pais`, `c`.`nombre` AS `nombre_pais`, `c`.`codigo_telefono` AS `codigo_telefono`, `u`.`fecha_registro` AS `fecha_registro`, `u`.`fecha_actualizacion` AS `fecha_actualizacion`, `u`.`fecha_eliminacion` AS `fecha_eliminacion`, `u`.`estado` AS `estado` FROM ((((`usuarios` `u` join `roles` `r` on(`u`.`id_rol` = `r`.`id_rol`)) join `tipos_identificaciones` `t` on(`u`.`id_tipo_identificacion` = `t`.`id_tipo_identificacion`)) join `empresas` `e` on(`u`.`id_empresa` = `e`.`id_empresa`)) join `codigos_paises` `c` on(`u`.`cod_pais` = `c`.`cod_pais`)) ORDER BY `u`.`nombre` ASC  ;
 
 --
 -- Restricciones para tablas volcadas

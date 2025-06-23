@@ -14,3 +14,5 @@ app/vendor/*
 *.p12
 
 app/html/firmados/
+
+.vscode/settings.json
