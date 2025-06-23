@@ -12,3 +12,6 @@ app/vendor/*
 .aws/*
 
 *.p12
+*.xml
+
+.vscode/settings.json
