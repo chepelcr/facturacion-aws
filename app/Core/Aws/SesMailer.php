@@ -28,6 +28,11 @@ class SesMailer extends PHPMailer {
 
     private static $pass = null;
 
+    /** @var string[] $tempFiles para limpiar tras enviar */
+    private $tempFiles = [];
+
+
+
     /**
      * Constructor de la clase que se encarga de colocar los valores de configuración de PHP Mailer obtenidos desde AWS Secrets Manager
      */
@@ -67,5 +72,40 @@ class SesMailer extends PHPMailer {
          **/
         $this->AddReplyTo(getEnt('app.email.reply'), getEnt('app.name'));
         $this->setFrom(getEnt('app.email.send'), getEnt('app.name'));
+    }
+
+    public function addAttachmentFromS3($path, $name) {
+        $tmpFile = tempnam(sys_get_temp_dir(), 's3_');
+
+        $awsS3Service = new AwsS3Service();
+
+        $awsS3Service->save_file_from_s3($path, $tmpFile);
+
+        // 5) Adjuntar al correo
+        $result = $this->addAttachment($tmpFile, $name);
+
+        $this->tempFiles[] = $tmpFile;
+
+        return $result;
+    }
+
+    /**
+     * Borrar los archivos temporales creados
+     */
+    private function deleteTempFiles() {
+        foreach ($this->tempFiles as $file) {
+            unlink($file);
+        }
+    }
+
+    /**
+     * Enviar correo electronico
+     */
+    public function send() {
+        $result = parent::send();
+
+        $this->deleteTempFiles();
+
+        return $result;
     }
 }

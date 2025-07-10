@@ -41,6 +41,11 @@ class Myqr extends QRcode {
         unlink($path);
         return base64_encode($png);
     }
+
+    /**
+     * Generar codigo QR
+     * @param $data
+     */
     public function codigoQR($data) {
         $contenido = $data['url'];
         // $contenido = base_url()."/informes/verInforme/".$data['id_informe']."/".$data['codigo'];

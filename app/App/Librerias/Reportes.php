@@ -17,7 +17,7 @@ class Reportes {
             $detalles =  $documento->detalles;
 
             $dataQR = array(
-                'url' => baseUrl('documentos/pdf/' . $clave),
+                'url' => cloudFrontUrl('biller/pdf/' . $clave . '.pdf')
             );
 
             $arrContextOptions = array(
@@ -32,12 +32,13 @@ class Reportes {
             $logoImg = base64_encode($logoImg);
 
             $dataPdf = array(
-                'nombre_archivo' => "pdf\\" . $documento->clave . ".pdf",
+                'nombre_archivo' => "biller/pdf/" . $documento->clave . ".pdf",
                 'documento' => $documento,
                 'detalles' => $detalles,
                 "qrCodigo" => $qr->codigoQR($dataQR),
                 "logo" => $logoImg,
             );
+
             $pdf->save_view("pdfs/facturaPDF", $dataPdf);
         } else {
             echo "Documento no existe";

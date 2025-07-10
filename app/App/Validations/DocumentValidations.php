@@ -264,7 +264,14 @@ class DocumentValidations {
             if (isset($document['references']['error'])) {
                 return $document['references'];
             }
+        } elseif ($documentTypeCode == '02' || $documentTypeCode == '03') {
+            return array(
+                'message' => 'No se ha ingresado la referencia del documento',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
         }
+
 
         //Validar la estructura de otros campos (otherFields)
         if (isset($document['otherFields'])) {
@@ -394,8 +401,17 @@ class DocumentValidations {
      * @param array $references Referencias del documento
      * @return array Referencias validadas
      */
-    private static function validateDocumentReferences($references) {
+    private static function validateDocumentReferences($references, $documentType) {
         $newReferences = array();
+
+        //Si las referencias estan vacias o son nulas, y el documento es 02 o 03, lanza una exepcion
+        if (($references == null || empty($references)) && ($documentType == '02' || $documentType == '03')) {
+            return array(
+                'message' => 'Debe ingresar al menos una referencia',
+                'status' => '400',
+                'error' => "Bad Request",
+            );
+        }
 
         foreach ($references as $reference) {
             if ($reference['type'] != '' && $reference['code'] != '' && $reference['number'] != '' && $reference['reason'] != '' && $reference['date'] != '') {

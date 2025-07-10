@@ -1,5 +1,7 @@
 <?php
 
+use Core\Aws\AwsS3Service;
+
 /**
  * Funcion para eliminar los campos vacios de un objeto
  * @param $data array|object
@@ -32,4 +34,18 @@ function deleteEmptyFields($data)
     }
 
     return $data;
+}
+
+function upload_file_to_s3($data, $path, $contentType, $acl = 'public-read')
+{
+    $awsS3Service = new AwsS3Service();
+
+    $file = array(
+        'key' => $path,
+        'data' => $data,
+        'contentType' => $contentType,
+        'acl' => $acl
+    );
+
+    return $awsS3Service->upload($file);
 }

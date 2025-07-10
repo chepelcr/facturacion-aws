@@ -33,25 +33,6 @@ class Correo {
 
         try {
 
-            /**
-             * Data para un receptor
-             * 
-             *  $data = array(
-             *      'Juan'=>'juan@mail.com'
-             *  );
-             * 
-             * Data para varios repectores
-             *   $data = array(
-             *       'Juan'=>'juan@mail.com',
-             *       'Daniel'=>'daniel@mail.com'
-             *   );
-
-             * $data[receptor]= $data;
-
-             * $mail->addAddress($correo, $nombre);
-             * 
-             */
-
             $receptor = $data->receptor;
 
             foreach ($receptor as $nombre => $correo) {
@@ -75,11 +56,6 @@ class Correo {
                 }
             } //Fin de la validacion de copia de correo
 
-            //$mail->addBCC('bcc@example.com');
-
-            /**
-             * $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
-             */
             //Attachments
             if (isset($data->adjuntos)) {
                 $adjuntos = $data->adjuntos;
@@ -88,10 +64,9 @@ class Correo {
                     $nombreArchivo = (string) $nombreArchivo;
 
                     //Insertar los adjuntos
-                    $mail->addAttachment($ubicacion, $nombreArchivo);
+                    $mail->addAttachmentFromS3($ubicacion, $nombreArchivo);
                 } //Fin del ciclo
             } //Fin de la validacion de archivos adjuntos
-
 
             //Content
             $mail->isHTML(true);                                  //Set email format to HTML
@@ -104,18 +79,11 @@ class Correo {
             //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             if ($mail->send()) {
-
                 insertAuditoria(0, 'correo', 'Correo enviado');
 
                 return true;
             }
         } catch (Exception $ex) {
-            $id_usuario = getSession('id_usuario');
-
-            if (!$id_usuario) {
-                $id_usuario = 0;
-            }
-
             $message = "Su mensaje no se ha enviado: {$mail->ErrorInfo}";
 
             insertError($message, 'correo');

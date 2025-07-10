@@ -11,8 +11,7 @@ use Aws\S3\S3Client;
  * @version 1.0
  * @author jcampos
  */
-class AwsS3Service
-{
+class AwsS3Service {
     /**
      * Nombre del bucket
      */
@@ -23,8 +22,11 @@ class AwsS3Service
      */
     private $client;
 
-    public function __construct($bucket)
-    {
+    public function __construct($bucket = '') {
+        if ($bucket == '') {
+            $bucket = getEnt('app.aws.bucket');
+        }
+
         $this->bucket = $bucket;
         $this->client = new S3Client([
             'version' => 'latest',
@@ -38,8 +40,7 @@ class AwsS3Service
      * @param string $key Ruta del archivo
      * @return string Contenido del archivo en base64
      */
-    public function getFile($key)
-    {
+    public function getFile($key) {
         $client = $this->client;
 
         $result = $client->getObject([
@@ -51,13 +52,35 @@ class AwsS3Service
     }
 
     /**
+     * Guarda un archivo desde S3
+     * @param string $key Ruta del archivo
+     * @param string $file Archivo a guardar
+     * @return bool Estado de la subida del archivo
+     */
+    public function save_file_from_s3($key, $file) {
+        try {
+            $client = $this->client;
+
+            $client->getObject([
+                'Bucket' => $this->bucket,
+                'Key'    => $key,
+                'SaveAs' => $file,
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            insertError($e->getMessage(), 'AWS S3 Service');
+            return false;
+        }
+    }
+
+    /**
      * Sube un archivo a S3
      * @param string $key Ruta del archivo
      * @param array $file Archivo a subir
      * @return bool Estado de la subida del archivo
      */
-    public function putFile($file)
-    {
+    public function upload($file) {
         $client = $this->client;
 
         $key = $file['key'];

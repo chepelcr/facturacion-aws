@@ -24,8 +24,7 @@ class Entorno
      */
     private static $entorno = null;
 
-    private static function setEnt()
-    {
+    private static function setEnt() {
         if (!isset(self::$entorno)) {
             $dotEnv = Dotenv::createImmutable('../');
             $dotEnv->load();

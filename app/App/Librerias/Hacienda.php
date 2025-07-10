@@ -77,12 +77,11 @@ class Hacienda {
             $p12 = location(getEnt('factura.p12'));
             $pin = getEnt('factura.pin');
 
-            $ruta = location("archivos\\xml\\firmados\\" . $clave . "_f.xml");
+            $ruta = "biller\\xml\\firmados\\" . $clave . "_f.xml";
 
             $firmador = new Firmador();
-            //firma y devuelve el base64_encode();
 
-            $xml64 =  $firmador->firmarXml($p12, $pin, $stringXML, $firmador::TO_XML_FILE, $ruta);
+            $xml64 =  $firmador->firmarXml($p12, $pin, $stringXML, $firmador::SAVE_TO_S3, $ruta);
 
             $this->xml64 = $xml64;
 
@@ -102,8 +101,11 @@ class Hacienda {
             $leer = json_encode(simplexml_load_string(base64_decode($xml64)));
             $json = json_decode($leer);
         } else {
-            $ruta = location("archivos\\xml\\firmados\\" . $clave . "_f.xml");
+            //Cargar el XML desde CloudFront
+            $ruta = cloudFrontUrl("biller\\xml\\firmados\\" . $clave . "_f.xml");
+
             $leer = json_encode(simplexml_load_file($ruta));
+
             $json = json_decode($leer);
 
             $xml64 = base64_encode(file_get_contents($ruta));
@@ -197,11 +199,9 @@ class Hacienda {
             $respuesta_xml = $xml['respuesta-xml'];
             $stringXML = base64_decode($respuesta_xml);
 
-            $salida = location("archivos\\xml\\respuesta\\" . $clave . ".xml");
-            $doc = new DomDocument();
-            $doc->preserveWhiteSpace = false;
-            $doc->loadXml($stringXML);
-            $doc->save($salida);
+            $path = "biller\\xml\\respuesta\\" . $clave . ".xml";
+
+            upload_file_to_s3($stringXML, $path, 'text/xml');
         }
 
         return json_encode(array('response' => $response, 'xml' => $xml));
@@ -309,21 +309,21 @@ class Hacienda {
                 }
             }
 
-            //Validar si existe el pdf en: location("archivos\\pdf\\" . $documento->clave . ".pdf")
-            if (!file_exists(location("archivos\\pdf\\" . $documento->clave . ".pdf"))) {
+            /*//Validar si existe el pdf en: location("biller\\pdf\\" . $documento->clave . ".pdf")
+            if (!file_exists(location("biller\\pdf\\" . $documento->clave . ".pdf"))) {
                 $reportes = new Reportes();
                 $reportes->generar_pdf($documento->id_documento);
             }
 
-            //Validar si exite el xml en: location("archivos\\xml\\respuesta\\" . $documento->clave . ".xml")
-            if (!file_exists(location("archivos\\xml\\respuesta\\" . $documento->clave . ".xml"))) {
+            //Validar si exite el xml en: location("biller\\xml\\respuesta\\" . $documento->clave . ".xml")
+            if (!file_exists(location("biller\\xml\\respuesta\\" . $documento->clave . ".xml"))) {
                 $this->validar($documento->clave);
-            }
+            }*/
 
             $adjuntos = array(
-                $documento->clave . '.pdf' => location("archivos\\pdf\\" . $documento->clave . ".pdf"),
-                $documento->clave . '.xml' => location("archivos\\xml\\firmados\\" . $documento->clave . "_f.xml"),
-                $documento->clave . '_respuesta_MH.xml' => location("archivos\\xml\\respuesta\\" . $documento->clave . ".xml"),
+                $documento->clave . '.pdf' => "biller\\pdf\\" . $documento->clave . ".pdf",
+                $documento->clave . '.xml' => "biller\\xml\\firmados\\" . $documento->clave . "_f.xml",
+                $documento->clave . '_respuesta_MH.xml' =>"biller\\xml\\respuesta\\" . $documento->clave . ".xml",
             );
 
             $data = array(
@@ -361,7 +361,7 @@ class Hacienda {
             $respuesta_xml = $respuesta['respuesta-xml'];
             $stringXML = base64_decode($respuesta_xml);
 
-            $salida = location("archivos\\xml\\respuesta\\" . $clave . ".xml");
+            $salida = location("biller\\xml\\respuesta\\" . $clave . ".xml");
             $doc = new DomDocument();
             $doc->preserveWhiteSpace = false;
             $doc->loadXml($stringXML);

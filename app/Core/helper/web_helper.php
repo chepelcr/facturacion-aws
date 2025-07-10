@@ -11,6 +11,14 @@ function baseUrl($ext = false) {
     return getEnt('app.config.host');
 } //Fin de la funcion
 
+function cloudFrontUrl($ext = false) {
+    if ($ext) {
+        return getEnt('app.config.cloudfront') . $ext;
+    }
+
+    return getEnt('app.config.cloudfront');
+} //Fin de la funcion
+
 /**Obtener un segmento de la url */
 function getSegment($num = 0) {
     /**Direccion de solicitud */

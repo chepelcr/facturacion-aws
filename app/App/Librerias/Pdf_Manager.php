@@ -2,6 +2,7 @@
 
 namespace App\Librerias;
 
+use Core\Aws\AwsS3Service;
 use Dompdf\Dompdf;
 
 use Core\Config\Header;
@@ -57,27 +58,17 @@ class Pdf_Manager {
         return base64_encode($dompdf->output());
     }
 
-    /**Guardar un archivo pdf en el sistema */
+    /**
+     * Almacenar un archivo en pdf en AWS S3
+     */
     public function save_view($view, $data = array()) {
         $dompdf = new Dompdf(array('isPhpEnabled' => true));
         $html = view($view, $data);
         $dompdf->loadHtml($html);
         $dompdf->render();
 
-        $folder = "archivos";
-
-        if (!is_dir($folder)) {
-            mkdir($folder);
-        }
-
-        $file = location($folder . '/' . $data['nombre_archivo']);
-
-        //Si el archivo existe, lo elimina
-        if (file_exists($file)) {
-            unlink($file);
-        }
-
         $output = $dompdf->output();
-        file_put_contents($file, $output);
+
+        upload_file_to_s3($output, $data['nombre_archivo'], 'application/pdf');
     }
 }

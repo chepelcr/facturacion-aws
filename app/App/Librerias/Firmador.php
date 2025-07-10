@@ -2,6 +2,7 @@
 
 namespace App\Librerias;
 
+use Core\Aws\AwsS3Service;
 use JRTEC\XMLSecLibs_Hacienda\XMLSecurityDSig;
 use JRTEC\XMLSecLibs_Hacienda\XMLSecurityKey;
 
@@ -19,6 +20,7 @@ class Firmador {
     const TO_BASE64_STRING = 3;
     const TO_XML_STRING = 4;
     const TO_XML_FILE = 5;
+    const SAVE_TO_S3 = 6;
 
     public function firmarXml($pfx, $pin, $input, $output, $path = null) {
 
@@ -96,6 +98,20 @@ class Firmador {
             } else {
                 return false;
             }
+        } else if ($output == self::SAVE_TO_S3) {
+            // Guarda el xml firmado en la ruta especificada y devuelve el resultado
+            if (!is_null($path)) {
+                $stringXML = base64_encode($xml->saveXML());
+
+                upload_file_to_s3($stringXML, $path, 'text/xml');
+
+                return $stringXML;
+            } else {
+                return false;
+            }
+        } else {
+            // Devuelve el string del archivo xml firmado en formato Base64
+            return base64_encode($xml->saveXML());
         }
     }
 }
