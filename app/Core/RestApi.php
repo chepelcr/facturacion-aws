@@ -25,6 +25,8 @@ abstract class RestApi {
 
     private $error = "";
 
+    private $userAgent = "";
+
     /**
      * Constructor de la clase
      * 
@@ -36,6 +38,8 @@ abstract class RestApi {
         $this->url = $url;
         $this->headers["Content-Type"] = $contentType;
         $this->isArray = $isArray;
+
+        $this->setUserAgent("JCampos/1.0 (+https://jcampos.dev)");
     }
 
     /**
@@ -71,6 +75,16 @@ abstract class RestApi {
         return $headers;
     }
 
+    /**
+     * Define el User-Agent para las solicitudes
+     *
+     * @param string $agent Cadena que se enviará como User-Agent
+     */
+    public function setUserAgent(string $agent) {
+        $this->userAgent = $agent;
+    }
+    
+
     public function makeGetRequestUrl($url, $data = array()) {
         $url = $this->constructUrl($url);
 
@@ -95,9 +109,12 @@ abstract class RestApi {
         #Set timeout
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 15);
 
-        $response = curl_exec($curl);
+        // Si hay User-Agent configurado, lo aplicamos
+        if (!empty($this->userAgent)) {
+            curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
+        }
 
-        //var_dump($response);
+        $response = curl_exec($curl);
 
         $this->validateCurlResponse($curl, $response, $url);
 
@@ -269,6 +286,11 @@ abstract class RestApi {
         #Set timeout
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 15);
 
+        // Si hay User-Agent configurado, lo aplicamos
+        if (!empty($this->userAgent)) {
+            curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
+        }
+
         $response = curl_exec($curl);
 
         $this->validateCurlResponse($curl, $response, $url);
@@ -306,6 +328,11 @@ abstract class RestApi {
         /*curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);*/
 
+        // Si hay User-Agent configurado, lo aplicamos
+        if (!empty($this->userAgent)) {
+            curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
+        }
+
         $response = curl_exec($curl);
 
         $this->validateCurlResponse($curl, $response, $url);
@@ -339,6 +366,11 @@ abstract class RestApi {
 
         /*curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);*/
+
+        // Si hay User-Agent configurado, lo aplicamos
+        if (!empty($this->userAgent)) {
+            curl_setopt($curl, CURLOPT_USERAGENT, $this->userAgent);
+        }
 
         $response = curl_exec($curl);
 

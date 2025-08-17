@@ -31,7 +31,7 @@ class AwsS3Service {
         $this->client = new S3Client([
             'version' => 'latest',
             'region' => getEnt('app.aws.region'),
-            'profile' => 'default'
+            'profile' => 'J-CAMPOS'
         ]);
     }
 

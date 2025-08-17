@@ -32,9 +32,9 @@ abstract class IvoisApi extends RestApi {
 
         parent::__construct($url, "application/json");
 
-        #$api_key = ApiConfig::getIvoisApiKey();
+        $api_key = ApiConfig::getIvoisApiKey();
 
-        #$this->setApiKey($api_key);
+        $this->setApiKey($api_key);
     }
 
     /**

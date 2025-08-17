@@ -259,14 +259,14 @@ class DocumentValidations {
 
         // Validar si existen referencias en el documento y luego validar cada linea
         if (isset($document['references'])) {
-            $document['references'] = self::validateDocumentReferences($document['references']);
+            $document['references'] = self::validateDocumentReferences($document['references'], $documentTypeCode);
 
             if (isset($document['references']['error'])) {
                 return $document['references'];
             }
         } elseif ($documentTypeCode == '02' || $documentTypeCode == '03') {
             return array(
-                'message' => 'No se ha ingresado la referencia del documento',
+                'message' => 'Debe ingresar al menos una referencia',
                 'status' => '400',
                 'error' => "Bad Request",
             );

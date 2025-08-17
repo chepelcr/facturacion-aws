@@ -45,7 +45,7 @@ class AwsAppConfig
         $client = new AppConfigDataClient([
             'version' => 'latest',
             'region' => getEnt('app.aws.region'),
-            'profile' => 'default'
+            'profile' => 'J-CAMPOS'
         ]);
 
         $result = $client->getConfiguration([

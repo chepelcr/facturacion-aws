@@ -145,7 +145,7 @@ class UsuariosService extends BaseService {
 
             if (is_bool($userData)) {
                 $dataServiceApi = $this->dataServiceApi;
-                $identificationType = $dataServiceApi->getIdentificationTypeById($data['nationality'], $data['identification']['typeId']);
+                $identificationType = $dataServiceApi->getIdentificationTypeById($data['identification']['typeId']);
 
                 $codigosPaisesModel = new CodigosPaisesModel();
                 $pais = $codigosPaisesModel->getByIsoCode($data['nationality']);

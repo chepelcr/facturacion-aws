@@ -18,7 +18,7 @@ class AwsMessagingService {
         $this->sdk = new Sdk([
             'region'  => getEnt('aws.region'),
             'version' => 'latest',
-            'profile' => 'default'
+            'profile' => 'J-CAMPOS'
         ]);
     }
 

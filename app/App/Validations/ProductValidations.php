@@ -51,13 +51,14 @@ class ProductValidations {
         $newDiscounts = array();
 
         foreach ($discounts as $discount) {
-            $reason = $discount['reason'];
+            //$reason = $discount['reason'];
             $percentage = (int) $discount['percentage'];
+            $discountTypeId = $discount['discountTypeId'];
 
-            if ($reason != '' && $percentage != '' && $percentage > 0) {
+            if ($discountTypeId != '' && $percentage != '' && $percentage > 0) {
                 $newDiscounts[] = $discount;
             } else {
-                if (($reason == '' && $percentage > 0) || ($reason != '' && $percentage == 0)) {
+                if (($discountTypeId == '' && $percentage > 0) || ($discountTypeId != '' && $percentage == 0)) {
                     return array(
                         'message' => 'No se han ingresado los campos del descuento',
                         'status' => '400',
