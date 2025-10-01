@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><FacturaElectronica xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.4/facturaElectronica">
+  <Clave>50602092500010244007700100001010000000566137234771</Clave>
+  <ProveedorSistemas>102440077</ProveedorSistemas>
+  <CodigoActividadEmisor>172101</CodigoActividadEmisor>
+  <NumeroConsecutivo>00100001010000000566</NumeroConsecutivo>
+  <FechaEmision>2025-09-02T22:21:06.035Z</FechaEmision>
+  <Emisor>
+    <Nombre>Vilma Corella Artavia</Nombre>
+    <Identificacion>
+      <Tipo>01</Tipo>
+      <Numero>102440077</Numero>
+    </Identificacion>
+    <NombreComercial>Modas Laura</NombreComercial>
+    <Ubicacion>
+      <Provincia>6</Provincia>
+      <Canton>01</Canton>
+      <Distrito>01</Distrito>
+      <OtrasSenas>Barrio El Cocal, de la escuela Mora y cañas 150m oeste y 75m sur</OtrasSenas>
+    </Ubicacion>
+    <Telefono>
+      <CodigoPais>506</CodigoPais>
+      <NumTelefono>89890512</NumTelefono>
+    </Telefono>
+    <CorreoElectronico>svaldez@interfaz.io</CorreoElectronico>
+  </Emisor>
+  <Receptor>
+    <Nombre>Corporacion de Supermercados Unidos Sociedad de Responsabilidad Limitada</Nombre>
+    <Identificacion>
+      <Tipo>02</Tipo>
+      <Numero>3102007223</Numero>
+    </Identificacion>
+    <NombreComercial>Walmart</NombreComercial>
+    <Ubicacion>
+      <Provincia>2</Provincia>
+      <Canton>01</Canton>
+      <Distrito>02</Distrito>
+      <OtrasSenas>Barrio El Coyol. De RITEVE Coyol, 600m oeste.</OtrasSenas>
+    </Ubicacion>
+    <OtrasSenasExtranjero>Barrio El Coyol. De RITEVE Coyol, 600m oeste.</OtrasSenasExtranjero>
+    <Telefono>
+      <CodigoPais>506</CodigoPais>
+      <NumTelefono>99999925</NumTelefono>
+    </Telefono>
+    <CorreoElectronico>vilmacorella@yahoo.com</CorreoElectronico>
+  </Receptor>
+  <CondicionVenta>01</CondicionVenta>
+  <DetalleServicio>
+    <LineaDetalle>
+      <NumeroLinea>1</NumeroLinea>
+      <CodigoCABYS>2718000000100</CodigoCABYS>
+      <CodigoComercial>
+        <Tipo>04</Tipo>
+        <Codigo>2645516</Codigo>
+      </CodigoComercial>
+      <Cantidad>88.0</Cantidad>
+      <UnidadMedida>Unid</UnidadMedida>
+      <UnidadMedidaComercial>Unid</UnidadMedidaComercial>
+      <Detalle>Almohada y Funda Bebé :: 3</Detalle>
+      <PrecioUnitario>4333.00</PrecioUnitario>
+      <MontoTotal>381304.00</MontoTotal>
+      <Descuento>
+        <MontoDescuento>11439.12</MontoDescuento>
+        <CodigoDescuento>07</CodigoDescuento>
+        <CodigoDescuentoOTRO>Descuento comercial</CodigoDescuentoOTRO>
+        <NaturalezaDescuento>Descuento comercial</NaturalezaDescuento>
+      </Descuento>
+      <SubTotal>369864.88</SubTotal>
+      <BaseImponible>369864.88</BaseImponible>
+      <Impuesto>
+        <Codigo>01</Codigo>
+        <CodigoTarifaIVA>08</CodigoTarifaIVA>
+        <Tarifa>13.0</Tarifa>
+        <Monto>48082.43</Monto>
+      </Impuesto>
+      <ImpuestoAsumidoEmisorFabrica>0.00</ImpuestoAsumidoEmisorFabrica>
+      <ImpuestoNeto>48082.43</ImpuestoNeto>
+      <MontoTotalLinea>417947.31</MontoTotalLinea>
+    </LineaDetalle>
+    <LineaDetalle>
+      <NumeroLinea>2</NumeroLinea>
+      <CodigoCABYS>2718000000100</CodigoCABYS>
+      <CodigoComercial>
+        <Tipo>04</Tipo>
+        <Codigo>2647973</Codigo>
+      </CodigoComercial>
+      <Cantidad>123.0</Cantidad>
+      <UnidadMedida>Unid</UnidadMedida>
+      <UnidadMedidaComercial>Unid</UnidadMedidaComercial>
+      <Detalle>Almohada Bebé Sencilla :: 3</Detalle>
+      <PrecioUnitario>2256.00</PrecioUnitario>
+      <MontoTotal>277488.00</MontoTotal>
+      <Descuento>
+        <MontoDescuento>8324.64</MontoDescuento>
+        <CodigoDescuento>07</CodigoDescuento>
+        <CodigoDescuentoOTRO>Descuento comercial</CodigoDescuentoOTRO>
+        <NaturalezaDescuento>Descuento comercial</NaturalezaDescuento>
+      </Descuento>
+      <SubTotal>269163.36</SubTotal>
+      <BaseImponible>269163.36</BaseImponible>
+      <Impuesto>
+        <Codigo>01</Codigo>
+        <CodigoTarifaIVA>08</CodigoTarifaIVA>
+        <Tarifa>13.0</Tarifa>
+        <Monto>34991.24</Monto>
+      </Impuesto>
+      <ImpuestoAsumidoEmisorFabrica>0.00</ImpuestoAsumidoEmisorFabrica>
+      <ImpuestoNeto>34991.24</ImpuestoNeto>
+      <MontoTotalLinea>304154.60</MontoTotalLinea>
+    </LineaDetalle>
+  </DetalleServicio>
+  <ResumenFactura>
+    <CodigoTipoMoneda>
+      <CodigoMoneda>CRC</CodigoMoneda>
+      <TipoCambio>1.0</TipoCambio>
+    </CodigoTipoMoneda>
+    <TotalServGravados>0.00</TotalServGravados>
+    <TotalServExentos>0.00</TotalServExentos>
+    <TotalServExonerado>0.00</TotalServExonerado>
+    <TotalServNoSujeto>0.00</TotalServNoSujeto>
+    <TotalMercanciasGravadas>658792.00</TotalMercanciasGravadas>
+    <TotalMercanciasExentas>0.00</TotalMercanciasExentas>
+    <TotalMercExonerada>0.00</TotalMercExonerada>
+    <TotalMercNoSujeta>0.00</TotalMercNoSujeta>
+    <TotalGravado>658792.00</TotalGravado>
+    <TotalExento>0.00</TotalExento>
+    <TotalExonerado>0.00</TotalExonerado>
+    <TotalNoSujeto>0.00</TotalNoSujeto>
+    <TotalVenta>658792.00</TotalVenta>
+    <TotalDescuentos>19763.76</TotalDescuentos>
+    <TotalVentaNeta>639028.24</TotalVentaNeta>
+    <TotalDesgloseImpuesto>
+      <Codigo>01</Codigo>
+      <CodigoTarifaIVA>08</CodigoTarifaIVA>
+      <TotalMontoImpuesto>83073.67</TotalMontoImpuesto>
+    </TotalDesgloseImpuesto>
+    <TotalImpuesto>83073.67</TotalImpuesto>
+    <TotalImpAsumEmisorFabrica>0.00</TotalImpAsumEmisorFabrica>
+    <TotalIVADevuelto>0.00</TotalIVADevuelto>
+    <TotalOtrosCargos>0.00</TotalOtrosCargos>
+    <MedioPago>
+      <TipoMedioPago>04</TipoMedioPago>
+      <MedioPagoOtros>Transferencia - Deposito bancario</MedioPagoOtros>
+      <TotalMedioPago>0.0</TotalMedioPago>
+    </MedioPago>
+    <TotalComprobante>722101.91</TotalComprobante>
+  </ResumenFactura>
+  <Otros>
+    <OtroTexto codigo="WMNumeroVendedor">19596221</OtroTexto>
+    <OtroTexto codigo="WMEnviarGLN">7407001010251</OtroTexto>
+    <OtroTexto codigo="WMNumeroOrden">2900678215</OtroTexto>
+  </Otros>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="xadessig-fb08d870-5779-4e0f-8a24-4940f357ddac"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="DR-64c16188-1a84-4037-93f6-59818dd4ed1a" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>14sE99TwrkMZw8us7IMUy5Du12Zg9oUZrA7VnIVNmTo=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#SP-88b799ac-b381-4ff8-9514-3fa23662d118"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>KjJD5A8529HixMPSDCL+nmduHlagafGLftKkajIFTvc=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="SV-xadessig-fb08d870-5779-4e0f-8a24-4940f357ddac">Qh3RVX7Z2uxzEaV+gTRDPAJUpmwANw3f/gqjKXzDafNDCmmjhW5bFTfU1nPTrvgS3htEV7J5NN8/&#13;
+jnHeu7eqUPGGCwIOlu+w9YBbKae1WojuZbbQrn6Y4FkeU9DcTtjixBFomwQ35Tc4fDDMGODbTCfT&#13;
+gnjxYq9TVOycD2+sigQ8xteIcaZ3HAChes3kgMlNruuOzLHDY7tIxcUivhQXU/MwF83SXZeFKBc8&#13;
+X4oZJRvmPrEkVgLhKmskhwxJf5CCDdt7ly+pEqimFpjVdw5PB9Ankn/YpSn/kyflDozhRC153Feb&#13;
+xctDsF5oEJEQ6axiGQT9P8dmzP6jblNST2JbgQ==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIFPTCCAyWgAwIBAgIGAX67KXLIMA0GCSqGSIb3DQEBCwUAMFgxCzAJBgNVBAYTAkNSMR8wHQYD&#13;
+VQQKDBZNSU5JU1RFUklPIERFIEhBQ0lFTkRBMQwwCgYDVQQLDANER1QxGjAYBgNVBAMMEUNBIFBF&#13;
+UlNPTkEgRklTSUNBMB4XDTIyMDIwMjE1NTkyMloXDTI2MDIwMTE1NTkyMlowgZkxGTAXBgNVBAUT&#13;
+EENQRi0wMS0wMjQ0LTAwNzcxGDAWBgNVBAQMD0NPUkVMTEEgQVJUQVZJQTEOMAwGA1UEKgwFVklM&#13;
+TUExCzAJBgNVBAYTAkNSMRcwFQYDVQQKDA5QRVJTT05BIEZJU0lDQTEMMAoGA1UECwwDQ1BGMR4w&#13;
+HAYDVQQDDBVWSUxNQSBDT1JFTExBIEFSVEFWSUEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK&#13;
+AoIBAQCgTr1o4n6C2DgyRkfNeJdT1C8bB6fhc5kq53G8RPXcVZB3ifCSSn/hDdQltaDOuEYQJ8r4&#13;
+tDouMAOvxaNRNPQdJ8RWFIPvkfzPO8t6wsvv+atyIE3Bu2GDjLpXK7W8QzZeCy6gd+wluxWOnyUJ&#13;
+onw4s98+x5HAt2fhSSCvAqJG44vces/4G5B8d+e1KT3nehpKEoKTX5RNLTvQiNuoLoxBUPKXop+6&#13;
+k37PuGds+yZC5hUr0qcDUiqgLozL0HkV6q5tlHFnHPoGevBWthG4+xWpgzX8yedNDw0sizrcqNRI&#13;
+232hJtpOcU8/CElqLs47ZpddpvUqQpF12U9FJXAi0lKXAgMBAAGjgcowgccwHwYDVR0jBBgwFoAU&#13;
+E/ZqQQ3toiRF0ciUqEGDfGIla1kwHQYDVR0OBBYEFBXvAnUcm9bHt09pNjnkFbaiqXvUMAsGA1Ud&#13;
+DwQEAwIGwDATBgNVHSUEDDAKBggrBgEFBQcDBDBjBggrBgEFBQcBAQRXMFUwUwYIKwYBBQUHMAKG&#13;
+R2h0dHBzOi8vcGtpLmNvbXByb2JhbnRlc2VsZWN0cm9uaWNvcy5nby5jci9wcm9kL2ludGVybWVk&#13;
+aWF0ZS1wZi1wZW0uY3J0MA0GCSqGSIb3DQEBCwUAA4ICAQBsOnrCMfi8iwE7uI6JNNMWGSf9meLh&#13;
+PF0JApvF0fhqF3glsSyCvOCvanK81UEIEIJtIJnUmcjhkSxTrVYxGXEraBVcsXgtJfnxEALUhose&#13;
+sEiItFf5KedYFLmp2xZhPf32b4BrEA5PJ9D3tM7pk7kKw2cZVNQ4EOzgk4fT5/Ywkb0jKjTMoLc9&#13;
+brkp010l6GX0iNOD9AeHlkOXfkTktnYjzy1h1jfDraXCgFWKamzQxrWV8GsZK7+KgL0CVc262zyD&#13;
+mYrNZ8eyDSWv9AHfEg+/UejehQUrHtrtX/GEL4qg1hlMvMFksJmTem9cWt2nC+oKV1dbE9sEUe8h&#13;
+2MfnDf96/DFT3qfNjjE50aTjzJmZFSKWOG9pMl7fJovFxNKpyXgf4/twtoUDOa8Q+/DfOLW2p8JB&#13;
+AM7cYe3RhfZcJ9dq6DbRGzFaDkYslfK09FgV4CsKs18UhGM3o1pVFK4geb6BmdmZn9u8u3P82XHV&#13;
+GjDl34RguPaTF5GQkAWYPovve47+UxbUWub+NCp3t9FN4oseVuht+ROUIuLReAJktvzpLqUPT/is&#13;
+g1vN85dnIgpxmZz6TYA5ajxyAsXHO6FBgACZEvvYZO8tO6K1IKNZphPDKVEK8hOg/Pufmp6clmLv&#13;
+Q7tJ/Voyz+9ubdNeLbkIs9F/LEnIFZ5Yz/wce91hMCwPRQ==</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties Target="#xadessig-fb08d870-5779-4e0f-8a24-4940f357ddac" xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"><xades:SignedProperties Id="SP-88b799ac-b381-4ff8-9514-3fa23662d118"><xades:SignedSignatureProperties><xades:SigningTime>2025-09-02T16:21:16-06:00</xades:SigningTime><xades:SigningCertificateV2><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>J3DY27r/U/vllyINEyLBLg/MUZGPh2pL70qe9w4O7io=</ds:DigestValue></xades:CertDigest><xades:IssuerSerialV2>MGYwXKRaMFgxGjAYBgNVBAMMEUNBIFBFUlNPTkEgRklTSUNBMQwwCgYDVQQLDANER1QxHzAdBgNV&#13;
+BAoMFk1JTklTVEVSSU8gREUgSEFDSUVOREExCzAJBgNVBAYTAkNSAgYBfrspcsg=</xades:IssuerSerialV2></xades:Cert></xades:SigningCertificateV2><xades:SignaturePolicyIdentifier><xades:SignaturePolicyId><xades:SigPolicyId><xades:Identifier>https://atv.hacienda.go.cr/ATV/ComprobanteElectronico/docs/esquemas/2016/v4.3/Resoluci%C3%B3n_General_sobre_disposiciones_t%C3%A9cnicas_comprobantes_electr%C3%B3nicos_para_efectos_tributarios.pdf</xades:Identifier></xades:SigPolicyId><xades:SigPolicyHash><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>aHR0cHM6Ly9hdHYuaGFjaWVuZGEuZ28uY3IvQVRWL0NvbXByb2JhbnRlRWxlY3Ryb25pY28vZG9j&#13;
+cy9lc3F1ZW1hcy8yMDE2L3Y0LjMvUmVzb2x1Y2klQzMlQjNuX0dlbmVyYWxfc29icmVfZGlzcG9z&#13;
+aWNpb25lc190JUMzJUE5Y25pY2FzX2NvbXByb2JhbnRlc19lbGVjdHIlQzMlQjNuaWNvc19wYXJh&#13;
+X2VmZWN0b3NfdHJpYnV0YXJpb3MucGRm</ds:DigestValue></xades:SigPolicyHash></xades:SignaturePolicyId></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#DR-64c16188-1a84-4037-93f6-59818dd4ed1a"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></FacturaElectronica>

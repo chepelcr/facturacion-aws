@@ -19,7 +19,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <figure>
                 <img class="circle-inner-inner img-fluid" src="<?= getFile('dist/img/logo.png') ?>" alt="Logo Empresa">
 
-                <!-- Colocar 'cargando' abajo de la imagen -->
+                
                 <figcaption class="text-center p-5">
                     <h1><?= getEnt('app.name') ?>
                 </figcaption>

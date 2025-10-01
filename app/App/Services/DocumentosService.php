@@ -15,6 +15,8 @@ use App\Api\ProvidersApi;
 use App\Api\TaxpayersApi;
 use App\Api\ValidationsApi;
 use App\Enums\CurrenciesEnum;
+use App\Enums\DocumentTypesEnum;
+use App\Enums\TaxTypesEnum;
 use App\Librerias\Indicador;
 use App\Librerias\Reportes;
 use App\Models\ConsecutivosModel;
@@ -57,6 +59,8 @@ class DocumentosService {
      */
     private $notificationsApi;
 
+    private $taxpayersApi;
+
     /**
      * Constructor
      */
@@ -69,6 +73,7 @@ class DocumentosService {
 
         $this->validationsApi = new ValidationsApi(getTaxpayerId());
         $this->notificationsApi = new NotificationsApi(getTaxpayerId());
+        $this->taxpayersApi = new TaxpayersApi();
     }
 
     /**
@@ -303,6 +308,241 @@ class DocumentosService {
     }
 
     /**
+     * Create XML from API response document
+     */
+    private function createXmlFromResponse($document) {
+        $docType = DocumentTypesEnum::tryFrom($document['documentType']);
+        if (!$docType) {
+            throw new \InvalidArgumentException('Unsupported document type');
+        }
+
+        $stringXML = '<?xml version="1.0" encoding="utf-8"?>\n'
+            . '<' . $docType->getXmlRoot() . '\n'
+            . '    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n'
+            . '    xmlns:xsd="http://www.w3.org/2001/XMLSchema"\n'
+            . '    xmlns="' . $docType->getXmlns(true) . '">';
+
+        // Generate new key and consecutive number
+        $consecutivosModel = new ConsecutivosModel();
+        $consecutivo_object = $consecutivosModel->obtener_consecutivo($document['documentType'], getEnt('factura.ambiente'));
+        $consecutivo = $this->createConsecutive($document['documentType'], $document['branchNumber'], $document['terminalNumber'], $consecutivo_object);
+        $empresa = $this->taxpayersApi->getTaxpayerById(getTaxpayerId());
+        $clave = $this->createKey($consecutivo, $empresa);
+
+        $stringXML .= '<Clave>' . $clave . '</Clave>\n'
+            . '<ProveedorSistemas>' . $document['issuer']['identification']['number'] . '</ProveedorSistemas>\n'
+            . '<CodigoActividadEmisor>' . $document['activityCode'] . '</CodigoActividadEmisor>\n'
+            . '<NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>\n'
+            . '<FechaEmision>' . date('c', strtotime($document['saleDate'])) . '</FechaEmision>\n'
+            . '<Emisor>\n'
+            . '    <Nombre>' . $document['issuer']['name'] . '</Nombre>\n'
+            . '    <Identificacion>\n'
+            . '        <Tipo>' . $document['issuer']['identification']['code'] . '</Tipo>\n'
+            . '        <Numero>' . $document['issuer']['identification']['number'] . '</Numero>\n'
+            . '    </Identificacion>\n'
+            . '    <NombreComercial>' . ($document['issuer']['tradeName'] ?? '') . '</NombreComercial>\n'
+            . '    <Ubicacion>\n'
+            . '        <Provincia>' . $document['issuer']['residence']['stateId'] . '</Provincia>\n'
+            . '        <Canton>' . str_pad($document['issuer']['residence']['countyId'], 2, '0', STR_PAD_LEFT) . '</Canton>\n'
+            . '        <Distrito>' . str_pad($document['issuer']['residence']['districtId'], 2, '0', STR_PAD_LEFT) . '</Distrito>\n'
+            . '        <OtrasSenas>' . $document['issuer']['residence']['address'] . '</OtrasSenas>\n'
+            . '    </Ubicacion>\n'
+            . '    <Telefono>\n'
+            . '        <CodigoPais>' . $document['issuer']['phone']['countryCode'] . '</CodigoPais>\n'
+            . '        <NumTelefono>' . $document['issuer']['phone']['number'] . '</NumTelefono>\n'
+            . '    </Telefono>\n'
+            . '    <CorreoElectronico>' . $document['issuer']['email'] . '</CorreoElectronico>\n'
+            . '</Emisor>';
+
+        if (isset($document['receiver'])) {
+            $stringXML .= '<Receptor>\n'
+                . '    <Nombre>' . $document['receiver']['name'] . '</Nombre>\n'
+                . '    <Identificacion>\n'
+                . '        <Tipo>' . $document['receiver']['identification']['code'] . '</Tipo>\n'
+                . '        <Numero>' . $document['receiver']['identification']['number'] . '</Numero>\n'
+                . '    </Identificacion>\n'
+                . '    <NombreComercial>' . ($document['receiver']['tradeName'] ?? '') . '</NombreComercial>';
+
+            if (isset($document['receiver']['residence'])) {
+                $stringXML .= '\n    <Ubicacion>';
+                if ($document['documentType'] == '08' || (isset($document['receiver']['residence']['stateId']) && isset($document['receiver']['residence']['countyId']) && isset($document['receiver']['residence']['districtId']))) {
+                    $stringXML .= '\n        <Provincia>' . $document['receiver']['residence']['stateId'] . '</Provincia>\n'
+                        . '        <Canton>' . str_pad($document['receiver']['residence']['countyId'], 2, '0', STR_PAD_LEFT) . '</Canton>\n'
+                        . '        <Distrito>' . str_pad($document['receiver']['residence']['districtId'], 2, '0', STR_PAD_LEFT) . '</Distrito>\n'
+                        . '        <OtrasSenas>' . $document['receiver']['residence']['address'] . '</OtrasSenas>';
+                } else {
+                    $stringXML .= '\n        <OtrasSenas>' . $document['receiver']['residence']['address'] . '</OtrasSenas>';
+                }
+                $stringXML .= '\n    </Ubicacion>\n'
+                    . '    <OtrasSenasExtranjero>' . ($document['receiver']['foreignAddress'] ?? $document['receiver']['residence']['address']) . '</OtrasSenasExtranjero>';
+            }
+
+            $stringXML .= '\n    <Telefono>\n'
+                . '        <CodigoPais>' . $document['receiver']['phone']['countryCode'] . '</CodigoPais>\n'
+                . '        <NumTelefono>' . $document['receiver']['phone']['number'] . '</NumTelefono>\n'
+                . '    </Telefono>\n'
+                . '    <CorreoElectronico>' . $document['receiver']['email'] . '</CorreoElectronico>\n'
+                . '</Receptor>';
+        }
+
+        $stringXML .= '\n<CondicionVenta>' . $document['saleCondition'] . '</CondicionVenta>\n'
+            . '<PlazoCredito>' . ($document['creditTerm'] ?? '0') . '</PlazoCredito>';
+
+        $stringXML .= $this->createDetailsXmlFromResponse($document['details']);
+        $stringXML .= $this->createSummaryXml($document);
+
+        if (isset($document['otherFields']) && !empty($document['otherFields'])) {
+            $stringXML .= '\n<Otros>';
+            foreach ($document['otherFields'] as $field) {
+                $stringXML .= '\n    <OtroTexto codigo="' . $field['code'] . '">' . $field['otherText'] . '</OtroTexto>';
+            }
+            $stringXML .= '\n</Otros>';
+        }
+
+        if (isset($document['references']) && !empty($document['references'])) {
+            foreach ($document['references'] as $reference) {
+                $stringXML .= '\n<InformacionReferencia>\n'
+                    . '    <TipoDoc>' . $reference['type'] . '</TipoDoc>\n'
+                    . '    <Numero>' . $reference['number'] . '</Numero>\n'
+                    . '    <FechaEmision>' . date('c', strtotime($reference['date'])) . '</FechaEmision>\n'
+                    . '    <Codigo>' . $reference['code'] . '</Codigo>\n'
+                    . '    <Razon>' . $reference['reason'] . '</Razon>\n'
+                    . '</InformacionReferencia>';
+            }
+        }
+
+        $stringXML .= '</' . $docType->getXmlRoot() . '>';
+        return $stringXML;
+    }
+
+    private function createDetailsXmlFromResponse($details) {
+        $stringXML = '<DetalleServicio>';
+        foreach ($details as $detail) {
+            $stringXML .= '\n<LineaDetalle>\n'
+                . '    <NumeroLinea>' . $detail['lineNumber'] . '</NumeroLinea>\n'
+                . '    <CodigoCABYS>' . $detail['cabys'] . '</CodigoCABYS>';
+
+            if (isset($detail['codes']) && !empty($detail['codes'])) {
+                foreach ($detail['codes'] as $code) {
+                    $stringXML .= '\n    <CodigoComercial>\n'
+                        . '        <Tipo>' . $code['codeType'] . '</Tipo>\n'
+                        . '        <Codigo>' . $code['number'] . '</Codigo>\n'
+                        . '    </CodigoComercial>';
+                }
+            }
+
+            $stringXML .= '\n    <Cantidad>' . $detail['quantity'] . '</Cantidad>\n'
+                . '    <UnidadMedida>' . $detail['unitMeasure'] . '</UnidadMedida>\n'
+                . '    <UnidadMedidaComercial>' . ($detail['commercialUnitMeasure'] ?? $detail['unitMeasure']) . '</UnidadMedidaComercial>\n'
+                . '    <Detalle>' . $detail['description'] . '</Detalle>\n'
+                . '    <PrecioUnitario>' . $detail['netPrice'] . '</PrecioUnitario>\n'
+                . '    <MontoTotal>' . $detail['totalAmount'] . '</MontoTotal>';
+
+            if (isset($detail['discounts']) && !empty($detail['discounts'])) {
+                foreach ($detail['discounts'] as $discount) {
+                    $stringXML .= '\n    <Descuento>\n'
+                        . '        <MontoDescuento>' . $discount['amount'] . '</MontoDescuento>\n'
+                        . '        <CodigoDescuento>' . $discount['discountType'] . '</CodigoDescuento>\n'
+                        . '        <CodigoDescuentoOTRO>' . $discount['reason'] . '</CodigoDescuentoOTRO>\n'
+                        . '        <NaturalezaDescuento>' . $discount['reason'] . '</NaturalezaDescuento>\n'
+                        . '    </Descuento>';
+                }
+            }
+
+            $stringXML .= '\n    <SubTotal>' . $detail['subtotal'] . '</SubTotal>\n'
+                . '    <BaseImponible>' . $detail['baseAmount'] . '</BaseImponible>';
+
+            if (isset($detail['taxes']) && !empty($detail['taxes'])) {
+                foreach ($detail['taxes'] as $tax) {
+                    $stringXML .= '\n    <Impuesto>\n'
+                        . '        <Codigo>' . $tax['code'] . '</Codigo>\n'
+                        . '        <CodigoTarifaIVA>' . ($tax['rateCode'] ?? '') . '</CodigoTarifaIVA>\n'
+                        . '        <Tarifa>' . ($tax['rate'] ?? 0) . '</Tarifa>\n'
+                        . '        <Monto>' . $tax['amount'] . '</Monto>';
+
+                    if (isset($tax['exemption'])) {
+                        $stringXML .= '\n        <Exoneracion>\n'
+                            . '            <TipoDocumento>' . $tax['exemption']['type'] . '</TipoDocumento>\n'
+                            . '            <NumeroDocumento>' . $tax['exemption']['number'] . '</NumeroDocumento>\n'
+                            . '            <NombreInstitucion>' . $tax['exemption']['institution']['name'] . '</NombreInstitucion>\n'
+                            . '            <FechaEmision>' . date('c', strtotime($tax['exemption']['issueDate'])) . '</FechaEmision>\n'
+                            . '            <PorcentajeExoneracion>' . $tax['exemption']['percentage'] . '</PorcentajeExoneracion>\n'
+                            . '            <MontoExoneracion>' . $tax['exemption']['amount'] . '</MontoExoneracion>\n'
+                            . '        </Exoneracion>';
+                    }
+
+                    $stringXML .= '\n    </Impuesto>';
+                }
+            }
+
+            $stringXML .= '\n    <ImpuestoAsumidoEmisorFabrica>' . ($detail['factoryAssumedTax'] ?? 0) . '</ImpuestoAsumidoEmisorFabrica>\n'
+                . '    <ImpuestoNeto>' . $detail['netTax'] . '</ImpuestoNeto>\n'
+                . '    <MontoTotalLinea>' . $detail['totalAmountLine'] . '</MontoTotalLinea>\n'
+                . '</LineaDetalle>';
+        }
+        $stringXML .= '\n</DetalleServicio>';
+        return $stringXML;
+    }
+
+    private function createSummaryXml($document) {
+        $summary = $document['summary'];
+        $stringXML = '\n<ResumenFactura>\n'
+            . '    <CodigoTipoMoneda>\n'
+            . '        <CodigoMoneda>' . $summary['currencyCode']['currencyCode'] . '</CodigoMoneda>\n'
+            . '        <TipoCambio>' . $summary['currencyCode']['exchangeRate'] . '</TipoCambio>\n'
+            . '    </CodigoTipoMoneda>\n'
+            . '    <TotalServGravados>' . $summary['taxedServices'] . '</TotalServGravados>\n'
+            . '    <TotalServExentos>' . $summary['taxFreeServices'] . '</TotalServExentos>\n'
+            . '    <TotalServExonerado>' . $summary['exemptServices'] . '</TotalServExonerado>\n'
+            . '    <TotalServNoSujeto>' . $summary['nonTaxableServices'] . '</TotalServNoSujeto>\n'
+            . '    <TotalMercanciasGravadas>' . $summary['taxedMerchandise'] . '</TotalMercanciasGravadas>\n'
+            . '    <TotalMercanciasExentas>' . $summary['taxFreeMerchandise'] . '</TotalMercanciasExentas>\n'
+            . '    <TotalMercExonerada>' . $summary['exemptMerchandise'] . '</TotalMercExonerada>\n'
+            . '    <TotalMercNoSujeta>' . $summary['nonTaxableMerchandise'] . '</TotalMercNoSujeta>\n'
+            . '    <TotalGravado>' . $summary['taxedTotal'] . '</TotalGravado>\n'
+            . '    <TotalExento>' . $summary['taxFreeTotal'] . '</TotalExento>\n'
+            . '    <TotalExonerado>' . $summary['exemptTotal'] . '</TotalExonerado>\n'
+            . '    <TotalNoSujeto>' . $summary['nonTaxableTotal'] . '</TotalNoSujeto>\n'
+            . '    <TotalVenta>' . $summary['saleTotal'] . '</TotalVenta>\n'
+            . '    <TotalDescuentos>' . $summary['discountTotal'] . '</TotalDescuentos>\n'
+            . '    <TotalVentaNeta>' . $summary['netTotal'] . '</TotalVentaNeta>';
+            
+        // Add tax breakdown from details
+        $taxSummary = $this->getXmlTaxSummary($document['details']);
+        foreach ($taxSummary as $tax) {
+            $stringXML .= '\n    <TotalDesgloseImpuesto>\n'
+                . '        <Codigo>' . $tax['taxType'] . '</Codigo>\n'
+                . '        <CodigoTarifaIVA>' . $tax['taxRateCode'] . '</CodigoTarifaIVA>\n'
+                . '        <TotalMontoImpuesto>' . $tax['taxAmount'] . '</TotalMontoImpuesto>\n'
+                . '    </TotalDesgloseImpuesto>';
+        }
+        
+        $stringXML .= '\n    <TotalImpuesto>' . $summary['taxTotal'] . '</TotalImpuesto>\n'
+            . '    <TotalImpAsumEmisorFabrica>' . ($summary['totalFactoryTax'] ?? 0) . '</TotalImpAsumEmisorFabrica>\n'
+            . '    <TotalIVADevuelto>' . $summary['returnedTax'] . '</TotalIVADevuelto>\n'
+            . '    <TotalOtrosCargos>' . $summary['otherChargesTotal'] . '</TotalOtrosCargos>';
+            
+        // Add payment methods from document
+        if (isset($document['payments']) && !empty($document['payments'])) {
+            foreach ($document['payments'] as $payment) {
+                $stringXML .= '\n    <MedioPago>\n'
+                    . '        <TipoMedioPago>' . $payment['type'] . '</TipoMedioPago>\n'
+                    . '        <MedioPagoOtros>' . ($payment['otherType'] ?? '') . '</MedioPagoOtros>\n'
+                    . '        <TotalMedioPago>' . $payment['amount'] . '</TotalMedioPago>\n'
+                    . '    </MedioPago>';
+            }
+        }
+        
+        $stringXML .= '\n    <TotalComprobante>' . $summary['voucherTotal'] . '</TotalComprobante>\n'
+            . '</ResumenFactura>';
+            
+        return $stringXML;
+    }
+
+
+
+
+    /**
      * Obtener la informacion de los clientes
      * 
      * @param string $numero_documento Numero de documento
@@ -440,8 +680,19 @@ class DocumentosService {
             }
         }
 
-        // Obtener el primer elemento del array
-        $documentVersion = $documentVersions[0];
+        // Buscar la versión 4.4
+        $documentVersion = null;
+        foreach ($documentVersions as $version) {
+            if ($version->versionNumber === '4.4') {
+                $documentVersion = $version;
+                break;
+            }
+        }
+        
+        // Si no se encuentra la versión 4.4, usar la primera disponible
+        if ($documentVersion === null) {
+            $documentVersion = $documentVersions[0];
+        }
 
         $taxTypes = $dataServiceApi->getTaxTypesByCountry(getCountryCode());
         $taxRates = $dataServiceApi->getTaxRatesByCountry(getCountryCode());
@@ -537,6 +788,77 @@ class DocumentosService {
         $documentsApi = $this->documentsApi;
 
         return $documentsApi->sendDocument($document);
+
+        /*if (!isset($response->error)) {
+            $hacienda = new Hacienda($response->documentKey, $response->attachments->xmlDocument->data);
+
+            $enviar = json_decode($hacienda->enviar());
+
+            if ($enviar->status >= 200 && $enviar->status < 300) {
+                //Obtener la fecha en gmt-6
+                $fecha_gmt = date('Y-m-d\TH:i:s', strtotime('-6 hours'));
+
+                $response->envio_atv = 1;
+                //$data_factura['fecha_envio'] = $fecha_gmt;
+
+                sleep(4);
+
+                $validar = json_decode($hacienda->validar(), true);
+                
+                if (isset($validar['xml']['ind-estado'])) {
+                    if ($validar['xml']['ind-estado'] != "procesando") {
+                        $json = json_decode(json_encode(simplexml_load_string(base64_decode($validar['xml']['respuesta-xml']))));
+
+
+                        // $data_validado = array(
+                        //     'valido_atv' => $json->Mensaje,
+                        //     'fecha_valido' => $fecha_gmt,
+                        //     'detalle_atv' => $json->DetalleMensaje,
+                        // );
+
+                        //$data_factura['valido_atv'] = $json->Mensaje;
+                        //$data_factura['fecha_valido'] = $fecha_gmt;
+                        //$data_factura['detalle_atv'] = $json->DetalleMensaje;
+
+                        $response->valido_atv = $json->Mensaje;
+                        $response->fecha_valido = $fecha_gmt;
+                        $response->detalle_atv = $json->DetalleMensaje;
+
+                        /*if ($json->Mensaje != "procesando") {
+                            $validated = true;
+                        }
+                    }
+                }
+
+                /*if ($validated) {
+                    //$correo_enviado = $hacienda->enviar_documento($id_documento);
+
+                    /*return json_encode(array(
+                        'clave' => $response->documentKey,
+                        "enviar" => $enviar->status,
+                        "validar_estado" => $validar['xml']['ind-estado'],
+                        "mensaje" => $json->Mensaje,
+                        "validar_mensaje" => $json->DetalleMensaje,
+                        //"correo_enviado" => $correo_enviado,
+                        'estado' => 'success',
+                    ));
+
+
+                } else {
+                    /*return json_encode(array(
+                        'clave' => $response->documentKey,
+                        "enviar" => $enviar->status,
+                        "validar_estado" => $validar['xml']['ind-estado'],
+                        "mensaje" => "Procesando",
+                        "validar_mensaje" => "El documento se encuentra en proceso de validación",
+                        //"correo_enviado" => false,
+                        'estado' => 'warning',
+                    ));
+                }
+            }
+        }*/
+
+        //return $response;
     }
 
     private function createKey($consecutivo, $emisor) {
@@ -579,6 +901,8 @@ class DocumentosService {
                 return (object) $document;
             }
 
+            $taxpayersApi = $this->taxpayersApi;
+
             $documentType = $document['documentType'];
             $currencyCode = $document['currency']['currencyCode'];
 
@@ -602,10 +926,12 @@ class DocumentosService {
                 $dias = 0;
             }
 
-            $notas = post('annotations');
+            $notas = $document['annotations'];
 
-            $empresasModel = new EmpresasModel();
-            $empresa = $empresasModel->getById(getSession('id_empresa'));
+            $empresa = $taxpayersApi->getTaxpayerById(getTaxpayerId());
+
+            //$empresasModel = new EmpresasModel();
+            //$empresa = $empresasModel->getById(getSession('id_empresa'));
 
             if ($documentType != '08') {
                 $emisor = $empresa;
@@ -615,60 +941,37 @@ class DocumentosService {
                 $receptor = $empresa;
             }
 
-            //Validar el tipo de documento
-            switch ($documentType) {
-                /**Factura electronica */
-                case '01':
-                    $stringXML = '<?xml version="1.0" encoding="utf-8"?>
-                <FacturaElectronica 
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaElectronica">';
-                    break;
-
-                /**Nota de debito electronica */
-                case '02':
-                    $stringXML = '<?xml version="1.0" encoding="utf-8"?>
-                <NotaDebitoElectronica
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/notaDebitoElectronica">';
-                    break;
-
-                /**Nota de credito electronica */
-                case '03':
-                    $stringXML = '<?xml version="1.0" encoding="utf-8"?>
-                <NotaCreditoElectronica
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/notaCreditoElectronica">';
-                    break;
-
-                /**Tiquete electronico */
-                case '04':
-                    $stringXML = '<?xml version="1.0" encoding="utf-8"?>
-                <TiqueteElectronico
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/tiqueteElectronico">';
-
-                    break;
-
-                /**Factura de compras */
-                case '08':
-                    $stringXML = '<?xml version="1.0" encoding="utf-8"?>
-                <FacturaCompra
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    xmlns="https://cdn.comprobanteselectronicos.go.cr/xml-schemas/v4.3/facturaCompra">';
-                    break;
-
-                default:
-                    return json_encode(array(
-                        'error' => 'Implementando documento',
-                        'estado' => 'error'
-                    ));
+            // Validate activity code matches issuer activities
+            $activityCodeValid = false;
+            if (isset($emisor->activities) && is_array($emisor->activities)) {
+                foreach ($emisor->activities as $activity) {
+                    if ($activity->code == $document['activityCode']) {
+                        $activityCodeValid = true;
+                        break;
+                    }
+                }
             }
+            
+            if (!$activityCodeValid) {
+                return (object) array(
+                    'error' => 'Activity code does not match issuer activities',
+                    'status' => '400'
+                );
+            }
+
+            $docType = DocumentTypesEnum::tryFrom($documentType);
+            if (!$docType) {
+                return json_encode(array(
+                    'error' => 'Implementando documento',
+                    'estado' => 'error'
+                ));
+            }
+
+            $stringXML = '<?xml version="1.0" encoding="utf-8"?>
+            <' . $docType->getXmlRoot() . '
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns="' . $docType->getXmlns(true) . '">';
 
             $consecutivosModel = new ConsecutivosModel();
             $consecutivo_object = $consecutivosModel->obtener_consecutivo($documentType, getEnt('factura.ambiente'));
@@ -677,53 +980,65 @@ class DocumentosService {
 
             $clave = $this->createKey($consecutivo, $empresa);
 
+            //Colocar el emisor
             $stringXML .= '<Clave>' . $clave . '</Clave>
-            <CodigoActividad>' . $emisor->cod_actividad . '</CodigoActividad>
+            <CodigoActividad>' . $document['activityCode'] . '</CodigoActividad>
             <NumeroConsecutivo>' . $consecutivo . '</NumeroConsecutivo>
             <FechaEmision>' . date("c") . '</FechaEmision>
             <Emisor>
-                <Nombre>' . $emisor->razon . '</Nombre>
+                <Nombre>' . $emisor->businessName . '</Nombre>
                 <Identificacion>
-                    <Tipo>' . $emisor->id_tipo_identificacion . '</Tipo>
-                    <Numero>' . $emisor->identificacion . '</Numero>
+                    <Tipo>' . $emisor->identification->code . '</Tipo>
+                    <Numero>' . $emisor->identification->number . '</Numero>
                 </Identificacion>
-                <NombreComercial>' . $emisor->nombre_comercial . '</NombreComercial>
+                <NombreComercial>' . (isset($emisor->tradeName) ? $emisor->tradeName : '') . '</NombreComercial>
                 <Ubicacion>
-                    <Provincia>' . $emisor->cod_provincia . '</Provincia>
-                    <Canton>' . str_pad($emisor->cod_canton, 2, "0", STR_PAD_LEFT) . '</Canton>
-                    <Distrito>' . str_pad($emisor->cod_distrito, 2, "0", STR_PAD_LEFT) . '</Distrito>
-                    <Barrio>' . str_pad($emisor->cod_barrio, 2, "0", STR_PAD_LEFT) . '</Barrio>
-                    <OtrasSenas>' . $emisor->otras_senas . '</OtrasSenas>
+                    <Provincia>' . $emisor->residence->stateId . '</Provincia>
+                    <Canton>' . str_pad($emisor->residence->countyId, 2, "0", STR_PAD_LEFT) . '</Canton>
+                    <Distrito>' . str_pad($emisor->residence->districtId, 2, "0", STR_PAD_LEFT) . '</Distrito>
+                    <OtrasSenas>' . $emisor->residence->address . '</OtrasSenas>
                 </Ubicacion>
                 <Telefono>
-                    <CodigoPais>' . $emisor->codigo_telefono . '</CodigoPais>
-                    <NumTelefono>' . $emisor->telefono . '</NumTelefono>
+                    <CodigoPais>' . (isset($emisor->businessPhone) ? $emisor->businessPhone->areaCode : $emisor->personalPhone->areaCode) . '</CodigoPais>
+                    <NumTelefono>' . (isset($emisor->businessPhone) ? $emisor->businessPhone->number : $emisor->personalPhone->number) . '</NumTelefono>
                 </Telefono>
-                <CorreoElectronico>' . $emisor->correo . '</CorreoElectronico>
+                <CorreoElectronico>' . $emisor->email . '</CorreoElectronico>
             </Emisor>';
 
             /**Si el documento no es un tiquete electronico, no agregar la informacion del cliente al archivo XML */
             if (isset($receptor)) {
 
                 $stringXML .= '<Receptor>
-                    <Nombre>' . $receptor->razon . '</Nombre>
+                    <Nombre>' . $receptor->businessName . '</Nombre>
                     <Identificacion>
-                        <Tipo>' . $receptor->id_tipo_identificacion . '</Tipo>
-                        <Numero>' . $receptor->identificacion . '</Numero>
+                        <Tipo>' . $receptor->identification->code . '</Tipo>
+                        <Numero>' . $receptor->identification->number . '</Numero>
                     </Identificacion>
-                    <NombreComercial>' . $receptor->nombre_comercial . '</NombreComercial>
-                    <Ubicacion>
-                        <Provincia>' . $receptor->cod_provincia . '</Provincia>
-                        <Canton>' . str_pad($receptor->cod_canton, 2, "0", STR_PAD_LEFT) . '</Canton>
-                        <Distrito>' . str_pad($receptor->cod_distrito, 2, "0", STR_PAD_LEFT) . '</Distrito>
-                        <Barrio>' . str_pad($receptor->cod_barrio, 2, "0", STR_PAD_LEFT) . '</Barrio>
-                        <OtrasSenas>' . $receptor->otras_senas . '</OtrasSenas>
-                    </Ubicacion>
+                    <NombreComercial>' . (isset($receptor->tradeName) ? $receptor->tradeName : '') . '</NombreComercial>';
+                
+                // Location is optional for receiver
+                if (isset($receptor->residence)) {
+                    $stringXML .= '
+                    <Ubicacion>';
+                    
+                    if ($documentType == '08' || (isset($receptor->residence->stateId) && isset($receptor->residence->countyId) && isset($receptor->residence->districtId))) {
+                        $stringXML .= '
+                        <Provincia>' . $receptor->residence->stateId . '</Provincia>
+                        <Canton>' . str_pad($receptor->residence->countyId, 2, "0", STR_PAD_LEFT) . '</Canton>
+                        <Distrito>' . str_pad($receptor->residence->districtId, 2, "0", STR_PAD_LEFT) . '</Distrito>';
+                    }
+                    
+                    $stringXML .= '
+                        <OtrasSenas>' . $receptor->residence->address . '</OtrasSenas>
+                    </Ubicacion>';
+                }
+                
+                $stringXML .= '
                     <Telefono>
-                        <CodigoPais>' . $receptor->codigo_telefono . '</CodigoPais>
-                        <NumTelefono>' . $receptor->telefono . '</NumTelefono>
+                        <CodigoPais>' . (isset($receptor->businessPhone) ? $receptor->businessPhone->areaCode : $receptor->personalPhone->areaCode) . '</CodigoPais>
+                        <NumTelefono>' . (isset($receptor->businessPhone) ? $receptor->businessPhone->number : $receptor->personalPhone->number) . '</NumTelefono>
                     </Telefono>
-                    <CorreoElectronico>' . $receptor->correo . '</CorreoElectronico>
+                    <CorreoElectronico>' . $receptor->email . '</CorreoElectronico>
                 </Receptor>';
             }
 
@@ -737,10 +1052,12 @@ class DocumentosService {
             $mediosPago = $document['payments'];
 
             foreach ($mediosPago as $medioPago) {
-                $stringXML .= '<MedioPago>' . $medioPago['paymentType'] . '</MedioPago>';
+                $stringXML .= '<MedioPago>' . $medioPago['type'] . '</MedioPago>';
             }
 
-            $stringXML .= '<DetalleServicio>';
+            $lineas_detalle = $document['details'];
+            $detailsXml = $this->createDetailsXml($document, $lineas_detalle);
+            $stringXML .= $detailsXml;
 
             $totalServGravados = 0;
             $totalServExentos = 0;
@@ -774,12 +1091,12 @@ class DocumentosService {
                         $detalle_linea = $linea_detalle['description'];
 
                         $precio_unitario_linea = $linea_detalle['netPrice'];
-                        $monto_total_linea = $linea_detalle['totalAmount'];
+                        /*$monto_total_linea = $linea_detalle['totalAmount'];
                         $subtotal_linea = $linea_detalle['subTotal'];
                         $impuesto_neto_linea = $linea_detalle['taxAmount'];
-                        $total_linea_linea = $linea_detalle['totalLine'];
+                        $total_linea_linea = $linea_detalle['totalLine'];*/
 
-                        $codigo_venta_linea = $linea_detalle['code'];
+                        //$codigo_venta_linea = $linea_detalle['code'];
 
                         $dataLinea = array(
                             'codigo' => $codigo,
@@ -1082,24 +1399,7 @@ class DocumentosService {
                 $document_references = $document['references'];
             }
 
-            //Validar el tipo de documento
-            switch ($documentType) {
-                case '01':
-                    $stringXML .= '</FacturaElectronica>';
-                    break;
-
-                case '02':
-                    $stringXML .= '</NotaDebitoElectronica>';
-                    break;
-
-                case '03':
-                    $stringXML .= '</NotaCreditoElectronica>';
-                    break;
-
-                case '04':
-                    $stringXML .= '</TiqueteElectronico>';
-                    break;
-            }
+            $stringXML .= '</' . $docType->getXmlRoot() . '>';
 
             $hacienda = new Hacienda($clave);
 
@@ -1564,5 +1864,52 @@ class DocumentosService {
         //var_dump($archivos_xml);
 
         return $documentsApi->uploadDocuments($archivos_xml);
+    }
+
+    /**
+     * Create tax summary from document details
+     */
+    private function getXmlTaxSummary($details) {
+        $taxSummaryList = [];
+        
+        foreach ($details as $detail) {
+            if (isset($detail['taxes']) && !empty($detail['taxes'])) {
+                foreach ($detail['taxes'] as $tax) {
+                    $amount = $tax['amount'];
+                    $taxType = TaxTypesEnum::tryFrom($tax['code']);
+                    
+                    // Apply business rules for amount calculation
+                    if ($taxType && $taxType->isForBaseAmount() && !isset($detail['factoryTax'])) {
+                        $amount = 0.0;
+                    } elseif ($taxType && $taxType->isForFactoryTax() && !isset($detail['factoryTax'])) {
+                        $amount = 0.0;
+                    } elseif (isset($tax['exemption'])) {
+                        $amount -= $tax['exemption']['amount'];
+                    }
+                    
+                    $key = $tax['code'] . '_' . ($tax['rateCode'] ?? 'null');
+                    
+                    if (isset($taxSummaryList[$key])) {
+                        $taxSummaryList[$key]['taxAmount'] += $amount;
+                    } else {
+                        $taxSummaryList[$key] = [
+                            'taxType' => $tax['code'],
+                            'taxRateCode' => $tax['rateCode'] ?? '',
+                            'taxAmount' => $amount
+                        ];
+                    }
+                }
+            }
+        }
+        
+        // Sort by tax type and rate code
+        uasort($taxSummaryList, function($a, $b) {
+            if ($a['taxType'] === $b['taxType']) {
+                return strcmp($a['taxRateCode'], $b['taxRateCode']);
+            }
+            return strcmp($a['taxType'], $b['taxType']);
+        });
+        
+        return array_values($taxSummaryList);
     }
 }

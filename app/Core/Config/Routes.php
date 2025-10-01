@@ -177,6 +177,8 @@ class Routes {
 
         $controllers = new Controllers($default_controller, $default_action);
 
+        //echo "entrando al serve";
+
         $controller = $controllers->controller();
         $action = $controllers->accion();
 

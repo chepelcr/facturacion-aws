@@ -85,7 +85,7 @@
                                                             endif;
 
                                                         ?>
-                                                            <option data-currencyCode="<?= $moneda->currencyCode ?>" value="<?= $moneda->isoCode ?>" <?= $moneda->currencyCode == 'CRC' ? 'selected' : '' ?>>
+                                                            <option data-currencyCode="<?= $moneda->currencyCode ?>" value="<?= $moneda->isoCode ?>" <?= $moneda->isoCode == '188' ? 'selected' : '' ?>>
                                                                 <?= $moneda->name ?>
                                                             </option>
                                                         <?php
@@ -207,7 +207,7 @@
                                     <div class="row d-flex justify-content-between">
                                         <div class="col-md-9 align-content-center">
                                             <h3 class="card-title">
-                                            <i class="fa-solid fa-basket-shopping"></i> Detalle de la venta
+                                                <i class="fa-solid fa-basket-shopping"></i> Detalle de la venta
                                             </h3>
                                         </div>
 

@@ -23,7 +23,8 @@ class Inicio extends BaseController
         if (is_login()) {
             return $this->inicio();
         } else {
-            header('Location: ' . baseUrl('login'));
+            //header('Location: ' . baseUrl('login'));
+            redirect(baseUrl('login'));
         }
     } //Fin de la funcion index
 

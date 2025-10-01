@@ -86,32 +86,7 @@
                     </div>
                 </div>
             </div>
-
-            <?php /*<div class="col-md-6 ubicacion">
-                <div class="form-group">
-                    <label class="text-left ivois-label" for="residence[neighborhoodId]">Barrio</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
-                        </div>
-                        <select class="receiver form-control inp residence_neighborhoodId" name="<?= $neighborhoodName ?? "residence[neighborhoodId]" ?>" required>
-                            <option value="">Seleccionar</option>
-
-                            <!-- Si existen, recorrer neighborhoods-->
-                            <?php if (isset($neighborhoods)): ?>
-                                <?php foreach ($neighborhoods as $neighborhood): ?>
-                                    <option value="<?= $neighborhood->neighborhoodId ?>"
-                                        <?php if (isset($residence->neighborhoodId) && $residence->neighborhoodId == $neighborhood->neighborhoodId) {
-                                            echo 'selected';
-                                        } ?>>
-                                        <?= ucfirst($neighborhood->neighborhoodName) ?></option>
-                                <?php endforeach ?>
-                            <?php endif ?>
-                        </select>
-                    </div>
-                </div>
-            </div>*/ ?>
-
+            
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="text-left ivois-label" for="residence[address]">Otras señas</label>

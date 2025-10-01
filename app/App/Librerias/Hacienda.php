@@ -17,12 +17,24 @@ class Hacienda {
 
     private $xml64 = null;
 
-    public function __construct($clave = null) {
-        $this->clave = $clave;
+    public function __construct($clave = null, $xml64 = null) {
+        if ($clave != null) {
+            $this->clave = $clave;
+        }
+
+        if ($xml64 != null) {
+            $this->xml64 = $xml64;
+        }
     }
 
     public function setClave($clave) {
         $this->clave = $clave;
+
+        return $this;
+    }
+
+    public function setXml64($xml64) {
+        $this->xml64 = $xml64;
 
         return $this;
     }
@@ -323,7 +335,7 @@ class Hacienda {
             $adjuntos = array(
                 $documento->clave . '.pdf' => "biller\\pdf\\" . $documento->clave . ".pdf",
                 $documento->clave . '.xml' => "biller\\xml\\firmados\\" . $documento->clave . "_f.xml",
-                $documento->clave . '_respuesta_MH.xml' =>"biller\\xml\\respuesta\\" . $documento->clave . ".xml",
+                $documento->clave . '_respuesta_MH.xml' => "biller\\xml\\respuesta\\" . $documento->clave . ".xml",
             );
 
             $data = array(
